@@ -1,6 +1,6 @@
 package famu.edu.a1travel.Model;
 
-public class EventAttendees extends BaseEventAttendees {
+public class EventAttendees {
     private Events eventID;
     private Users userID;
 
