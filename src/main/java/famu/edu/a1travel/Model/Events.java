@@ -1,8 +1,11 @@
 package famu.edu.a1travel.Model;
 import com.google.cloud.Timestamp;
+import com.google.protobuf.util.Timestamps;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.text.ParseException;
 
 @Data
 @NoArgsConstructor
@@ -19,4 +22,12 @@ public class Events {
     private String organizer;
     private float price;
     private int registrations;
+
+    public void setEventEnd(String eventEnd) throws ParseException {
+        this.eventEnd = Timestamp.fromProto(Timestamps.parse(eventEnd));
+    }
+
+    public void setEventStart(String eventStart) throws ParseException {
+        this.eventStart = Timestamp.fromProto(Timestamps.parse(eventStart));
+    }
 }
