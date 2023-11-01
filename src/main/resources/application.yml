@@ -46,6 +46,8 @@ security:
     - /api/event/
     - /api/user/
     - /api/user/{userId}
+    - /api/destination/
+    - /api/destination/{userId}
   exposed-headers:
     - X-Xsrf-Token
     - X-Auth-Token
