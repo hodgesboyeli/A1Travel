@@ -13,7 +13,7 @@ public class Specials {
     private boolean isActive;
     private String name;
 
-    public void setIsActive (boolean isActive) {
-        this.isActive = isActive;
+    public boolean getIsActive() {
+        return isActive;
     }
 }

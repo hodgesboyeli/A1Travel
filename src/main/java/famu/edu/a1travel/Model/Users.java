@@ -23,7 +23,7 @@ public class Users {
 
     private boolean isActive;
 
-    public void setIsActive (boolean isActive) {
-        this.isActive = isActive;
+    public boolean getIsActive() {
+        return isActive;
     }
 }
