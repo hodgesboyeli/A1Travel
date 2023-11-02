@@ -70,8 +70,15 @@ public class AuthenticationController {
                     case "firstName":
                         user.setFirstName((String) entry.getValue());
                         break;
+                    case "lastName":
+                        user.setLastName((String) entry.getValue());
+                        break;
+                    case "username":
+                        user.setUsername((String) entry.getValue());
+                        break;
                 }
             }
+            user.setRole("Customer");
             user.setCreatedAt(Timestamp.now());
             user.setActive(Boolean.TRUE);
             payload = usersService.createUser(user);
