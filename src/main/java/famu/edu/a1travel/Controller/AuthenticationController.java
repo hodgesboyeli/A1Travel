@@ -76,6 +76,7 @@ public class AuthenticationController {
             user.setRole("Customer");
             user.setCreatedAt(Timestamp.now());
             user.setActive(Boolean.TRUE);
+            usersService.createUser(user);
 
             //create new user
             UserRecord userRecord = firebaseAuth.createUser(request);
@@ -84,7 +85,7 @@ public class AuthenticationController {
             statusCode = 201;
 
             name = "Successfully created new user: "+userRecord.getUid();
-        } catch (FirebaseAuthException e) {
+        } catch (FirebaseAuthException | ExecutionException | InterruptedException e) {
             payload = new ErrorMessage("Cannot create new user in database.", CLASS_NAME, e.toString());
         }
         response = new ResponseWrapper(statusCode,name, payload);
