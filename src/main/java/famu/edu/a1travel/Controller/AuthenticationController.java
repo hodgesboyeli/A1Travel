@@ -130,7 +130,6 @@ public class AuthenticationController {
         return response.getResponse();
     }
 
-
     @GetMapping("/logout")
     public String logout() {
         SecurityContextHolder.getContext().setAuthentication(null);

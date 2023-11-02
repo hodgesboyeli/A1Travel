@@ -20,9 +20,7 @@ public class Users {
     private String lastName;
     private String role;
     private String username;
-
     private boolean isActive;
-
     public boolean getIsActive() {
         return isActive;
     }
