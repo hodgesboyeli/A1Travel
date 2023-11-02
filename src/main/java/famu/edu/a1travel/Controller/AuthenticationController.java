@@ -24,16 +24,14 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api")
-//@CrossOrigin("localhost:3000")
+@CrossOrigin(origins = "http://localhost:8080")
 public class AuthenticationController {
 
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    private final AuthenticationManager authenticationManager;
 
     @Value("${response.status}")
     private int statusCode;
@@ -43,16 +41,13 @@ public class AuthenticationController {
     private ResponseWrapper response;
     private static final String CLASS_NAME = "Authentication";
 
-
     private final Log logger = LogFactory.getLog(this.getClass());
 
     public AuthenticationController(AuthenticationManager authenticationManager) {
-
-        this.authenticationManager = authenticationManager;
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody Map<String,Object> userValues) throws FirebaseAuthException {
+    public ResponseEntity register(@RequestBody Map<String,Object> userValues) {
         final UsersService usersService = new UsersService();
         try{
             Users user = new Users();
@@ -74,60 +69,54 @@ public class AuthenticationController {
                         break;
                     case "username":
                         user.setUsername((String) entry.getValue());
+                        request.setDisplayName((String) entry.getValue());
                         break;
                 }
             }
             user.setRole("Customer");
             user.setCreatedAt(Timestamp.now());
             user.setActive(Boolean.TRUE);
-            payload = usersService.createUser(user);
+
+            //create new user
+            UserRecord userRecord = firebaseAuth.createUser(request);
+            //TODO Return a JWT so after registration you log in
+            payload = user;
             statusCode = 201;
 
-            UserRecord userRecord = firebaseAuth.createUser(request);
             name = "Successfully created new user: "+userRecord.getUid();
-        } catch (Exception e) {
+        } catch (FirebaseAuthException e) {
             payload = new ErrorMessage("Cannot create new user in database.", CLASS_NAME, e.toString());
         }
-
         response = new ResponseWrapper(statusCode,name, payload);
-
         return response.getResponse();
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody LoginRequest loginRequest) throws FirebaseAuthException {
-        String token = "";
+    public ResponseEntity login(@RequestBody LoginRequest loginRequest) {
+        statusCode = 401;
+        String token;
         HttpHeaders headers = new HttpHeaders();
-
         try {
-            //give email and password to
+            //verify user exists based on email
             UserRecord userRecord = firebaseAuth.getUserByEmail(loginRequest.getEmail());
 
-            //logger.info(userRecord.getUid());
-
+            logger.info(userRecord.getUid());
             UserDetails userDetails = new FirebaseUserDetails(userRecord);
-            //logger.info(userDetails);
             token = JwtUtil.generateToken(userDetails);
+            payload = token;
             //logger.info(token);
-            UsersService service = new UsersService();
-            Users user = service.getUserByUid(userRecord.getUid());
-            payload = Objects.requireNonNullElseGet(user, Users::new);
-            //service.updateLastLogin(user.getUid() );
 
             statusCode = 200;
-            name = "user";
+            name = "jwt";
             headers.add("X-Auth-Token", token);
             Instant now = Instant.now();
             Instant expiryDate = now.plus(1, ChronoUnit.HOURS);
             headers.add("Expires", String.valueOf(expiryDate.toEpochMilli()));
 
-        } catch (InterruptedException | ExecutionException e) {
-
-            payload = new ErrorMessage("Error signing in", CLASS_NAME, e.toString());
+        } catch (FirebaseAuthException e) {
+            payload = new ErrorMessage("Error authenticating user: ", CLASS_NAME, e.toString());
         }
-
         response = new ResponseWrapper(statusCode, name, payload, headers);
-
         return response.getResponse();
     }
 
