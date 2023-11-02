@@ -18,7 +18,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -101,7 +100,9 @@ public class AuthenticationController {
         HttpHeaders headers = new HttpHeaders();
 
         try {
+            //give email and password to
             UserRecord userRecord = firebaseAuth.getUserByEmail(loginRequest.getEmail());
+
             //logger.info(userRecord.getUid());
 
             UserDetails userDetails = new FirebaseUserDetails(userRecord);
