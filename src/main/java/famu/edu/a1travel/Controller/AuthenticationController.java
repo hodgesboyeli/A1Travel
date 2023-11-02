@@ -1,6 +1,7 @@
 package famu.edu.a1travel.Controller;
 
 import com.google.api.client.util.Value;
+import com.google.cloud.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
@@ -17,11 +18,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -48,13 +51,33 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody Users user) throws FirebaseAuthException {
+    public ResponseEntity register(@RequestBody Map<String,Object> userValues) throws FirebaseAuthException {
         final UsersService usersService = new UsersService();
         try{
+            Users user = new Users();
+            UserRecord.CreateRequest request = new UserRecord.CreateRequest();
+            for (Map.Entry<String,Object> entry : userValues.entrySet()){
+                switch (entry.getKey()){
+                    case "email":
+                        user.setEmail((String) entry.getValue());
+                        request.setEmail((String) entry.getValue());
+                        break;
+                    case "password":
+                        request.setPassword((String) entry.getValue());
+                        break;
+                    case "firstName":
+                        user.setFirstName((String) entry.getValue());
+                        break;
+                }
+            }
+            user.setCreatedAt(Timestamp.now());
+            user.setActive(Boolean.TRUE);
             payload = usersService.createUser(user);
             statusCode = 201;
-            name = "userId";
-        } catch (ExecutionException | InterruptedException e) {
+
+            UserRecord userRecord = firebaseAuth.createUser(request);
+            name = "Successfully created new user: "+userRecord.getUid();
+        } catch (Exception e) {
             payload = new ErrorMessage("Cannot create new user in database.", CLASS_NAME, e.toString());
         }
 
