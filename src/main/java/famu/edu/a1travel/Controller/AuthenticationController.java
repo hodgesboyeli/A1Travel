@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -98,10 +99,10 @@ public class AuthenticationController {
             UserDetails userDetails = new FirebaseUserDetails(userRecord);
             //logger.info(userDetails);
             token = JwtUtil.generateToken(userDetails);
-            logger.info(token);
+            //logger.info(token);
             UsersService service = new UsersService();
             Users user = service.getUserByUid(userRecord.getUid());
-            payload = user;
+            payload = Objects.requireNonNullElseGet(user, Users::new);
             //service.updateLastLogin(user.getUid() );
 
             statusCode = 200;
