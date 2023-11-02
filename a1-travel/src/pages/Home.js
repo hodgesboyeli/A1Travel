@@ -1,9 +1,12 @@
 import React from 'react'
 
-export default function Home(){
+function Home(){
     return (
         <div>
+            {console.log("help")}
             Hello!
         </div>
     );
 }
+
+export default Home;
