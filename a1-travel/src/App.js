@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import Main from "./pages/Main";
 import Menu from "./pages/Menu";
 import Login from "./pages/Login";
-
+import './styles.css';
 function App() {
     return (
         <Router>
