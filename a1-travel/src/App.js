@@ -5,6 +5,7 @@ import Main from "./pages/Main";
 import Menu from "./pages/Menu";
 import Login from "./pages/Login";
 import './styles.css';
+import SignUp from "./pages/SignUp";
 function App() {
     return (
         <Router>
@@ -13,6 +14,7 @@ function App() {
                 <Route element={<Home />} path='/home'/>
                 <Route element={<Main />} path=''/>
                 <Route element={<Login />} path='/login'/>
+                <Route element={<SignUp />} path='/signup'/>
             </Routes>
         </Router>
     );

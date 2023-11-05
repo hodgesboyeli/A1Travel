@@ -28,6 +28,12 @@
     font-family: 'Bebas Neue', sans-serif;
 }
 
+.element {
+    margin: 0;
+    padding: 0;
+}
+
+
 /* Heading styles */
 h1 {
     font-size: 24px;
