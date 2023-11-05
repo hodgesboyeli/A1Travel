@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from "react-router-dom";
 
 export default function SignUp() {
     return (
@@ -36,11 +37,11 @@ export default function SignUp() {
                         <input type="password" className="form-control" id="inputPassword" placeholder="PASSWORD" />
                     </div>
                     <div className="text-center" style={{marginTop: 30}}>
-                        <button type="submit" className="btn btn-sm custom-button">SIGN IN</button>
+                        <button type="submit" className="btn btn-sm custom-button">CREATE ACCOUNT</button>
                     </div>
-                    <a className="d-flex justify-content-center mb-4" style={{marginTop: 30}}>
-                        ALREADY HAVE AN ACCOUNT? SIGN IN
-                    </a>
+                    <div className="text-center mt-3">
+                        <Link to="/login">Create an account</Link>
+                    </div>
                 </form>
             </div>
         </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from "react-router-dom";
 
 export default function Login() {
     return (
@@ -30,9 +31,9 @@ export default function Login() {
                     <div className="text-center" style={{marginTop: 30}}>
                         <button type="submit" className="btn btn-sm custom-button">SIGN IN</button>
                     </div>
-                    <a className="d-flex justify-content-center" style={{marginTop: 30}}>
-                        Create an account
-                    </a>
+                    <div className="text-center mt-3">
+                        <Link to="/signup">Create an account</Link>
+                    </div>
                 </form>
             </div>
         </div>
