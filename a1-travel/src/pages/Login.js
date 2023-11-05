@@ -1,20 +1,40 @@
 import React from 'react';
 
-export default function Login(){
+export default function Login() {
     return (
-        <div>
-        <div className="container-fluid">
-            <form className="row justify-content-center">
-                <div className="mb-3 w-25 col">
-                    <label for='inputEmail' className='form-input'>
-                        Email
-                    </label>
+        <div className="pageStyle">
+            <div className="container justify-content-center">
+                <div className="container-fluid d-flex justify-content-center">
+                    <p className="brand-name h2 mb-3" style={{color: "#FF6C37", paddingTop: 60}}>
+                        A1 TRAVEL
+                    </p>
                 </div>
-                <div className="mb-3 w-25 col">
-                    <label htmlFor="exampleInputPassword1" className="form-input">Password</label>
+                <div className="text-center mt-3">
+                    <img src={process.env.PUBLIC_URL + "/A1Logo.png"} className="img-fluid" alt="A1 Travel Logo" />
                 </div>
-            </form>
+                <div className="container-fluid d-flex justify-content-center">
+                    <p className="h2" style={{color: "white", paddingTop: 60}}>
+                        LOGIN
+                    </p>
+                </div>
+            </div>
+
+            <div className="signin-form-movement container-fluid d-flex justify-content-center">
+                <form className="w-25">
+                    <div className="mb-3">
+                        <input type="text" className="form-control" id="inputUsername" placeholder="USERNAME" />
+                    </div>
+                    <div className="mb-3">
+                        <input type="password" className="form-control" id="inputPassword" placeholder="PASSWORD" />
+                    </div>
+                    <div className="text-center" style={{marginTop: 30}}>
+                        <button type="submit" className="btn btn-sm custom-button">SIGN IN</button>
+                    </div>
+                    <a className="d-flex justify-content-center" style={{marginTop: 30}}>
+                        Create an account
+                    </a>
+                </form>
+            </div>
         </div>
-        </div>
-);
+    );
 }

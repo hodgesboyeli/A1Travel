@@ -8,7 +8,7 @@ import './styles.css';
 function App() {
     return (
         <Router>
-            <Menu />
+            {/*<Menu />*/}
             <Routes>
                 <Route element={<Home />} path='/home'/>
                 <Route element={<Main />} path=''/>
