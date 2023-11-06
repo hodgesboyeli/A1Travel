@@ -6,6 +6,8 @@ import Navbar from "./pages/Navbar";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import './styles.css';
+import TAHome from "./pages/TAHome";
+import AdminHome from "./pages/AdminHome";
 
 function App() {
     return (
@@ -15,6 +17,8 @@ function App() {
                 <Route element={<Main />} path=''/>
                 <Route element={<Login />} path='/login'/>
                 <Route element={<SignUp />} path='/signup'/>
+                <Route element={<TAHome />} path='/tahome'/>
+                <Route element={<AdminHome />} path='/adminhome'/>
             </Routes>
         </Router>
     );

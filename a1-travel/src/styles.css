@@ -34,13 +34,18 @@
     font-size: 20px;
 }
 
+.element {
+    margin: 0;
+    padding: 0;
+}
+
 .search-bar {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-form {
+.search-bar form {
     display: flex;
     background: #f2f2f2;
     border: 1px solid #ccc;
@@ -48,23 +53,17 @@ form {
     padding: 5px;
 }
 
-input {
+.search-bar input {
     border: none;
     outline: none;
     background: transparent;
     flex: 1;
 }
 
-button {
+.search-bar button {
     background: transparent;
     border: none;
     cursor: pointer;
-}
-
-
-.element {
-    margin: 0;
-    padding: 0;
 }
 
 
