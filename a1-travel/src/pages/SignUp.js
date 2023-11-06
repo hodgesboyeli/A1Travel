@@ -39,7 +39,7 @@ export default function SignUp() {
                     <div className="text-center" style={{marginTop: 40}}>
                         <button type="submit" className="btn btn-sm custom-button">CREATE ACCOUNT</button>
                     </div>
-                    <div className="text-center mt-3 mb-3">
+                    <div className="p text-center mt-3 mb-3">
                         <Link to="/login">ALREADY HAVE ACCOUNT? SIGN IN</Link>
                     </div>
                 </form>

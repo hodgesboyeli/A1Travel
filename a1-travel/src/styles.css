@@ -9,12 +9,17 @@
     color: #fff;
     text-decoration: none;
     padding: 10px 20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 25px;
 }
 
 .navbar a:hover {
-    background-color: #555;
+    background-color: #0066FF;
 }
 
+.navbar-nav .nav-item {
+    margin-right: 20px; /* Adjust the right margin as needed */
+}
 
 .signin-form-movement{
     width: 100%;
@@ -26,7 +31,36 @@
 .form-control::placeholder
 {
     font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
 }
+
+.search-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+form {
+    display: flex;
+    background: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+input {
+    border: none;
+    outline: none;
+    background: transparent;
+    flex: 1;
+}
+
+button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
 
 .element {
     margin: 0;
@@ -36,8 +70,10 @@
 
 /* Heading styles */
 h1 {
-    font-size: 24px;
-    color: #333;
+    font-size: 28px;
+    color: #000;
+    margin-bottom: 15px;
+    font-family: 'Bebas Neue', sans-serif;
 }
 
 h2 {
@@ -51,7 +87,6 @@ p {
     color: #666;
     margin-bottom: 15px;
     font-family: 'Bebas Neue', sans-serif;
-
 }
 
 /* Link styles */
@@ -94,4 +129,12 @@ a:hover {
 
 .pageStyle {
     background-color: #1E71EE;
+}
+
+@font-face {
+    font-family: 'Bebas Neue';
+    src: url('/Users/dbhoo/Desktop/Capstone/Code/GitHub/A1Travel/a1-travel/public/Bebas_Neue/BebasNeue-Regular.ttf') format('truetype');
+    /* Add other font formats (woff, woff2) for better browser support */
+    font-weight: normal;
+    font-style: normal;
 }
