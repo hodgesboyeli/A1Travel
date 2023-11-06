@@ -133,7 +133,7 @@ a:hover {
 
 @font-face {
     font-family: 'Bebas Neue';
-    src: url('/Users/dbhoo/Desktop/Capstone/Code/GitHub/A1Travel/a1-travel/public/Bebas_Neue/BebasNeue-Regular.ttf') format('truetype');
+    src: url('BebasNeue-Regular.ttf') format('truetype');
     /* Add other font formats (woff, woff2) for better browser support */
     font-weight: normal;
     font-style: normal;
