@@ -1,5 +1,5 @@
 import React from 'react';
-import AdminNavbar from "./AdminNavbar";
+import AdminNavbar from "../AdminNavbar";
 export default function AdminHome(){
     return (
         <div className="page-style">

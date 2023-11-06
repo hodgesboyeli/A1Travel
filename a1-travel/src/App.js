@@ -1,13 +1,14 @@
 import React from 'react';
 import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
-import CustHome from "./pages/CustHome";
+import CustHome from "./pages/Customer/CustHome";
 import Main from "./pages/Main";
 import Navbar from "./pages/Navbar";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import './styles.css';
-import TAHome from "./pages/TAHome";
-import AdminHome from "./pages/AdminHome";
+import TAHome from "./pages/Travel_Admin/TAHome";
+import AdminHome from "./pages/Admin/AdminHome";
+import DatabaseManagement from "./pages/Travel_Admin/Database Management";
 
 function App() {
     return (
@@ -17,8 +18,9 @@ function App() {
                 <Route element={<Main />} path=''/>
                 <Route element={<Login />} path='/login'/>
                 <Route element={<SignUp />} path='/signup'/>
-                <Route element={<TAHome />} path='/tahome'/>
-                <Route element={<AdminHome />} path='/adminhome'/>
+                <Route element={<TAHome />} path='/ta-home'/>
+                <Route element={<AdminHome />} path='/admin-home'/>
+                <Route element={<DatabaseManagement />} path='/travel_admin/database-managament'/>
             </Routes>
         </Router>
     );
