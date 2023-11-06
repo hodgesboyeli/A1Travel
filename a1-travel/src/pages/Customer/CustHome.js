@@ -14,7 +14,7 @@ export default function CustHome(){
                 <div className="text-center" style={{marginTop: 40}}>
                     <button type="submit" className="btn btn-md custom-button">
                         Create Trip
-                        <i className="fas fa-plane"></i>
+                        <div><i className="fas fa-plane"></i></div>
                     </button>
                 </div>
             </div>

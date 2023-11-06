@@ -30,6 +30,10 @@
     padding-right: 20px;
 }
 
+.sign-out-button:hover{
+    color: black;
+}
+
 .signin-form-movement{
     width: 100%;
     height: 100%;

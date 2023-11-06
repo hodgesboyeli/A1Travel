@@ -20,7 +20,7 @@ function App() {
                 <Route element={<SignUp />} path='/signup'/>
                 <Route element={<TAHome />} path='/ta-home'/>
                 <Route element={<AdminHome />} path='/admin-home'/>
-                <Route element={<DatabaseManagement />} path='/travel_admin/database-managament'/>
+                <Route element={<DatabaseManagement />} path='/travel_admin/database-management'/>
             </Routes>
         </Router>
     );
