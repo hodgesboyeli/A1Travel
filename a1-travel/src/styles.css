@@ -21,6 +21,15 @@
     margin-right: 20px; /* Adjust the right margin as needed */
 }
 
+.sign-out-button{
+    color : #FFFFFF;
+    background-color: #1E71EE;
+    border : none;
+    margin-left: auto;
+    font-size : 25px;
+    padding-right: 20px;
+}
+
 .signin-form-movement{
     width: 100%;
     height: 100%;
@@ -66,10 +75,9 @@
     cursor: pointer;
 }
 
-
 /* Heading styles */
 h1 {
-    font-size: 28px;
+    font-size: 48px;
     color: #000;
     margin-bottom: 15px;
     font-family: 'Bebas Neue', sans-serif;
@@ -126,7 +134,21 @@ a:hover {
     background-color: #FA4705;
 }
 
-.pageStyle {
+.admin-button{
+    background-color: #BEBEBE;
+    color: black;
+    width: 170px;
+    height: 171px;
+    border-radius: 25px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size : 24px;
+}
+
+.admin-button:hover{
+    background-color: lightgray;
+}
+
+.page-style {
     background-color: #1E71EE;
 }
 

@@ -18,7 +18,7 @@ export default function Login() {
         }
     };
     return (
-        <div className="pageStyle">
+        <div className="page-style">
             <div className="container justify-content-center">
                 <div className="container-fluid d-flex justify-content-center">
                     <p className="brand-name h2 mb-3" style={{color: "#FF6C37", paddingTop: 55}}>
