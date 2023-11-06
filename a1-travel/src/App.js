@@ -10,7 +10,6 @@ import './styles.css';
 function App() {
     return (
         <Router>
-            <Login/>
             <Routes>
                 <Route element={<Home />} path='/home'/>
                 <Route element={<Main />} path=''/>

@@ -6,7 +6,7 @@ export default function Login() {
         <div className="pageStyle">
             <div className="container justify-content-center">
                 <div className="container-fluid d-flex justify-content-center">
-                    <p className="brand-name h2 mb-3" style={{color: "#FF6C37", paddingTop: 60}}>
+                    <p className="brand-name h2 mb-3" style={{color: "#FF6C37", paddingTop: 55}}>
                         A1 TRAVEL
                     </p>
                 </div>
@@ -14,7 +14,7 @@ export default function Login() {
                     <img src={process.env.PUBLIC_URL + "/A1Logo.png"} className="img-fluid" alt="A1 Travel Logo" />
                 </div>
                 <div className="container-fluid d-flex justify-content-center">
-                    <p className="h2" style={{color: "white", paddingTop: 60}}>
+                    <p className="h2" style={{color: "white", paddingTop: 55}}>
                         LOGIN
                     </p>
                 </div>
@@ -28,11 +28,11 @@ export default function Login() {
                     <div className="mb-3">
                         <input type="password" className="form-control" id="inputPassword" placeholder="PASSWORD" />
                     </div>
-                    <div className="text-center" style={{marginTop: 30}}>
+                    <div className="text-center" style={{marginTop: 40}}>
                         <button type="submit" className="btn btn-sm custom-button">SIGN IN</button>
                     </div>
-                    <div className="text-center mt-3">
-                        <Link to="/signup">Create an account</Link>
+                    <div className="text-center mt-4">
+                        <Link to="/signup">CREATE AN ACCOUNT</Link>
                     </div>
                 </form>
             </div>
