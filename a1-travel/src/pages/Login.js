@@ -20,8 +20,8 @@ export default function Login() {
                 </div>
             </div>
 
-            <div className="signin-form-movement container-fluid d-flex justify-content-center">
-                <form className="w-25">
+            <div className="signin-form-movement container-fluid d-flex justify-content-center" >
+                <form className="w-25 row">
                     <div className="mb-3">
                         <input type="text" className="form-control" id="inputUsername" placeholder="USERNAME" />
                     </div>
