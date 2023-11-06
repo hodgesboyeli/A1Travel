@@ -9,6 +9,7 @@ import './styles.css';
 import TAHome from "./pages/Travel_Admin/TAHome";
 import AdminHome from "./pages/Admin/AdminHome";
 import DatabaseManagement from "./pages/Travel_Admin/Database Management";
+import UserSearch from "./pages/Admin/User Search";
 
 function App() {
     return (
@@ -21,6 +22,7 @@ function App() {
                 <Route element={<TAHome />} path='/ta-home'/>
                 <Route element={<AdminHome />} path='/admin-home'/>
                 <Route element={<DatabaseManagement />} path='/travel_admin/database-management'/>
+                <Route element={<UserSearch />} path='/admin/user-search'/>
             </Routes>
         </Router>
     );
