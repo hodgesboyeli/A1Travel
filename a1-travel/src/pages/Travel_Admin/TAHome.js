@@ -1,10 +1,11 @@
 import React from 'react';
 import AdminNavbar from "../AdminNavbar";
 import {Link} from "react-router-dom";
+import TravelAdminNavbar from "../TravelAdminNavbar";
 export default function TAHome(){
     return (
         <div className="page-style">
-            <AdminNavbar/>
+            <TravelAdminNavbar/>
             <div className="container-fluid d-flex justify-content-center mt-5" style={{paddingTop: 30}}>
                 <h1 style={{color : "#FFF"}}>Travel Administrator Dashboard</h1>
             </div>
