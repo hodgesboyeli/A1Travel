@@ -1,7 +1,22 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Link} from "react-router-dom";
+import { auth } from "../Firebase";
+import {axios}from "axios";
 
 export default function Login() {
+    const [email, setEmail] = useState('');
+    const [pass, setPass] = useState('');
+    const handleLogin = async () => {
+        try {
+            const user = await auth.signInWithEmailAndPassword(email,pass);
+            //const response = await axios.post('/login',{ email: user.email });
+            //const jwtToken = response.data;
+
+            //console.log('JWT Token: ',jwtToken);
+        } catch (error){
+            console.log(error.message);
+        }
+    };
     return (
         <div className="pageStyle">
             <div className="container justify-content-center">
