@@ -20,7 +20,7 @@ export default function SignUp() {
                 </div>
             </div>
             <div className="element signin-form-movement container-fluid d-flex justify-content-center">
-                <form className="w-25">
+                <form className="w-25 row">
                     <div className="mb-3">
                         <input type="text" className="form-control" id="inputFirstName" placeholder="FIRST NAME" />
                     </div>
@@ -36,7 +36,7 @@ export default function SignUp() {
                     <div className="mb-3">
                         <input type="password" className="form-control" id="inputPassword" placeholder="PASSWORD" />
                     </div>
-                    <div className="text-center" style={{marginTop: 40}}>
+                    <div className="text-center">
                         <button type="submit" className="btn btn-sm custom-button">CREATE ACCOUNT</button>
                     </div>
                     <div className="p text-center mt-3 mb-3">
