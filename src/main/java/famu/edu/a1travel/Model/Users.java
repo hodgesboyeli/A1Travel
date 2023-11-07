@@ -13,17 +13,14 @@ import org.springframework.lang.Nullable;
 public class Users {
     @DocumentId
     private @Nullable String userId;
-    private @Nullable String uid;
     private Timestamp createdAt;
     private String email;
     private String firstName;
     private String lastName;
     private String role;
     private String username;
-
     private boolean isActive;
-
-    public void setIsActive (boolean isActive) {
-        this.isActive = isActive;
+    public boolean getIsActive() {
+        return isActive;
     }
 }
