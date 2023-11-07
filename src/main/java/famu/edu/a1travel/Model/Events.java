@@ -22,7 +22,8 @@ public class Events {
     private String organizer;
     private float price;
     private int registrations;
-
+    private String phoneNumber;
+    private String email;
     public void setEventEnd(String eventEnd) throws ParseException {
         this.eventEnd = Timestamp.fromProto(Timestamps.parse(eventEnd));
     }
