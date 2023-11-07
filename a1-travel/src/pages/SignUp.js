@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
-import { app, db } from '../Firebase';
-import { doc, setDoc } from "firebase/firestore";
+import Axios from 'axios';
 
 export default function SignUp() {
     const [firstName, setFirstName] = useState('');
@@ -10,29 +8,32 @@ export default function SignUp() {
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+
     const handleSignUp = async (e) => {
         e.preventDefault();
-        const auth = getAuth(app);
+        console.log('handleSignUp function is working!');
 
+        // Create a user object with input data
+        const user = {
+            firstName,
+            lastName,
+            email,
+            username,
+            password,
+        };
+        console.log('handleSignUp function is stillll working!');
         try {
-            const response = await createUserWithEmailAndPassword(auth, email, password);
+            const response = await Axios.post('http://localhost:8080/api/register', user);
 
-            if (response.user) {
-                // After successful registration, add user data to Firestore
-                const userRef = doc(db, 'Users', response.user.uid); // 'Users' is the Firestore collection name
-                const userData = {
-                    firstName,
-                    lastName,
-                    email,
-                    username,
-                };
-                await setDoc(userRef, userData); // Add user data to Firestore
-
+            if (response.status === 201) {
+                // Registration successful, you can navigate to a success page or display a success message
                 console.log('User signed up successfully');
             } else {
+                // Handle registration failure, show an error message to the user
                 console.error('Sign-up failed');
             }
         } catch (error) {
+            // Handle network errors or other issues
             console.error('Error:', error);
         }
     };
