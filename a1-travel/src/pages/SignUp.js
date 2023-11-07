@@ -38,15 +38,16 @@ export default function SignUp() {
     };
 
     return (
-        <div className="pageStyle">
+        <div className="page-style">
             <div className="container justify-content-center">
                 <div className="container-fluid d-flex justify-content-center">
                     <p className="brand-name h2 mb-4" style={{ color: "#FF6C37", paddingTop: 30 }}>
                         A1 TRAVEL
                     </p>
                 </div>
-                <div className="text-center mb-3">
-                    <img src={process.env.PUBLIC_URL + "/A1Logo.png"} className="img-fluid" alt="A1 Travel Logo" />
+                <div className="text-center mb-2">
+                    <img src={process.env.PUBLIC_URL + "/A1Logo.png"} style={{marginTop:5}}
+                         className="img-fluid" alt="A1 Travel Logo" />
                 </div>
                 <div className="container-fluid d-flex justify-content-center">
                     <p className="h2 mb-4" style={{ color: "white", paddingTop: 40 }}>
@@ -106,10 +107,10 @@ export default function SignUp() {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
-                    <div className="text-center">
+                    <div className="text-center mt-3">
                         <button type="submit" className="btn btn-sm custom-button">CREATE ACCOUNT</button>
                     </div>
-                    <div className="p text-center mt-3 mb-3">
+                    <div className="p text-center mt-4 mb-3">
                         <Link to="/login">ALREADY HAVE ACCOUNT? SIGN IN</Link>
                     </div>
                 </form>

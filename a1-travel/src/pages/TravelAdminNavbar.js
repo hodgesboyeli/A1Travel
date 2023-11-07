@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function AdminNavbar(){
+export default function TravelAdminNavbar(){
     return (
         <nav className="navbar navbar-expand-lg" style={{backgroundColor:"#FFF"}}>
             <div className="d-flex justify-content-end" style={{paddingLeft: 10}}>
@@ -9,7 +9,7 @@ export default function AdminNavbar(){
                 <div className="collapse navbar-collapse " id="navbarNav">
                     <ul className="navbar-nav justify-content-center">
                         <li className="nav-item">
-                            <a className="nav-link" href="http://localhost:3000/admin-home" style={{color: "#000"}}>Home</a>
+                            <a className="nav-link" href="http://localhost:3000/ta-home" style={{color: "#000"}}>Home</a>
                         </li>
                         <li className="nav-item">
                             <a className="nav-link" href="#" style={{color: "#000"}}>Inbox</a>
