@@ -19,40 +19,31 @@ public class UsersService {
         ApiFuture<QuerySnapshot> future = query.get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 
-        ArrayList<Users> users = (documents.size() > 0) ? new ArrayList<>() : null;
+        ArrayList<Users> users = !documents.isEmpty() ? new ArrayList<>() : null;
 
         for (QueryDocumentSnapshot doc : documents)
             users.add(doc.toObject(Users.class));
 
         return users;
-
-
     }
 
     public Users getUserById(String id) throws ExecutionException, InterruptedException {
-        Users user = null;
-
         DocumentReference doc = db.collection("Users").document(id);
         ApiFuture<DocumentSnapshot> future = doc.get();
-        user = future.get().toObject(Users.class);
-
-        return user;
+        return future.get().toObject(Users.class);
     }
 
     public String createUser(Users user) throws ExecutionException, InterruptedException {
-        String userId = null;
         user.setCreatedAt(Timestamp.now());
         //user.setLastLogin(Timestamp.now());
 
         ApiFuture<DocumentReference> future = db.collection("Users").add(user);
         DocumentReference userRef = future.get();
-        userId = userRef.getId();
 
-        return userId;
+        return userRef.getId();
     }
 
     public void updateUser(String id, Map<String, String> updateValues) {
-
         String[] allowed = {"uid", "email", "firstName", "lastName"};
         List<String> list = Arrays.asList(allowed);
         Map<String, Object> formattedValues = new HashMap<>();

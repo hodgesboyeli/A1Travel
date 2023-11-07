@@ -28,7 +28,7 @@ import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:8080")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthenticationController {
 
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();

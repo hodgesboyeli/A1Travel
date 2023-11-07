@@ -5,7 +5,7 @@ export default function AdminNavbar(){
         <div className="header">
             <nav className="navbar navbar-expand-lg" style={{backgroundColor:"#FFF"}}>
                 <img src={process.env.PUBLIC_URL + "/A1Logo.png"} alt="A1 Travel Logo" height="60" width="60"/>
-                <a className="brand-name" style={{color: "#FF6C37"}}>A1 TRAVEL</a>
+                <a className="nav brand-name" style={{color: "#FF6C37"}}>A1 TRAVEL</a>
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
