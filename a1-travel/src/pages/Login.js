@@ -8,12 +8,13 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
 
-    const handleLogin = async () => {
+    const handleLogin = async (e) => {
+        e.preventDefault();
         try {
             const auth = getAuth(app);
             const user = await signInWithEmailAndPassword(auth,email,pass);
             console.log(email);
-            const response = await Axios.post('http://localhost:8080/api/login',{ email: email, password:'' });
+            const response = await Axios.post('http://localhost:8080/api/login',{ email: email });
             const jwtToken = response.data;
 
             console.log('JWT Token: ',jwtToken);
@@ -22,7 +23,7 @@ export default function Login() {
             console.log(error.message);
         }
     };
-    return <div className="pageStyle">
+    return (<div className="page-style">
         <div className="container justify-content-center">
             <div className="container-fluid d-flex justify-content-center">
                 <p className="brand-name h2 mb-3" style={{color: "#FF6C37", paddingTop: 55}}>
@@ -39,7 +40,7 @@ export default function Login() {
             </div>
         </div>
         <div className="signin-form-movement container-fluid d-flex justify-content-center" >
-            {/*<form className="w-25 row" onSubmit={handleLogin}>*/}
+            <form className="w-25 row" onSubmit={handleLogin}>
                 <div className="mb-3">
                     <input type="text" className="form-control" id="inputUsername" placeholder="USERNAME"
                     value={email}
@@ -51,13 +52,14 @@ export default function Login() {
                     onChange={(e)=>setPass(e.target.value)}/>
                 </div>
                 <div className="text-center" style={{marginTop: 40}}>
-                    <button className="btn btn-sm custom-button" onClick={handleLogin}>
+                    <button type='submit' className="btn btn-sm custom-button">
                         SIGN IN
                     </button>
                 </div>
                 <div className="text-center mt-4">
                     <Link to="/signup">CREATE AN ACCOUNT</Link>
                 </div>
+            </form>
         </div>
-    </div>;
+    </div>);
 }
