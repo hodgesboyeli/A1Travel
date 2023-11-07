@@ -1,6 +1,7 @@
 import React, {useRef, useState} from 'react';
 import AdminNavbar from "../AdminNavbar";
 import TravelAdminNavbar from "../TravelAdminNavbar";
+import Axios from "axios";
 
 export default function DatabaseManagement() {
     const [showEventForm, setShowEventForm] = useState(false);
@@ -8,13 +9,54 @@ export default function DatabaseManagement() {
     const emailRef = useRef(null);
     const imageRef = useRef(null);
     const [inputValues, setInputValues] = useState({
-        inputEventName: '',
-        inputEventCategory: '',
-        inputEventDescription: '',
-        inputEventOrganizer: '',
-        inputPhoneNumber: '',
-        inputEmail: '',
+        eventName: '',
+        eventType: '',
+        description: '',
+        organizer: '',
+        phoneNumber: '',
+        email: '',
     });
+
+    const handleSignUp = async (e) => {
+        e.preventDefault();
+        console.log('handleSignUp function is working!');
+
+        // Destructure input values
+        const {
+            eventName,
+            eventType,
+            description,
+            organizer,
+        } = inputValues;
+
+        const phoneNumber = phoneRef.current.value;
+        const email = emailRef.current.value;
+
+        // Create an event object with input data
+        const event = {
+            eventName,
+            eventType,
+            description,
+            organizer,
+            phoneNumber,
+            email,
+        };
+
+        try {
+            const response = await Axios.post('http://localhost:8080/api/event/', event);
+            console.log(event);
+            if (response.status === 201) {
+                // Registration successful, you can navigate to a success page or display a success message
+                console.log('Event created successfully');
+            } else {
+                // Handle registration failure, show an error message to the user
+                console.error('Event create failed');
+            }
+        } catch (error) {
+            // Handle network errors or other issues
+            console.error('Error:', error);
+        }
+    };
 
     const handleRadioChange = (event) => {
         if (event.target.id === "radioEvent") {
@@ -34,10 +76,10 @@ export default function DatabaseManagement() {
 
     const handleReset = () => {
         setInputValues({
-            inputEventName: '',
-            inputEventCategory: '',
-            inputEventDescription: '',
-            inputEventOrganizer: '',
+            eventName: '',
+            eventType: '',
+            description: '',
+            organizer: '',
         });
 
         // Clear Phone Number and Email input fields
@@ -53,6 +95,7 @@ export default function DatabaseManagement() {
             imageRef.current.value = '';
         }
     };
+
 
     return (
         <div>
@@ -96,22 +139,22 @@ export default function DatabaseManagement() {
 
             {showEventForm && (
                 <div className="container-fluid d-flex justify-content-center" style={{paddingLeft: 150, paddingRight: 150}}>
-                    <form className="row g-3">
+                    <form className="row g-3" onSubmit={handleSignUp}>
                         <div className="col-md-6">
                             <label htmlFor="inputEventName" className="form-label">Event Name</label>
-                            <input type="text" className="form-control" id="inputEventName" value={inputValues.inputEventName} onChange={handleInputChange} />
+                            <input type="text" className="form-control" id="eventName" value={inputValues.eventName} onChange={handleInputChange} />
                         </div>
                         <div className="col-md-6">
-                            <label htmlFor="inputEventCategory" className="form-label">Event Category</label>
-                            <input type="text" className="form-control" id="inputEventCategory" value={inputValues.inputEventCategory} onChange={handleInputChange} />
+                            <label htmlFor="category" className="form-label">Event Category</label>
+                            <input type="text" className="form-control" id="eventType" value={inputValues.category} onChange={handleInputChange} />
                         </div>
                         <div className="col-12">
-                            <label htmlFor="inputEventDescription" className="form-label">Event Description</label>
-                            <textarea className="form-control" id="inputEventDescription" rows="3" value={inputValues.inputEventDescription} onChange={handleInputChange}></textarea>
+                            <label htmlFor="description" className="form-label">Event Description</label>
+                            <textarea className="form-control" id="description" rows="3" value={inputValues.description} onChange={handleInputChange}></textarea>
                         </div>
                         <div className="col-md-6">
-                            <label htmlFor="inputEventOrganizer" className="form-label">Event Organizer</label>
-                            <input type="text" className="form-control" id="inputEventOrganizer" value={inputValues.inputEventOrganizer} onChange={handleInputChange}/>
+                            <label htmlFor="organizer" className="form-label">Event Organizer</label>
+                            <input type="text" className="form-control" id="organizer" value={inputValues.organizer} onChange={handleInputChange}/>
                         </div>
                         <div className="col-md-6">
                             <label htmlFor="inputContactInfo" className="form-label">Contact Information</label>
@@ -128,9 +171,9 @@ export default function DatabaseManagement() {
                             <button type="submit" className="btn btn-success">Submit</button>
                         </div>
                         <div className="col-12 d-flex justify-content-center">
-                        <button type="button" className="btn btn-secondary" onClick={handleReset}>
-                            Reset
-                        </button>
+                            <button type="button" className="btn btn-secondary" onClick={handleReset}>
+                                Reset
+                            </button>
                         </div>
                     </form>
                 </div>
