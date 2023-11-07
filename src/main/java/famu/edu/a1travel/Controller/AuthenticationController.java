@@ -47,80 +47,61 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody Map<String,Object> userValues) {
+    public String register(@RequestBody Map<String,Object> userValues) throws ExecutionException, InterruptedException, FirebaseAuthException {
         final UsersService usersService = new UsersService();
-        try{
-            Users user = new Users();
-            UserRecord.CreateRequest request = new UserRecord.CreateRequest();
-            for (Map.Entry<String,Object> entry : userValues.entrySet()){
-                switch (entry.getKey()){
-                    case "email":
-                        user.setEmail((String) entry.getValue());
-                        request.setEmail((String) entry.getValue());
-                        break;
-                    case "password":
-                        request.setPassword((String) entry.getValue());
-                        break;
-                    case "firstName":
-                        user.setFirstName((String) entry.getValue());
-                        break;
-                    case "lastName":
-                        user.setLastName((String) entry.getValue());
-                        break;
-                    case "username":
-                        user.setUsername((String) entry.getValue());
-                        request.setDisplayName((String) entry.getValue());
-                        break;
-                }
-            }
-            user.setRole("Customer");
-            user.setCreatedAt(Timestamp.now());
-            user.setActive(Boolean.TRUE);
 
-            //create user document and set auth uid to the user doc id
-            request.setUid(usersService.createUser(user));
-            //create new user
-            UserRecord userRecord = firebaseAuth.createUser(request);
+        Users user = new Users();
+        UserRecord.CreateRequest request = new UserRecord.CreateRequest();
+        for (Map.Entry<String,Object> entry : userValues.entrySet()){
+            switch (entry.getKey()){
+                case "email":
+                    user.setEmail((String) entry.getValue());
+                    request.setEmail((String) entry.getValue());
+                    break;
+                case "password":
+                    request.setPassword((String) entry.getValue());
+                    break;
+                case "firstName":
+                    user.setFirstName((String) entry.getValue());
+                    break;
+                case "lastName":
+                    user.setLastName((String) entry.getValue());
+                    break;
+                case "username":
+                    user.setUsername((String) entry.getValue());
+                    request.setDisplayName((String) entry.getValue());
+                    break;
+            }
+        }
+        user.setRole("Customer");
+        user.setCreatedAt(Timestamp.now());
+        user.setActive(Boolean.TRUE);
+
+        //create user document and set auth uid to the user doc id
+        request.setUid(usersService.createUser(user));
+        //create new user
+        UserRecord userRecord = firebaseAuth.createUser(request);
 
             //TODO Return a JWT so after registration you log in
-            payload = user;
-            statusCode = 201;
-
-            name = "Successfully created new user: "+userRecord.getUid();
-        } catch (FirebaseAuthException | ExecutionException | InterruptedException e) {
-            payload = new ErrorMessage("Cannot create new user in database.", CLASS_NAME, e.toString());
-        }
-        response = new ResponseWrapper(statusCode,name, payload);
-        return response.getResponse();
+        return userRecord.getUid();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String,Object>> login(@RequestBody LoginRequest loginRequest) {
-        statusCode = 401;
-        String token;
+    public String login(@RequestBody LoginRequest loginRequest) throws FirebaseAuthException {
         HttpHeaders headers = new HttpHeaders();
-        try {
-            //verify user exists based on email
-            UserRecord userRecord = firebaseAuth.getUserByEmail(loginRequest.getEmail());
+        //verify user exists based on email
+        UserRecord userRecord = firebaseAuth.getUserByEmail(loginRequest.getEmail());
 
-            logger.info(userRecord.getUid());
-            UserDetails userDetails = new FirebaseUserDetails(userRecord);
-            token = JwtUtil.generateToken(userDetails);
-            payload = token;
-            //logger.info(token);
+        logger.info(userRecord.getUid());
+        UserDetails userDetails = new FirebaseUserDetails(userRecord);
+        String token = JwtUtil.generateToken(userDetails);
+        //logger.info(token);
 
-            statusCode = 200;
-            name = "jwt";
-            headers.add("X-Auth-Token", token);
-            Instant now = Instant.now();
-            Instant expiryDate = now.plus(1, ChronoUnit.HOURS);
-            headers.add("Expires", String.valueOf(expiryDate.toEpochMilli()));
-
-        } catch (FirebaseAuthException e) {
-            payload = new ErrorMessage("Error authenticating user: ", CLASS_NAME, e.toString());
-        }
-        response = new ResponseWrapper(statusCode, name, payload, headers);
-        return response.getResponse();
+        headers.add("X-Auth-Token", token); 
+        Instant now = Instant.now();
+        Instant expiryDate = now.plus(1, ChronoUnit.HOURS);
+        headers.add("Expires", String.valueOf(expiryDate.toEpochMilli()));
+        return token;
     }
 
     @GetMapping("/logout")
