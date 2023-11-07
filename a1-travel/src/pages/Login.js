@@ -18,7 +18,11 @@ export default function Login() {
             //const jwtToken = response.data;
 
             //console.log('JWT Token: ',jwtToken);
-            const roleResponse = await Axios.get('http://localhost:8080/api/user/?field=role&value='+email);
+            const params = {
+                field: 'role',
+                value: email
+            };
+            const roleResponse = await Axios.get('http://localhost:8080/api/user/',{params:params});
             const role = roleResponse.data.user.role;
             console.log(role);
             navigate('/login')
