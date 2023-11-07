@@ -21,7 +21,6 @@ export default function SignUp() {
             username,
             password,
         };
-        console.log('handleSignUp function is stillll working!');
         try {
             const response = await Axios.post('http://localhost:8080/api/register', user);
 
