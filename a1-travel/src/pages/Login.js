@@ -1,7 +1,8 @@
 import React, { useState} from 'react';
 import {Link} from "react-router-dom";
 import {app} from "../Firebase";
-import {getAuth} from "firebase/auth";
+import { signInWithEmailAndPassword, getAuth} from "firebase/auth";
+import Axios from "axios";
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -10,12 +11,14 @@ export default function Login() {
     const handleLogin = async () => {
         try {
             const auth = getAuth(app);
-            const user = await auth.signInWithEmailAndPassword(email,pass);
-            //const response = await axios.post('localhost:8080/api/login',{ email: user.email });
-            //const jwtToken = response.data;
+            const user = await signInWithEmailAndPassword(auth,email,pass);
+            console.log(email);
+            const response = await Axios.post('http://localhost:8080/api/login',{ email: email, password:'' });
+            const jwtToken = response.data;
 
-            //console.log('JWT Token: ',jwtToken);
+            console.log('JWT Token: ',jwtToken);
         } catch (error){
+            console.log('oops!');
             console.log(error.message);
         }
     };
@@ -36,7 +39,7 @@ export default function Login() {
             </div>
         </div>
         <div className="signin-form-movement container-fluid d-flex justify-content-center" >
-            <form className="w-25 row">
+            {/*<form className="w-25 row" onSubmit={handleLogin}>*/}
                 <div className="mb-3">
                     <input type="text" className="form-control" id="inputUsername" placeholder="USERNAME"
                     value={email}
@@ -48,18 +51,13 @@ export default function Login() {
                     onChange={(e)=>setPass(e.target.value)}/>
                 </div>
                 <div className="text-center" style={{marginTop: 40}}>
-                    <button type="submit" className="btn btn-sm custom-button"
-                            onClick={
-                                ()=>{handleLogin().then(); console.log('poop');}
-                            }
-                    >
+                    <button className="btn btn-sm custom-button" onClick={handleLogin}>
                         SIGN IN
                     </button>
                 </div>
                 <div className="text-center mt-4">
                     <Link to="/signup">CREATE AN ACCOUNT</Link>
                 </div>
-            </form>
         </div>
     </div>;
 }
