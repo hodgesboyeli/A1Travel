@@ -28,7 +28,7 @@ import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "localhost:3000")
 public class AuthenticationController {
 
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -76,10 +76,12 @@ public class AuthenticationController {
             user.setRole("Customer");
             user.setCreatedAt(Timestamp.now());
             user.setActive(Boolean.TRUE);
-            usersService.createUser(user);
 
+            //create user document and set auth uid to the user doc id
+            request.setUid(usersService.createUser(user));
             //create new user
             UserRecord userRecord = firebaseAuth.createUser(request);
+
             //TODO Return a JWT so after registration you log in
             payload = user;
             statusCode = 201;
@@ -93,7 +95,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<Map<String,Object>> login(@RequestBody LoginRequest loginRequest) {
         statusCode = 401;
         String token;
         HttpHeaders headers = new HttpHeaders();

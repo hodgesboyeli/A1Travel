@@ -44,7 +44,7 @@ public class UsersService {
     }
 
     public void updateUser(String id, Map<String, String> updateValues) {
-        String[] allowed = {"uid", "email", "firstName", "lastName"};
+        String[] allowed = {"email", "firstName", "lastName"};
         List<String> list = Arrays.asList(allowed);
         Map<String, Object> formattedValues = new HashMap<>();
 
@@ -64,17 +64,10 @@ public class UsersService {
     }
 
     public Users getUserByUid(String uid) throws ExecutionException, InterruptedException {
-        Users user = null;
+        DocumentReference doc = db.collection("Users").document(uid);
+        ApiFuture<DocumentSnapshot> future = doc.get();
 
-        Query query = db.collection("Users")
-                .whereEqualTo("uid", uid);
-        ApiFuture<QuerySnapshot> future = query.get();
-        List<QueryDocumentSnapshot> docs = future.get().getDocuments();
-
-        if (docs.size() == 1)
-            user = docs.get(0).toObject(Users.class);
-
-        return user;
+        return future.get().toObject(Users.class);
     }
 
     /*public void updateLastLogin(String id) {

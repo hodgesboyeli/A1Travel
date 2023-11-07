@@ -13,7 +13,6 @@ import org.springframework.lang.Nullable;
 public class Users {
     @DocumentId
     private @Nullable String userId;
-    private @Nullable String uid;
     private Timestamp createdAt;
     private String email;
     private String firstName;

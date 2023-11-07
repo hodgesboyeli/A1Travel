@@ -39,8 +39,8 @@ security:
     - /favicon.ico
     - /
     - /api/login
+    - /api/logout
     - /api/register
-    - /logout
     - /css/**
     - /js/**
     - /api/event/
