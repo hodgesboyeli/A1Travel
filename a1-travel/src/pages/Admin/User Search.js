@@ -1,38 +1,93 @@
-import React from 'react';
-import AdminNavbar from "../AdminNavbar";
+import React, { useState } from 'react';
+import AdminNavbar from '../AdminNavbar';
 
 export default function UserSearch() {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchBy, setSearchBy] = useState('global'); // Set the default search criteria
+
+    const handleSearchByChange = (event) => {
+        setSearchBy(event.target.value);
+    };
+
+    const handleSearchSubmit = (event) => {
+        event.preventDefault();
+        // Handle the search logic based on the selected searchBy criteria and searchTerm
+        // You can implement this logic as needed
+        console.log(`Search by: ${searchBy}, Term: ${searchTerm}`);
+    };
+
     return (
         <div>
             <AdminNavbar />
             <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
                 <h1>User Search</h1>
             </div>
+
             <div className="container-fluid d-flex justify-content-center">
-                <form className="row g-3">
-                    <div className="col-md-6">
-                        <label htmlFor="inputFirstName" className="form-label">First Name</label>
-                        <input type="text" className="form-control" id="inputFirstName" />
-                    </div>
-                    <div className="col-md-6">
-                        <label htmlFor="inputLastName" className="form-label">Last Name</label>
-                        <input type="text" className="form-control" id="inputLastName" />
-                    </div>
-                    <div className="col-md-6">
-                        <label htmlFor="inputUsername" className="form-label">Username</label>
-                        <input type="text" className="form-control" id="inputUsername" />
-                    </div>
-                    <div className="col-md-6">
-                        <label htmlFor="inputEmail" className="form-label">Email</label>
-                        <input type="email" className="form-control" id="inputEmail" />
-                    </div>
-                    <div className="col-md-6">
-                        <label htmlFor="inputID" className="form-label">ID</label>
-                        <input type="text" className="form-control" id="inputID" />
-                    </div>
-                    <div className="col-12 d-flex justify-content-center">
-                        <button type="submit" className="btn btn-primary">Search</button>
-                    </div>
+                <p className="form-check-inline">Search By:</p>
+                <label style={{ marginRight: 10 }}>
+                    <input
+                        className="form-check-input form-check-inline"
+                        type="radio"
+                        value="firstName"
+                        checked={searchBy === 'firstName'}
+                        onChange={handleSearchByChange}
+                    />
+                    First Name
+                </label>
+                <label style={{ marginRight: 10 }}>
+                    <input
+                        className="form-check-input form-check-inline"
+                        type="radio"
+                        value="lastName"
+                        checked={searchBy === 'lastName'}
+                        onChange={handleSearchByChange}
+                    />
+                    Last Name
+                </label>
+                <label style={{ marginRight: 10 }}>
+                    <input
+                        className="form-check-input form-check-inline"
+                        type="radio"
+                        value="username"
+                        checked={searchBy === 'username'}
+                        onChange={handleSearchByChange}
+                    />
+                    Username
+                </label>
+                <label style={{ marginRight: 10 }}>
+                    <input
+                        className="form-check-input form-check-inline"
+                        type="radio"
+                        value="email"
+                        checked={searchBy === 'email'}
+                        onChange={handleSearchByChange}
+                    />
+                    Email
+                </label>
+                <label style={{ marginRight: 10 }}>
+                    <input
+                        className="form-check-input form-check-inline"
+                        type="radio"
+                        value="id"
+                        checked={searchBy === 'id'}
+                        onChange={handleSearchByChange}
+                    />
+                    ID
+                </label>
+            </div>
+
+            <div className="search-bar">
+                <form onSubmit={handleSearchSubmit}>
+                    <input
+                        type="text"
+                        placeholder="Search"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <button type="submit">
+                        <i className="fas fa-search"></i> {/* Font Awesome magnifying glass icon */}
+                    </button>
                 </form>
             </div>
         </div>
