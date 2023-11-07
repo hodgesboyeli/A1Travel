@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {app} from "../Firebase";
 import {getAuth, signInWithEmailAndPassword} from "firebase/auth";
 import Axios from "axios";
@@ -7,7 +7,7 @@ import Axios from "axios";
 export default function Login() {
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
-
+    const navigate = useNavigate();
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
@@ -15,9 +15,13 @@ export default function Login() {
             const user = await signInWithEmailAndPassword(auth,email,pass);
             console.log(email);
             const response = await Axios.post('http://localhost:8080/api/login',{ email: email });
-            const jwtToken = response.data;
+            //const jwtToken = response.data;
 
-            console.log('JWT Token: ',jwtToken);
+            //console.log('JWT Token: ',jwtToken);
+            const roleResponse = await Axios.get('http://localhost:8080/api/user/?field=role&value='+email);
+            const role = roleResponse.data.user.role;
+            console.log(role);
+            navigate('/login')
         } catch (error){
             console.log('oops!');
             console.log(error.message);

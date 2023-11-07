@@ -1,5 +1,6 @@
 package famu.edu.a1travel.Controller;
 
+import famu.edu.a1travel.Model.Users;
 import famu.edu.a1travel.Service.UsersService;
 import com.google.api.client.util.Value;
 import famu.edu.a1travel.Util.ErrorMessage;
@@ -48,6 +49,7 @@ public class UsersController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<Map<String,Object>> getUser(@PathVariable(name = "userId") String id){
+        payload = new Users();
         try {
             payload = usersService.getUserById(id);
             statusCode = 200;
