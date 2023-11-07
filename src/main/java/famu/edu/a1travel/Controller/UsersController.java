@@ -29,9 +29,12 @@ public class UsersController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<Map<String,Object>> getUsers(){
+    public ResponseEntity<Map<String,Object>> getUsers(
+            @RequestParam(name="field",required = false,defaultValue = "") String field,
+            @RequestParam(name="value",required = false,defaultValue = "") String value)
+    {
         try {
-            payload = usersService.getUsers();
+            payload = usersService.getUsers(field,value);
             statusCode = 200;
             name = "users";
         } catch (ExecutionException | InterruptedException e) {

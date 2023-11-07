@@ -163,3 +163,8 @@ a:hover {
     font-weight: normal;
     font-style: normal;
 }
+
+.inViewB {
+    position:fixed;
+    bottom:0;
+}
