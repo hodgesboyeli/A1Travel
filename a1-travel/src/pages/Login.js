@@ -16,41 +16,31 @@ export default function Login() {
     const [user,setUser] = useState({})
     const auth = getAuth();
     async function handleSubmit(e) { // added async to fix await error
-        console.log("Yoooo, we running, gang.)")
         e.preventDefault()
         try {
-            console.log("Try catch")
             setError('')
             setLoading(true)
-            console.log("Loading...")
-            console.log("Before login call");
             console.log(emailRef.current.value)
             console.log(passwordRef.current.value)
             await signInWithEmailAndPassword(getAuth(), emailRef.current.value, passwordRef.current.value);
-            console.log("After login call");
             try {
                 var response = await axios.get('http://localhost:8080/api/user/email/'+emailRef.current.value)
                 if(response.status === 404) throw response.statusText
 
                 let user = response.data
 
-                console.log(user.user_email)
-                console.log(emailRef.current.value)
-                if (user.user_email !== emailRef.current.value ) throw "Invalid Credentials";
+                console.log(user.email)
+                if (user.email !== emailRef.current.value ) throw "Invalid Credentials";
 
-                if(!user.user_active) throw 'User is Deactivated or Paused';
+                if(!user.isActive) throw 'User is Deactivated or Paused';
 
                 sessionStorage.clear()
-                sessionStorage.setItem("role",user.user_role)
+                sessionStorage.setItem("role",user.role)
 
             } catch(err) {
                 console.log(err)
                 setError(err)
             }
-
-            console.log("I said...we runnin")
-
-            console.log(currentUser)
 
             if (sessionStorage.getItem('role') ==="Customer"){
                 navigate('/home')
