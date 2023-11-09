@@ -101,7 +101,7 @@ export default function Login() {
             <div className="signin-form-movement container-fluid d-flex justify-content-center">
                 <form className="w-25 row" onSubmit={handleSubmit}>
                     <div className="mb-3">
-                        <input type="email" className="form-control" id="email" placeholder="USERNAME" ref={emailRef} />
+                        <input type="email" className="form-control" id="email" placeholder="EMAIL" ref={emailRef} />
                     </div>
                     <div className="mb-3">
                         <input type="password" className="form-control" id="password" placeholder="PASSWORD" ref={passwordRef} />
