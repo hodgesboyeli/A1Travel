@@ -1,16 +1,22 @@
 import React from 'react';
 import axios from "axios";
+import {auth} from "../Firebase";
 
 export default function Navbar(){
 
     const handleLogout = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/logout`);
+            // Sign the user out with Firebase Authentication
+            await auth.signOut();
+
+            // Make a request to the server's logout endpoint (optional, depends on your server setup)
+            const response = await axios.get('http://localhost:8080/api/logout');
 
             if (response.data === 'Logged out successfully') {
+                // Redirect the user to the login page
                 window.location.href = '/login';
             } else {
-                console.error('Logout failed');
+                console.error('Logout failed on the server');
             }
         } catch (error) {
             console.error('Error during logout:', error);
