@@ -10,21 +10,24 @@ import TAHome from "./pages/Travel_Admin/TAHome";
 import AdminHome from "./pages/Admin/AdminHome";
 import DatabaseManagement from "./pages/Travel_Admin/Database Management";
 import UserSearch from "./pages/Admin/User Search";
+import {AuthProvider} from "./pages/AuthContext";
 
 function App() {
     return (
-        <Router>
-            <Routes>
-                <Route element={<CustHome />} path='/home'/>
-                <Route element={<Main />} path=''/>
-                <Route element={<Login />} path='/login'/>
-                <Route element={<SignUp />} path='/signup'/>
-                <Route element={<TAHome />} path='/ta-home'/>
-                <Route element={<AdminHome />} path='/admin-home'/>
-                <Route element={<DatabaseManagement />} path='/travel_admin/database-management'/>
-                <Route element={<UserSearch />} path='/admin/user-search'/>
-            </Routes>
-        </Router>
+        <AuthProvider>
+            <Router>
+                <Routes>
+                    <Route element={<CustHome />} path='/home'/>
+                    <Route element={<Main />} path=''/>
+                    <Route element={<Login />} path='/login'/>
+                    <Route element={<SignUp />} path='/signup'/>
+                    <Route element={<TAHome />} path='/ta-home'/>
+                    <Route element={<AdminHome />} path='/admin-home'/>
+                    <Route element={<DatabaseManagement />} path='/travel_admin/database-management'/>
+                    <Route element={<UserSearch />} path='/admin/user-search'/>
+                </Routes>
+            </Router>
+        </AuthProvider>
     );
 }
 

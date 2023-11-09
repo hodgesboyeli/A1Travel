@@ -1,27 +1,71 @@
-import React, { useState} from 'react';
-import {Link} from "react-router-dom";
-import {app} from "../Firebase";
-import { signInWithEmailAndPassword, getAuth} from "firebase/auth";
-import Axios from "axios";
+import React, {useRef, useState} from 'react';
+import {useAuth} from './AuthContext'
+import { Link, useNavigate } from 'react-router-dom'
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
+import axios from "axios"
 
 export default function Login() {
-    const [email, setEmail] = useState('');
-    const [pass, setPass] = useState('');
-
-    const handleLogin = async (e) => {
-        e.preventDefault();
+    const emailRef = useRef()
+    const passwordRef = useRef()
+    const {login} = useAuth()
+    const [error, setError] = useState('')
+    const [loading,setLoading] = useState(false)
+    const navigate = useNavigate()
+    const currentUser = useAuth()
+    const [user,setUser] = useState({})
+    const auth = getAuth();
+    async function handleSubmit(e) { // added async to fix await error
+        console.log("Yoooo, we running, gang.)")
+        e.preventDefault()
         try {
-            const auth = getAuth(app);
-            const user = await signInWithEmailAndPassword(auth,email,pass);
-            console.log(email);
-            const response = await Axios.post('http://localhost:8080/api/login',{ email: email });
-            const jwtToken = response.data;
+            console.log("Try catch")
+            setError('')
+            setLoading(true)
+            console.log("Loading...")
+            console.log("Before login call");
+            console.log(emailRef.current.value)
+            console.log(passwordRef.current.value)
+            await signInWithEmailAndPassword(getAuth(), emailRef.current.value, passwordRef.current.value);
+            console.log("After login call");
+            try {
+                var response = await axios.get('http://localhost:8080/api/user/'+emailRef.current.value)
+                if(response.status === 404) throw response.statusText
 
-            console.log('JWT Token: ',jwtToken);
-        } catch (error){
-            console.log('oops!');
-            console.log(error.message);
+                let user = response.data
+
+                console.log(user.user_email)
+                console.log(emailRef.current.value)
+                if (user.user_email !== emailRef.current.value ) throw "Invalid Credentials";
+
+                if(!user.user_active) throw 'User is Deactivated or Paused';
+
+                sessionStorage.clear()
+                sessionStorage.setItem("role",user.user_role)
+
+            } catch(err) {
+                console.log(err)
+                setError(err)
+            }
+
+            console.log("I said...we runnin")
+
+            console.log(currentUser)
+
+            if (sessionStorage.getItem('role') ==="Customer"){
+                navigate('/home')
+            }else if (sessionStorage.getItem('role') === "Administrator"){
+                navigate('/admin-home')
+            }else if (sessionStorage.getItem('role') === "Travel Administrator"){
+                navigate('/ta-home/')
+            }else{
+                console.log("Invalid user role value, returning to login.")
+                navigate('/login')
+            }
+        } catch {
+            setError('Failed to sign in')
         }
+        setLoading(false)
     };
     return (<div className="page-style">
         <div className="container justify-content-center">
@@ -40,19 +84,17 @@ export default function Login() {
             </div>
         </div>
         <div className="signin-form-movement container-fluid d-flex justify-content-center" >
-            <form className="w-25 row" onSubmit={handleLogin}>
+            <form className="w-25 row" onSubmit={handleSubmit}>
                 <div className="mb-3">
-                    <input type="text" className="form-control" id="inputUsername" placeholder="USERNAME"
-                    value={email}
-                    onChange={(e)=>setEmail(e.target.value)}/>
+                    <input type="email" className="form-control" id="email" placeholder="USERNAME"
+                    ref={emailRef}/>
                 </div>
                 <div className="mb-3">
-                    <input type="password" className="form-control" id="inputPassword" placeholder="PASSWORD"
-                    value={pass}
-                    onChange={(e)=>setPass(e.target.value)}/>
+                    <input type="password" className="form-control" id="password" placeholder="PASSWORD"
+                    ref={passwordRef}/>
                 </div>
                 <div className="text-center" style={{marginTop: 40}}>
-                    <button type='submit' className="btn btn-sm custom-button">
+                    <button disabled={loading} type='submit' className="btn btn-sm custom-button">
                         SIGN IN
                     </button>
                 </div>
