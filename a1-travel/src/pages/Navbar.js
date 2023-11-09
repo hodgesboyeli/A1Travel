@@ -1,6 +1,22 @@
 import React from 'react';
+import axios from "axios";
 
 export default function Navbar(){
+
+    const handleLogout = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/logout`);
+
+            if (response.data === 'Logged out successfully') {
+                window.location.href = '/login';
+            } else {
+                console.error('Logout failed');
+            }
+        } catch (error) {
+            console.error('Error during logout:', error);
+        }
+    };
+
     return (
         <nav className="navbar navbar-expand-lg">
             <div className="d-flex justify-content-end" style={{paddingLeft: 10}}>
@@ -26,7 +42,7 @@ export default function Navbar(){
                     </ul>
                 </div>
             </div>
-            <button type="log-out" className="sign-out-button btn-md">
+            <button type="log-out" className="sign-out-button btn-md" onClick={handleLogout}>
                 <i className="fas fa-sign-out"></i>
             </button>
         </nav>
