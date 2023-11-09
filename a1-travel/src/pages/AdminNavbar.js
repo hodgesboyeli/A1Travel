@@ -1,6 +1,28 @@
 import React from 'react';
+import {auth} from "../Firebase";
+import axios from "axios";
 
 export default function AdminNavbar(){
+
+    const handleLogout = async () => {
+        try {
+            // Sign the user out with Firebase Authentication
+            await auth.signOut();
+
+            // Make a request to the server's logout endpoint (optional, depends on your server setup)
+            const response = await axios.get('http://localhost:8080/api/logout');
+
+            if (response.data === 'Logged out successfully') {
+                // Redirect the user to the login page
+                window.location.href = '/login';
+            } else {
+                console.error('Logout failed on the server');
+            }
+        } catch (error) {
+            console.error('Error during logout:', error);
+        }
+    };
+
     return (
         <nav className="navbar navbar-expand-lg" style={{backgroundColor:"#FFF"}}>
             <div className="d-flex justify-content-end" style={{paddingLeft: 10}}>
@@ -17,7 +39,7 @@ export default function AdminNavbar(){
                     </ul>
                 </div>
             </div>
-            <button type="log-out" className="sign-out-button btn-md">
+            <button type="log-out" className="sign-out-button btn-md" onClick={handleLogout}>
                 <i className="fas fa-sign-out" style={{backgroundColor: "#FFF", color: "#000"}}></i>
             </button>
         </nav>
