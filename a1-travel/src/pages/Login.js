@@ -23,8 +23,8 @@ export default function Login() {
             console.log(error.message);
         }
     };
-    return (
-        <div className="page-style">
+    return (<div className="page-style">
+        <div className="container justify-content-center">
             <div className="container-fluid d-flex justify-content-center">
                 <p className="brand-name h2 mb-3" style={{color: "#FF6C37", paddingTop: 55}}>
                     A1 TRAVEL
@@ -38,27 +38,28 @@ export default function Login() {
                     LOGIN
                 </p>
             </div>
-            <div className="signin-form-movement container-fluid d-flex justify-content-center" >
-                <form className="w-25 row" onSubmit={handleLogin}>
-                    <div className="mb-3">
-                        <input type="text" className="form-control" id="inputUsername" placeholder="USERNAME"
-                               value={email}
-                               onChange={(e)=>setEmail(e.target.value)}/>
-                    </div>
-                    <div className="mb-3">
-                        <input type="password" className="form-control" id="inputPassword" placeholder="PASSWORD"
-                               value={pass}
-                               onChange={(e)=>setPass(e.target.value)}/>
-                    </div>
-                    <div className="text-center" style={{marginTop: 40}}>
-                        <button type='submit' className="btn btn-sm custom-button">
-                            SIGN IN
-                        </button>
-                    </div>
-                    <div className="text-center mt-4">
-                        <Link to="/signup">CREATE AN ACCOUNT</Link>
-                    </div>
-                </form>
-            </div>
-        </div>);
+        </div>
+        <div className="signin-form-movement container-fluid d-flex justify-content-center" >
+            <form className="w-25 row" onSubmit={handleLogin}>
+                <div className="mb-3">
+                    <input type="text" className="form-control" id="inputUsername" placeholder="USERNAME"
+                           value={email}
+                           onChange={(e)=>setEmail(e.target.value)}/>
+                </div>
+                <div className="mb-3">
+                    <input type="password" className="form-control" id="inputPassword" placeholder="PASSWORD"
+                           value={pass}
+                           onChange={(e)=>setPass(e.target.value)}/>
+                </div>
+                <div className="text-center" style={{marginTop: 40}}>
+                    <button type='submit' className="btn btn-sm custom-button">
+                        SIGN IN
+                    </button>
+                </div>
+                <div className="text-center mt-4">
+                    <Link to="/signup">CREATE AN ACCOUNT</Link>
+                </div>
+            </form>
+        </div>
+    </div>);
 }
