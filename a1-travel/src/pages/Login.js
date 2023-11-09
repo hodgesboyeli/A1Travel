@@ -29,7 +29,7 @@ export default function Login() {
             await signInWithEmailAndPassword(getAuth(), emailRef.current.value, passwordRef.current.value);
             console.log("After login call");
             try {
-                var response = await axios.get('http://localhost:8080/api/user/'+emailRef.current.value)
+                var response = await axios.get('http://localhost:8080/api/user/email/'+emailRef.current.value)
                 if(response.status === 404) throw response.statusText
 
                 let user = response.data

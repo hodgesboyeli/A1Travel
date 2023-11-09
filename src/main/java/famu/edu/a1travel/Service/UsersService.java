@@ -70,6 +70,24 @@ public class UsersService {
         return future.get().toObject(Users.class);
     }
 
+    public Users getUserByEmail(String email) throws ExecutionException, InterruptedException {
+        CollectionReference usersCollection = db.collection("Users");
+
+        Query query = usersCollection.whereEqualTo("email", email);
+        ApiFuture<QuerySnapshot> future = query.get();
+
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+        if (!documents.isEmpty()) {
+            // Assuming email is unique, there should be at most one user
+            QueryDocumentSnapshot document = documents.get(0);
+            return document.toObject(Users.class);
+        } else {
+            return null; // User not found
+        }
+    }
+
+
     /*public void updateLastLogin(String id) {
         DocumentReference docRef = db.collection("Users").document(id);
         ApiFuture<WriteResult> writeResult = docRef.update("lastLogin", FieldValue.serverTimestamp());
