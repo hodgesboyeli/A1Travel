@@ -1,7 +1,8 @@
 import React, {useRef, useState} from 'react';
-import AdminNavbar from "../AdminNavbar";
 import TravelAdminNavbar from "../TravelAdminNavbar";
 import Axios from "axios";
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
 
 export default function DatabaseManagement() {
     const [showEventForm, setShowEventForm] = useState(false);
@@ -15,6 +16,8 @@ export default function DatabaseManagement() {
         organizer: '',
         phoneNumber: '',
         email: '',
+        eventStart: null,
+        eventEnd: null,
     });
 
     const handleSignUp = async (e) => {
@@ -27,8 +30,18 @@ export default function DatabaseManagement() {
             eventType,
             description,
             organizer,
+            eventStart,
+            eventEnd
         } = inputValues;
 
+        // Convert dates to Firestore Timestamp
+        /*const timestampStart = eventStart
+            ? firebase.firestore.Timestamp.fromDate(new Date(eventStart))
+            : null;
+        const timestampEnd = eventEnd
+            ? firebase.firestore.Timestamp.fromDate(new Date(eventEnd))
+            : null;
+*/
         const phoneNumber = phoneRef.current.value;
         const email = emailRef.current.value;
 
@@ -40,7 +53,11 @@ export default function DatabaseManagement() {
             organizer,
             phoneNumber,
             email,
+            eventStart: eventStart + ".000Z",
+            eventEnd: eventEnd + ".000Z"
         };
+
+        console.log(event);
 
         try {
             const response = await Axios.post('http://localhost:8080/api/event/', event);
@@ -66,13 +83,30 @@ export default function DatabaseManagement() {
         }
     };
 
-    const handleInputChange = (event) => {
-        const { id, value } = event.target;
+    const handleDateChange = (date, id) => {
+        const formattedDate = date ? date.toISOString().slice(0, -5) : null;
         setInputValues({
             ...inputValues,
-            [id]: value,
+            [id]: formattedDate ,
         });
+
+        console.log(formattedDate + ".000Z")
     };
+
+
+    const handleInputChange = (event) => {
+        const { id, value, type } = event.target;
+
+        if (type === 'datetime-local') {
+            handleDateChange(new Date(value), id);
+        } else {
+            setInputValues({
+                ...inputValues,
+                [id]: value,
+            });
+        }
+    };
+
 
     const handleReset = () => {
         setInputValues({
@@ -151,6 +185,14 @@ export default function DatabaseManagement() {
                         <div className="col-12">
                             <label htmlFor="description" className="form-label">Event Description</label>
                             <textarea className="form-control" id="description" rows="3" value={inputValues.description} onChange={handleInputChange}></textarea>
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="eventStart" className="form-label">Event Start</label>
+                            <input type="datetime-local" className="form-control" id="eventStart" value={inputValues.eventStart} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="eventEnd" className="form-label">Event End</label>
+                            <input type="datetime-local" className="form-control" id="eventEnd" value={inputValues.eventEnd} onChange={handleInputChange} />
                         </div>
                         <div className="col-md-6">
                             <label htmlFor="organizer" className="form-label">Event Organizer</label>
