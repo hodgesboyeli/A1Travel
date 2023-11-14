@@ -168,3 +168,7 @@ a:hover {
     position:fixed;
     bottom:0;
 }
+
+.pfp-img {
+    width:100px;
+}

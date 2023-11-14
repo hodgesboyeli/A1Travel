@@ -3,7 +3,6 @@ import axios from "axios";
 import {auth} from "../Firebase";
 
 export default function Navbar(){
-
     const handleLogout = async () => {
         try {
             // Sign the user out with Firebase Authentication

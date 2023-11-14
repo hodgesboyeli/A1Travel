@@ -1,30 +1,25 @@
-import React, { useState } from 'react';
+import React, {useRef, useState} from 'react';
 import AdminNavbar from '../AdminNavbar';
-import {app, db} from "../../Firebase";
+import {db} from "../../Firebase";
 import {getDocs, query, collection, where} from 'firebase/firestore'
 
 export default function UserSearch() {
-    const [searchTerm, setSearchTerm] = useState('');
     const [searchBy, setSearchBy] = useState('global'); // Set the default search criteria
-    const [searchQuery, setSearchQuery] = useState('');
+    const searchQuery = useRef();
     const [filteredUsers, setFilteredUsers] = useState([]);
 
     const handleSearchByChange = (event) => {
         setSearchBy(event.target.value);
     };
 
-    const handleSearchSubmit = (event) => {
-        event.preventDefault();
-        // Handle the search logic based on the selected searchBy criteria and searchTerm
-        // You can implement this logic as needed
-        console.log(`Search by: ${searchBy}, Term: ${searchTerm}`);
-    };
-
     const handleSearch = async(e) => {
         e.preventDefault();
+        const search = searchQuery.current.value;
         // Perform a Firestore query to find users that match the searchQuery
-        const querySnapshot = await
-        getDocs(query(collection(db,'Users'), where(searchBy, '>=', searchQuery), where(searchBy, '<', searchQuery + '\uf8ff')));
+        const querySnapshot = await getDocs(query(collection(
+                db, 'Users'),
+            where(searchBy, '>=', search),
+            where(searchBy, '<', search + '\uf8ff')));
 
         const matchedUsers = querySnapshot.docs.map((doc) => doc.data());
         console.log(matchedUsers);
@@ -96,9 +91,9 @@ export default function UserSearch() {
                 <form onSubmit={handleSearch}>
                     <input
                         type="text"
+                        className="form-control"
                         placeholder="Search"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        ref={searchQuery}
                     />
                     <button type="submit">
                         <i className="fas fa-search"></i> {/* Font Awesome magnifying glass icon */}
@@ -108,9 +103,22 @@ export default function UserSearch() {
             <div className="user-list">
                 {filteredUsers.length > 0 ? (
                     filteredUsers.map((user, index) => (
-                        <div key={index} className="user-card">
-                            <div>Name: {user.firstName} {user.lastName}</div>
-                            <div>Email: {user.email}</div>
+                        <div key={index} className="card">
+                            <div className="row g-0">
+                                <div className="col">
+                                    <img src={process.env.PUBLIC_URL+'/blank-profile-pic.png'} className="pfp-img img-fluid rounded-start" alt="Profile"/>
+                                </div>
+                                <div className="col">
+                                    <div className="card-body">
+                                        <div className="card-title">
+                                            <b>{user.firstName} {user.lastName}</b>
+                                        </div>
+                                        <div className="card-text">
+                                            {user.email}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     ))
                 ) : (
