@@ -30,20 +30,10 @@ import java.util.concurrent.ExecutionException;
 @RequestMapping("/api")
 @CrossOrigin(origins = "localhost:3000")
 public class AuthenticationController {
-
-    private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-
-    @Value("${response.status}")
-    private int statusCode;
-    @Value("${response.name}")
-    private String name;
-    private Object payload;
-    private ResponseWrapper response;
-    private static final String CLASS_NAME = "Authentication";
-
+    private final FirebaseAuth firebaseAuth;
     private final Log logger = LogFactory.getLog(this.getClass());
-
-    public AuthenticationController(AuthenticationManager authenticationManager) {
+    public AuthenticationController(FirebaseAuth firebaseAuth) {
+        this.firebaseAuth = firebaseAuth;
     }
 
     @PostMapping("/register")
@@ -88,20 +78,12 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest loginRequest) throws FirebaseAuthException {
-        HttpHeaders headers = new HttpHeaders();
         //verify user exists based on email
         UserRecord userRecord = firebaseAuth.getUserByEmail(loginRequest.getEmail());
 
         logger.info(userRecord.getUid());
         UserDetails userDetails = new FirebaseUserDetails(userRecord);
-        String token = JwtUtil.generateToken(userDetails);
-        //logger.info(token);
-
-        headers.add("X-Auth-Token", token);
-        Instant now = Instant.now();
-        Instant expiryDate = now.plus(1, ChronoUnit.HOURS);
-        headers.add("Expires", String.valueOf(expiryDate.toEpochMilli()));
-        return userRecord.getUid();//temporarily return uid till i figure out how to utilize JWT
+        return JwtUtil.generateToken(userDetails);
     }
 
     @GetMapping("/logout")
