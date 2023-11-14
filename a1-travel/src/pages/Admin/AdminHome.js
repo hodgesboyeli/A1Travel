@@ -1,5 +1,5 @@
 import React from 'react';
-import AdminNavbar from "../AdminNavbar";
+import AdminNavbar from "../../Navbars/AdminNavbar";
 import {Link} from "react-router-dom";
 export default function AdminHome(){
     return (
@@ -10,15 +10,17 @@ export default function AdminHome(){
             </div>
             <div className="container-fluid d-flex justify-content-center mt-5">
                 <Link to={"/admin/user-search"}>
-                <button type="button" className="admin-button" style={{marginRight: 20}}>
-                    <i className="fas fa-user d-flex justify-content-center" style={{fontSize: 80}}></i>
-                    User Search
-                </button>
+                    <button type="button" className="admin-button" style={{marginRight: 20}}>
+                        <i className="fas fa-user d-flex justify-content-center" style={{fontSize: 80}}></i>
+                        User Search
+                    </button>
                 </Link>
-                <button type="button" className="admin-button">
-                    <i className="fas fa-bullhorn d-flex justify-content-center" style={{fontSize: 80}}></i>
-                    Announcements
-                </button>
+                <Link to={"/admin/create-announcements"}>
+                    <button type="button" className="admin-button">
+                        <i className="fas fa-bullhorn d-flex justify-content-center" style={{fontSize: 80}}></i>
+                        Announcements
+                    </button>
+                </Link>
             </div>
             <div className="container-fluid d-flex justify-content-center mt-3">
                 <button type="button" className="admin-button" style={{marginRight: 20}}>

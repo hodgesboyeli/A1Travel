@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import AdminNavbar from '../AdminNavbar';
+import AdminNavbar from '../../Navbars/AdminNavbar';
 import {app, db} from "../../Firebase";
 import {getDocs, query, collection, where} from 'firebase/firestore'
 

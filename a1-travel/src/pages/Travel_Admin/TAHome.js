@@ -1,7 +1,7 @@
 import React from 'react';
-import AdminNavbar from "../AdminNavbar";
+import AdminNavbar from "../../Navbars/AdminNavbar";
 import {Link} from "react-router-dom";
-import TravelAdminNavbar from "../TravelAdminNavbar";
+import TravelAdminNavbar from "../../Navbars/TravelAdminNavbar";
 export default function TAHome(){
     return (
         <div className="page-style">
