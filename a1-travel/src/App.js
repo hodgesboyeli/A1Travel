@@ -14,23 +14,6 @@ import TravelAdminRoutes from "./Routes/TravelAdminRoutes";
 import AdminRoutes from "./Routes/AdminRoutes";
 
 function App() {
-    const [name,setName] = useState('');
-    const checkUser = getAuth(app).onAuthStateChanged((u)=>{
-        setName( u ? u.email : 'No User');
-        return name;
-    });
-    useEffect(()=>{
-        return () => {
-            checkUser();
-        }
-    }, []);
-    const signUserOut = () =>{
-        try{
-            signOut(getAuth(app)).then();
-        } catch (error){
-            console.log(error.message);
-        }
-    };
     return (
         <AuthProvider>
 
