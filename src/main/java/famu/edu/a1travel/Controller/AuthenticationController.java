@@ -1,6 +1,5 @@
 package famu.edu.a1travel.Controller;
 
-import com.google.api.client.util.Value;
 import com.google.cloud.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
@@ -8,21 +7,14 @@ import com.google.firebase.auth.UserRecord;
 import famu.edu.a1travel.Model.Users;
 import famu.edu.a1travel.Security.FirebaseUserDetails;
 import famu.edu.a1travel.Service.UsersService;
-import famu.edu.a1travel.Util.ErrorMessage;
 import famu.edu.a1travel.Util.JwtUtil;
 import famu.edu.a1travel.Util.LoginRequest;
-import famu.edu.a1travel.Util.ResponseWrapper;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
