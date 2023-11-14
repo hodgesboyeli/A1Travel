@@ -14,8 +14,12 @@ import java.util.concurrent.ExecutionException;
 public class UsersService {
     private final Firestore db = FirestoreClient.getFirestore();
 
-    public ArrayList<Users> getUsers() throws ExecutionException, InterruptedException {
+    public ArrayList<Users> getUsers(String searchField, String value) throws ExecutionException, InterruptedException {
         Query query = db.collection("Users");
+        if (!searchField.isEmpty() && !value.isEmpty()) {
+            query = query.whereGreaterThanOrEqualTo(searchField, value)
+                    .whereLessThan(searchField, value + "\uf8ff");
+        }
         ApiFuture<QuerySnapshot> future = query.get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 

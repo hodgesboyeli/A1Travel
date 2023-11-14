@@ -47,6 +47,7 @@ security:
     - /api/event/
     - /api/user/
     - /api/user/{userId}
+    - /api/user/**
     - /api/destination/
     - /api/destination/{userId}
   exposed-headers:

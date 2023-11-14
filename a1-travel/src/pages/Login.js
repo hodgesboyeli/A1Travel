@@ -64,7 +64,7 @@ export default function Login() {
             modal.show();
         }
     };
-
+  
     const handleCloseModal = () => {
         if (modalRef.current) {
             const modal = Modal.getInstance(modalRef.current);
