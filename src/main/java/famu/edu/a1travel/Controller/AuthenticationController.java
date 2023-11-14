@@ -97,11 +97,11 @@ public class AuthenticationController {
         String token = JwtUtil.generateToken(userDetails);
         //logger.info(token);
 
-        headers.add("X-Auth-Token", token); 
+        headers.add("X-Auth-Token", token);
         Instant now = Instant.now();
         Instant expiryDate = now.plus(1, ChronoUnit.HOURS);
         headers.add("Expires", String.valueOf(expiryDate.toEpochMilli()));
-        return token;
+        return userRecord.getUid();//temporarily return uid till i figure out how to utilize JWT
     }
 
     @GetMapping("/logout")

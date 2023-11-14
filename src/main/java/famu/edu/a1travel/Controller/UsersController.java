@@ -56,6 +56,7 @@ public class UsersController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<Map<String,Object>> getUser(@PathVariable(name = "userId") String id){
+        payload = new Users();
         try {
             payload = usersService.getUserById(id);
             statusCode = 200;
