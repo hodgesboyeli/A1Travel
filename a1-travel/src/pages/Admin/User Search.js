@@ -1,6 +1,6 @@
 import React, {useRef, useState} from 'react';
 import AdminNavbar from '../AdminNavbar';
-import {db} from "../../Firebase";
+import {auth, db} from "../../Firebase";
 import {getDocs, query, collection, where} from 'firebase/firestore'
 
 export default function UserSearch() {
@@ -100,15 +100,15 @@ export default function UserSearch() {
                     </button>
                 </form>
             </div>
-            <div className="user-list">
+            <div className="container mt-4 ms-5 me-5 mb-4">
                 {filteredUsers.length > 0 ? (
                     filteredUsers.map((user, index) => (
                         <div key={index} className="card">
-                            <div className="row g-0">
-                                <div className="col">
+                            <div className="d-flex flex-row justify-content-center align-items-center">
+                                <div className="col-md-1 me-auto">
                                     <img src={process.env.PUBLIC_URL+'/blank-profile-pic.png'} className="pfp-img img-fluid rounded-start" alt="Profile"/>
                                 </div>
-                                <div className="col">
+                                <div className="col-md-6">
                                     <div className="card-body">
                                         <div className="card-title">
                                             <b>{user.firstName} {user.lastName}</b>
@@ -117,6 +117,15 @@ export default function UserSearch() {
                                             {user.email}
                                         </div>
                                     </div>
+                                </div>
+                                <div className="col-md-1 text-center d-flex flex-column align-items-center form-check form-switch">
+                                    <label className="form-check-label" htmlFor={`flexSwitchCheckDefault-${index}`}>
+                                        <b>Active</b>
+                                    </label>
+                                    <input className="form-check-input me-auto ms-auto" type="checkbox" role="switch" id={`flexSwitchCheckDefault-${index}`}/>
+                                </div>
+                                <div className="col-md-1">
+                                    Poop
                                 </div>
                             </div>
                         </div>
