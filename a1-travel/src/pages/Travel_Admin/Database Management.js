@@ -185,8 +185,8 @@ export default function DatabaseManagement() {
                             <input type="text" className="form-control" id="eventName" value={inputValues.eventName} onChange={handleInputChange} />
                         </div>
                         <div className="col-md-6">
-                            <label htmlFor="inputEventCategory" className="form-label">Event Category</label>
-                            <input type="text" className="form-control" id="eventType" value={inputValues.category} onChange={handleInputChange} />
+                            <label htmlFor="inputEventType" className="form-label">Event Category</label>
+                            <input type="text" className="form-control" id="eventType" value={inputValues.eventType} onChange={handleInputChange} />
                         </div>
                         <div className="col-12">
                             <label htmlFor="inputEventDescription" className="form-label">Event Description</label>
