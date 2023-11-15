@@ -1,13 +1,16 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import TravelAdminNavbar from "../TravelAdminNavbar";
 import Axios from "axios";
 import 'firebase/compat/firestore';
+import { Modal } from 'bootstrap';
 
 export default function DatabaseManagement() {
     const [showEventForm, setShowEventForm] = useState(false);
     const phoneRef = useRef(null);
     const emailRef = useRef(null);
     const imageRef = useRef(null);
+    const modalRef = useRef(null);
+    const errorModalRef = useRef(null);
     const [inputValues, setInputValues] = useState({
         eventName: '',
         eventType: '',
@@ -22,9 +25,28 @@ export default function DatabaseManagement() {
         capacity: null
     });
 
+    const isFormValid = () => {
+        const requiredFields = ['eventName', 'eventType', 'description', 'organizer', 'eventStart', 'eventEnd', 'location', 'price', 'capacity'];
+
+        for (const field of requiredFields) {
+            if (!inputValues[field]) {
+                // Field is empty, show error and return false
+                showErrorModal();
+                return false;
+            }
+        }
+
+        // All required fields are filled, return true
+        return true;
+    };
+
     const handleSignUp = async (e) => {
         e.preventDefault();
         console.log('handleSignUp function is working!');
+
+        if (!isFormValid()) {
+            return;
+        }
 
         // Destructure input values
         const {
@@ -66,15 +88,62 @@ export default function DatabaseManagement() {
             if (response.status === 201) {
                 // Registration successful, you can navigate to a success page or display a success message
                 console.log('Event created successfully');
+                showModal();
             } else {
                 // Handle registration failure, show an error message to the user
                 console.error('Event create failed');
+                showErrorModal();
             }
         } catch (error) {
             // Handle network errors or other issues
             console.error('Error:', error);
+            showErrorModal();
         }
     };
+
+    const showModal = () => {
+        if (modalRef.current) {
+            const modal = new Modal(modalRef.current);
+            modal.show();
+        }
+    };
+
+    const handleCloseModal = () => {
+        if (modalRef.current) {
+            const modal = Modal.getInstance(modalRef.current);
+            if (modal) {
+                modal.hide();
+            }
+        }
+    };
+
+    const showErrorModal = () => {
+        if (errorModalRef.current) {
+            const modal = new Modal(errorModalRef.current);
+            modal.show();
+        }
+    };
+
+    const handleCloseErrorModal = () => {
+        if (errorModalRef.current) {
+            const modal = Modal.getInstance(errorModalRef.current);
+            if (modal) {
+                modal.hide();
+            }
+        }
+    };
+
+    useEffect(() => {
+        return () => {
+            handleCloseModal();
+        };
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            handleCloseErrorModal();
+        };
+    }, []);
 
     const handleRadioChange = (event) => {
         if (event.target.id === "radioEvent") {
@@ -236,6 +305,46 @@ export default function DatabaseManagement() {
                             </button>
                         </div>
                     </form>
+                    <div className="modal fade" ref={modalRef} tabIndex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="successModalLabel">
+                                        Success!
+                                    </h5>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleReset}></button>
+                                </div>
+                                <div className="modal-body">
+                                    <p>Event has been successfully created.</p>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleReset}>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="modal fade" ref={errorModalRef} tabIndex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="errorModalLabel">
+                                        Error!
+                                    </h5>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseErrorModal}></button>
+                                </div>
+                                <div className="modal-body">
+                                    <p>Error creating the event. Please try again.</p>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseErrorModal}>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
