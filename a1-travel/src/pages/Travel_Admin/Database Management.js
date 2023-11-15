@@ -1,7 +1,6 @@
 import React, {useRef, useState} from 'react';
 import TravelAdminNavbar from "../TravelAdminNavbar";
 import Axios from "axios";
-import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 
 export default function DatabaseManagement() {
@@ -18,6 +17,9 @@ export default function DatabaseManagement() {
         email: '',
         eventStart: null,
         eventEnd: null,
+        location: '',
+        price: null,
+        capacity: null
     });
 
     const handleSignUp = async (e) => {
@@ -31,17 +33,13 @@ export default function DatabaseManagement() {
             description,
             organizer,
             eventStart,
-            eventEnd
+            eventEnd,
+            location,
+            price,
+            capacity
         } = inputValues;
 
-        // Convert dates to Firestore Timestamp
-        /*const timestampStart = eventStart
-            ? firebase.firestore.Timestamp.fromDate(new Date(eventStart))
-            : null;
-        const timestampEnd = eventEnd
-            ? firebase.firestore.Timestamp.fromDate(new Date(eventEnd))
-            : null;
-*/
+
         const phoneNumber = phoneRef.current.value;
         const email = emailRef.current.value;
 
@@ -53,8 +51,11 @@ export default function DatabaseManagement() {
             organizer,
             phoneNumber,
             email,
+            location,
             eventStart: eventStart + ".000Z",
-            eventEnd: eventEnd + ".000Z"
+            eventEnd: eventEnd + ".000Z",
+            price,
+            capacity
         };
 
         console.log(event);
@@ -114,6 +115,11 @@ export default function DatabaseManagement() {
             eventType: '',
             description: '',
             organizer: '',
+            eventStart: '',
+            eventEnd: '',
+            location: '',
+            price: '',
+            capacity: ''
         });
 
         // Clear Phone Number and Email input fields
@@ -179,30 +185,42 @@ export default function DatabaseManagement() {
                             <input type="text" className="form-control" id="eventName" value={inputValues.eventName} onChange={handleInputChange} />
                         </div>
                         <div className="col-md-6">
-                            <label htmlFor="category" className="form-label">Event Category</label>
+                            <label htmlFor="inputEventCategory" className="form-label">Event Category</label>
                             <input type="text" className="form-control" id="eventType" value={inputValues.category} onChange={handleInputChange} />
                         </div>
                         <div className="col-12">
-                            <label htmlFor="description" className="form-label">Event Description</label>
+                            <label htmlFor="inputEventDescription" className="form-label">Event Description</label>
                             <textarea className="form-control" id="description" rows="3" value={inputValues.description} onChange={handleInputChange}></textarea>
                         </div>
                         <div className="col-md-6">
-                            <label htmlFor="eventStart" className="form-label">Event Start</label>
+                            <label htmlFor="inputPrice" className="form-label">Price</label>
+                            <input type="number" className="form-control" id="price" value={inputValues.price} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputCapacity" className="form-label">Capacity</label>
+                            <input type="number" className="form-control" id="capacity" value={inputValues.capacity} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputEventStart" className="form-label">Event Start</label>
                             <input type="datetime-local" className="form-control" id="eventStart" value={inputValues.eventStart} onChange={handleInputChange} />
                         </div>
                         <div className="col-md-6">
-                            <label htmlFor="eventEnd" className="form-label">Event End</label>
+                            <label htmlFor="inputEventEnd" className="form-label">Event End</label>
                             <input type="datetime-local" className="form-control" id="eventEnd" value={inputValues.eventEnd} onChange={handleInputChange} />
                         </div>
-                        <div className="col-md-6">
-                            <label htmlFor="organizer" className="form-label">Event Organizer</label>
+                        <div className="col-md-4">
+                            <label htmlFor="inputOrganizer" className="form-label">Event Organizer</label>
                             <input type="text" className="form-control" id="organizer" value={inputValues.organizer} onChange={handleInputChange}/>
                         </div>
-                        <div className="col-md-6">
+                        <div className="col-md-4">
+                            <label htmlFor="inputLocation" className="form-label">Event Location</label>
+                            <input type="text" className="form-control" id="location" value={inputValues.location} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-4">
                             <label htmlFor="inputContactInfo" className="form-label">Contact Information</label>
                             <div className="input-group">
-                                <input type="text" className="form-control" placeholder="Phone Number" aria-label="Phone Number" ref={phoneRef} />
-                                <input type="text" className="form-control" placeholder="Email" aria-label="Email" ref={emailRef} />
+                                <input type="text" className= "form-control" placeholder="Phone Number" aria-label="Phone Number" ref={phoneRef} />
+                                <input type="text" className= "form-control" placeholder="Email" aria-label="Email" ref={emailRef} />
                             </div>
                         </div>
                         <div className="col-12">
