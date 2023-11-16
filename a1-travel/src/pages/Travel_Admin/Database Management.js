@@ -117,8 +117,6 @@ export default function DatabaseManagement() {
         } catch (error) {
             console.error('Error uploading image: ', error);
         }
-
-
     };
 
     const handleEventSubmit = async (e) => {
