@@ -35,7 +35,15 @@ export default function DatabaseManagement() {
         arriveTime: null,
         duration: '',
         status: '',
-        stops: null
+        stops: null,
+        color: '',
+        make: '',
+        model: '',
+        pickupDate: null,
+        pickupLocation: '',
+        returnDate: null,
+        returnLocation: '',
+        year: null
     });
 
     const isEventFormValid = () => {
@@ -55,6 +63,36 @@ export default function DatabaseManagement() {
 
     const isFlightFormValid = () => {
         const requiredFields = ['airline', 'departLocation', 'arriveLocation', 'departTime', 'arriveTime', 'price', 'duration', 'status', 'stops'];
+
+        for (const field of requiredFields) {
+            if (!inputValues[field]) {
+                // Field is empty, show error and return false
+                showErrorModal();
+                return false;
+            }
+        }
+
+        // All required fields are filled, return true
+        return true;
+    };
+
+    const isTrainFormValid = () => {
+        const requiredFields = ['departLocation', 'arriveLocation', 'departTime', 'arriveTime', 'price', 'duration', 'status', 'stops'];
+
+        for (const field of requiredFields) {
+            if (!inputValues[field]) {
+                // Field is empty, show error and return false
+                showErrorModal();
+                return false;
+            }
+        }
+
+        // All required fields are filled, return true
+        return true;
+    };
+
+    const isCarFormValid = () => {
+        const requiredFields = ['color', 'make', 'model', 'pickupDate', 'pickupLocation', 'price', 'returnDate', 'returnLocation', 'year'];
 
         for (const field of requiredFields) {
             if (!inputValues[field]) {
@@ -179,6 +217,104 @@ export default function DatabaseManagement() {
         }
     };
 
+    const handleTrainSubmit = async (e) => {
+        e.preventDefault();
+        console.log('handleTrainSubmit function is working!');
+
+        if (!isTrainFormValid()) {
+            return;
+        }
+
+        const {
+            departLocation,
+            arriveLocation,
+            departTime,
+            arriveTime,
+            price,
+            duration,
+            status,
+            stops
+        } = inputValues;
+
+        const train = {
+            departLocation,
+            arriveLocation,
+            departTime: departTime + ".000Z",
+            arriveTime: arriveTime + ".000Z",
+            price,
+            duration,
+            status,
+            stops
+        };
+
+        console.log(train);
+
+        try {
+            const response = await Axios.post('http://localhost:8080/api/train/', train);
+            console.log(train);
+            if (response.status === 201) {
+                console.log('Train created successfully');
+                showModal();
+            } else {
+                console.error('Train create failed');
+                showErrorModal();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showErrorModal();
+        }
+    };
+
+    const handleCarSubmit = async (e) => {
+        e.preventDefault();
+        console.log('handleCarSubmit function is working!');
+
+        if (!isCarFormValid()) {
+            return;
+        }
+
+        const {
+            color,
+            make,
+            model,
+            pickupDate,
+            pickupLocation,
+            price,
+            returnDate,
+            returnLocation,
+            year
+        } = inputValues;
+
+        const car = {
+            color,
+            make,
+            model,
+            pickupDate: pickupDate + ".000Z",
+            returnDate: returnDate + ".000Z",
+            pickupLocation,
+            price,
+            returnLocation,
+            year
+        };
+
+        console.log(car);
+
+        try {
+            const response = await Axios.post('http://localhost:8080/api/car/', car);
+            console.log(car);
+            if (response.status === 201) {
+                console.log('Car created successfully');
+                showModal();
+            } else {
+                console.error('Car create failed');
+                showErrorModal();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showErrorModal();
+        }
+    };
+
     const showModal = () => {
         if (modalRef.current) {
             const modal = new Modal(modalRef.current);
@@ -265,14 +401,21 @@ export default function DatabaseManagement() {
     };
 
     const handleDateChange = (date, id) => {
-        const formattedDate = date ? date.toISOString().slice(0, -5) : null;
+
+        // Convert the local date to UTC before formatting
+        const formattedDate = date
+            ? new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, -5)
+            : null;
+
         setInputValues({
             ...inputValues,
-            [id]: formattedDate ,
+            [id]: formattedDate,
         });
-
-        console.log(formattedDate + ".000Z")
     };
+
+
+
+
 
 
     const handleInputChange = (event) => {
@@ -327,6 +470,33 @@ export default function DatabaseManagement() {
             duration: '',
             status: '',
             stops: ''
+        });
+    };
+
+    const handleTrainReset = () => {
+        setInputValues({
+            departLocation: '',
+            arriveLocation: '',
+            departTime: '',
+            arriveTime: '',
+            price: '',
+            duration: '',
+            status: '',
+            stops: ''
+        });
+    };
+
+    const handleCarReset = () => {
+        setInputValues({
+            color: '',
+            make: '',
+            model: '',
+            pickupDate: '',
+            pickupLocation: '',
+            price: '',
+            returnDate: '',
+            returnLocation: '',
+            year: ''
         });
     };
 
@@ -588,6 +758,184 @@ export default function DatabaseManagement() {
                                 </div>
                                 <div className="modal-body">
                                     <p>Error creating the flight. Please try again.</p>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseErrorModal}>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showTrainForm && (
+                <div className="container-fluid d-flex justify-content-center" style={{paddingLeft: 150, paddingRight: 150}}>
+                    <form className="row g-3" onSubmit={handleTrainSubmit}>
+                        <div className="col-md-6">
+                            <label htmlFor="inputDepartLocation" className="form-label">Departure Location</label>
+                            <input type="text" className="form-control" id="departLocation" value={inputValues.departLocation} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputArriveLocation" className="form-label">Arrival Location</label>
+                            <input type="text" className="form-control" id="arriveLocation" value={inputValues.arriveLocation} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputDepartTime" className="form-label">Departure Time</label>
+                            <input type="datetime-local" className="form-control" id="departTime" value={inputValues.departTime} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputArriveTime" className="form-label">Arrival Time</label>
+                            <input type="datetime-local" className="form-control" id="arriveTime" value={inputValues.arriveTime} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-3">
+                            <label htmlFor="inputPrice" className="form-label">Price</label>
+                            <input type="number" className="form-control" id="price" value={inputValues.price} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-3">
+                            <label htmlFor="inputDuration" className="form-label">Duration</label>
+                            <input type="text" className="form-control" id="duration" value={inputValues.duration} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-3">
+                            <label htmlFor="inputStatus" className="form-label">Status</label>
+                            <input type="text" className="form-control" id="status" value={inputValues.status} onChange={handleInputChange}/>
+                        </div>
+                        <div className="col-md-3">
+                            <label htmlFor="inputStops" className="form-label">Stops</label>
+                            <input type="number" className="form-control" id="stops" value={inputValues.stops} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-12 d-flex justify-content-center">
+                            <button type="submit" className="btn btn-success">Submit</button>
+                        </div>
+                        <div className="col-12 d-flex justify-content-center">
+                            <button type="button" className="btn btn-secondary" onClick={handleTrainReset}>
+                                Reset
+                            </button>
+                        </div>
+                    </form>
+                    <div className="modal fade" ref={modalRef} tabIndex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="successModalLabel">
+                                        Success!
+                                    </h5>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleTrainReset}></button>
+                                </div>
+                                <div className="modal-body">
+                                    <p>Train has been successfully created.</p>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleTrainReset}>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="modal fade" ref={errorModalRef} tabIndex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="errorModalLabel">
+                                        Error!
+                                    </h5>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseErrorModal}></button>
+                                </div>
+                                <div className="modal-body">
+                                    <p>Error creating the train. Please try again.</p>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseErrorModal}>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showCarForm && (
+                <div className="container-fluid d-flex justify-content-center" style={{paddingLeft: 150, paddingRight: 150}}>
+                    <form className="row g-3" onSubmit={handleCarSubmit}>
+                        <div className="col-md-3">
+                            <label htmlFor="inputMake" className="form-label">Make</label>
+                            <input type="text" className="form-control" id="make" value={inputValues.make} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-3">
+                            <label htmlFor="inputModel" className="form-label">Model</label>
+                            <input type="text" className="form-control" id="model" value={inputValues.model} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-3">
+                            <label htmlFor="inputYear" className="form-label">Year</label>
+                            <input type="number" className="form-control" id="year" value={inputValues.year} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-3">
+                            <label htmlFor="inputColor" className="form-label">Color</label>
+                            <input type="text" className="form-control" id="color" value={inputValues.color} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputPickupDate" className="form-label">Pickup Date</label>
+                            <input type="datetime-local" className="form-control" id="pickupDate" value={inputValues.pickupDate} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputPickupLocation" className="form-label">Pickup Location</label>
+                            <input type="text" className="form-control" id="pickupLocation" value={inputValues.pickupLocation} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputReturnDate" className="form-label">Return Date</label>
+                            <input type="datetime-local" className="form-control" id="returnDate" value={inputValues.returnDate} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputReturnLocation" className="form-label">Return Location</label>
+                            <input type="text" className="form-control" id="returnLocation" value={inputValues.returnLocation} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-12">
+                            <label htmlFor="inputPrice" className="form-label">Price</label>
+                            <input type="number" className="form-control" id="price" value={inputValues.price} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-12 d-flex justify-content-center">
+                            <button type="submit" className="btn btn-success">Submit</button>
+                        </div>
+                        <div className="col-12 d-flex justify-content-center">
+                            <button type="button" className="btn btn-secondary" onClick={handleCarReset}>
+                                Reset
+                            </button>
+                        </div>
+                    </form>
+                    <div className="modal fade" ref={modalRef} tabIndex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="successModalLabel">
+                                        Success!
+                                    </h5>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCarReset}></button>
+                                </div>
+                                <div className="modal-body">
+                                    <p>Car has been successfully created.</p>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCarReset}>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="modal fade" ref={errorModalRef} tabIndex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="errorModalLabel">
+                                        Error!
+                                    </h5>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseErrorModal}></button>
+                                </div>
+                                <div className="modal-body">
+                                    <p>Error creating the car. Please try again.</p>
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseErrorModal}>

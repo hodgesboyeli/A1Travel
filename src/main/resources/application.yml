@@ -46,6 +46,8 @@ security:
     - /js/**
     - /api/event/
     - /api/flight/
+    - /api/train/
+    - /api/car/
     - /api/user/
     - /api/user/{userId}
     - /api/user/**
