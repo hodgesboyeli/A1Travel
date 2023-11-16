@@ -6,6 +6,11 @@ import { Modal } from 'bootstrap';
 
 export default function DatabaseManagement() {
     const [showEventForm, setShowEventForm] = useState(false);
+    const [showTransportationForm, setShowTransportationForm] = useState(false);
+    const [showFlightForm, setShowFlightForm] = useState(false);
+    const [showTrainForm, setShowTrainForm] = useState(false);
+    const [showCarForm, setShowCarForm] = useState(false);
+    const [showDestinationForm, setShowDestinationForm] = useState(false);
     const phoneRef = useRef(null);
     const emailRef = useRef(null);
     const imageRef = useRef(null);
@@ -22,10 +27,18 @@ export default function DatabaseManagement() {
         eventEnd: null,
         location: '',
         price: null,
-        capacity: null
+        capacity: null,
+        airline: '',
+        departLocation: '',
+        arriveLocation: '',
+        departTime: null,
+        arriveTime: null,
+        duration: '',
+        status: '',
+        stops: null
     });
 
-    const isFormValid = () => {
+    const isEventFormValid = () => {
         const requiredFields = ['eventName', 'eventType', 'description', 'organizer', 'eventStart', 'eventEnd', 'location', 'price', 'capacity'];
 
         for (const field of requiredFields) {
@@ -40,11 +53,26 @@ export default function DatabaseManagement() {
         return true;
     };
 
-    const handleSignUp = async (e) => {
-        e.preventDefault();
-        console.log('handleSignUp function is working!');
+    const isFlightFormValid = () => {
+        const requiredFields = ['airline', 'departLocation', 'arriveLocation', 'departTime', 'arriveTime', 'price', 'duration', 'status', 'stops'];
 
-        if (!isFormValid()) {
+        for (const field of requiredFields) {
+            if (!inputValues[field]) {
+                // Field is empty, show error and return false
+                showErrorModal();
+                return false;
+            }
+        }
+
+        // All required fields are filled, return true
+        return true;
+    };
+
+    const handleEventSubmit = async (e) => {
+        e.preventDefault();
+        console.log('handleEventSubmit function is working!');
+
+        if (!isEventFormValid()) {
             return;
         }
 
@@ -101,6 +129,56 @@ export default function DatabaseManagement() {
         }
     };
 
+    const handleFlightSubmit = async (e) => {
+        e.preventDefault();
+        console.log('handleFlightSubmit function is working!');
+
+        if (!isFlightFormValid()) {
+            return;
+        }
+
+        const {
+            airline,
+            departLocation,
+            arriveLocation,
+            departTime,
+            arriveTime,
+            price,
+            duration,
+            status,
+            stops
+        } = inputValues;
+
+        const flight = {
+            airline,
+            departLocation,
+            arriveLocation,
+            departTime: departTime + ".000Z",
+            arriveTime: arriveTime + ".000Z",
+            price,
+            duration,
+            status,
+            stops
+        };
+
+        console.log(flight);
+
+        try {
+            const response = await Axios.post('http://localhost:8080/api/flight/', flight);
+            console.log(flight);
+            if (response.status === 201) {
+                console.log('Flight created successfully');
+                showModal();
+            } else {
+                console.error('Flight create failed');
+                showErrorModal();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showErrorModal();
+        }
+    };
+
     const showModal = () => {
         if (modalRef.current) {
             const modal = new Modal(modalRef.current);
@@ -151,6 +229,39 @@ export default function DatabaseManagement() {
         } else {
             setShowEventForm(false);
         }
+
+        if (event.target.id === "radioTransportation") {
+            setShowTransportationForm(true);
+        } else {
+            setShowTransportationForm(false);
+        }
+
+        if (event.target.id === "radioFlight") {
+            setShowFlightForm(true);
+            setShowTransportationForm(true);
+        } else {
+            setShowFlightForm(false);
+        }
+
+        if (event.target.id === "radioTrain") {
+            setShowTrainForm(true);
+            setShowTransportationForm(true);
+        } else {
+            setShowTrainForm(false);
+        }
+
+        if (event.target.id === "radioCar") {
+            setShowCarForm(true);
+            setShowTransportationForm(true);
+        } else {
+            setShowCarForm(false);
+        }
+
+        if (event.target.id === "radioDestination") {
+            setShowDestinationForm(true);
+        } else {
+            setShowDestinationForm(false);
+        }
     };
 
     const handleDateChange = (date, id) => {
@@ -178,7 +289,7 @@ export default function DatabaseManagement() {
     };
 
 
-    const handleReset = () => {
+    const handleEventReset = () => {
         setInputValues({
             eventName: '',
             eventType: '',
@@ -203,6 +314,20 @@ export default function DatabaseManagement() {
         if (imageRef.current) {
             imageRef.current.value = '';
         }
+    };
+
+    const handleFlightReset = () => {
+        setInputValues({
+            airline: '',
+            departLocation: '',
+            arriveLocation: '',
+            departTime: '',
+            arriveTime: '',
+            price: '',
+            duration: '',
+            status: '',
+            stops: ''
+        });
     };
 
 
@@ -248,7 +373,7 @@ export default function DatabaseManagement() {
 
             {showEventForm && (
                 <div className="container-fluid d-flex justify-content-center" style={{paddingLeft: 150, paddingRight: 150}}>
-                    <form className="row g-3" onSubmit={handleSignUp}>
+                    <form className="row g-3" onSubmit={handleEventSubmit}>
                         <div className="col-md-6">
                             <label htmlFor="inputEventName" className="form-label">Event Name</label>
                             <input type="text" className="form-control" id="eventName" value={inputValues.eventName} onChange={handleInputChange} />
@@ -300,7 +425,7 @@ export default function DatabaseManagement() {
                             <button type="submit" className="btn btn-success">Submit</button>
                         </div>
                         <div className="col-12 d-flex justify-content-center">
-                            <button type="button" className="btn btn-secondary" onClick={handleReset}>
+                            <button type="button" className="btn btn-secondary" onClick={handleEventReset}>
                                 Reset
                             </button>
                         </div>
@@ -312,13 +437,13 @@ export default function DatabaseManagement() {
                                     <h5 className="modal-title" id="successModalLabel">
                                         Success!
                                     </h5>
-                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleReset}></button>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleEventReset}></button>
                                 </div>
                                 <div className="modal-body">
                                     <p>Event has been successfully created.</p>
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleReset}>
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleEventReset}>
                                         Close
                                     </button>
                                 </div>
@@ -336,6 +461,133 @@ export default function DatabaseManagement() {
                                 </div>
                                 <div className="modal-body">
                                     <p>Error creating the event. Please try again.</p>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseErrorModal}>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showTransportationForm && (
+                <div className="container-fluid d-flex justify-content-center">
+                    <p className="form-check-inline">Type: </p>
+                    <input
+                        className="form-check-input form-check-inline"
+                        type="radio"
+                        name="AddNew"
+                        id="radioFlight"
+                        onChange={handleRadioChange}
+                    />
+                    <label style={{ marginRight: 10 }} htmlFor="radioEvent">
+                        Flight
+                    </label>
+                    <input
+                        className="form-check-input form-check-inline"
+                        type="radio"
+                        name="AddNew"
+                        id="radioTrain"
+                        onChange={handleRadioChange}
+                    />
+                    <label style={{ marginRight: 10 }} htmlFor="radioTransportation">
+                        Train
+                    </label>
+                    <input
+                        className="form-check-input form-check-inline"
+                        type="radio"
+                        name="AddNew"
+                        id="radioCar"
+                        onChange={handleRadioChange}
+                    />
+                    <label style={{ marginRight: 10 }} htmlFor="radioDestination">
+                        Car
+                    </label>
+                </div>
+            )}
+
+            {showFlightForm && (
+                <div className="container-fluid d-flex justify-content-center" style={{paddingLeft: 150, paddingRight: 150}}>
+                    <form className="row g-3" onSubmit={handleFlightSubmit}>
+                        <div className="col-md-4">
+                            <label htmlFor="inputAirline" className="form-label">Airline</label>
+                            <input type="text" className="form-control" id="airline" value={inputValues.airline} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-4">
+                            <label htmlFor="inputDepartLocation" className="form-label">Departure Location</label>
+                            <input type="text" className="form-control" id="departLocation" value={inputValues.departLocation} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-4">
+                            <label htmlFor="inputArriveLocation" className="form-label">Arrival Location</label>
+                            <input type="text" className="form-control" id="arriveLocation" value={inputValues.arriveLocation} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputDepartTime" className="form-label">Departure Time</label>
+                            <input type="datetime-local" className="form-control" id="departTime" value={inputValues.departTime} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputArriveTime" className="form-label">Arrival Time</label>
+                            <input type="datetime-local" className="form-control" id="arriveTime" value={inputValues.arriveTime} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-3">
+                            <label htmlFor="inputPrice" className="form-label">Price</label>
+                            <input type="number" className="form-control" id="price" value={inputValues.price} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-3">
+                            <label htmlFor="inputDuration" className="form-label">Duration</label>
+                            <input type="text" className="form-control" id="duration" value={inputValues.duration} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-3">
+                            <label htmlFor="inputStatus" className="form-label">Status</label>
+                            <input type="text" className="form-control" id="status" value={inputValues.status} onChange={handleInputChange}/>
+                        </div>
+                        <div className="col-md-3">
+                            <label htmlFor="inputStops" className="form-label">Stops</label>
+                            <input type="number" className="form-control" id="stops" value={inputValues.stops} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-12 d-flex justify-content-center">
+                            <button type="submit" className="btn btn-success">Submit</button>
+                        </div>
+                        <div className="col-12 d-flex justify-content-center">
+                            <button type="button" className="btn btn-secondary" onClick={handleFlightReset}>
+                                Reset
+                            </button>
+                        </div>
+                    </form>
+                    <div className="modal fade" ref={modalRef} tabIndex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="successModalLabel">
+                                        Success!
+                                    </h5>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleFlightReset}></button>
+                                </div>
+                                <div className="modal-body">
+                                    <p>Flight has been successfully created.</p>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleFlightReset}>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="modal fade" ref={errorModalRef} tabIndex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="errorModalLabel">
+                                        Error!
+                                    </h5>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseErrorModal}></button>
+                                </div>
+                                <div className="modal-body">
+                                    <p>Error creating the flight. Please try again.</p>
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseErrorModal}>
