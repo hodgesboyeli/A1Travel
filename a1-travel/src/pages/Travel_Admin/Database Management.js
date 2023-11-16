@@ -3,6 +3,7 @@ import TravelAdminNavbar from "../TravelAdminNavbar";
 import Axios from "axios";
 import 'firebase/compat/firestore';
 import { Modal } from 'bootstrap';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export default function DatabaseManagement() {
     const [showEventForm, setShowEventForm] = useState(false);
@@ -15,6 +16,7 @@ export default function DatabaseManagement() {
     const emailRef = useRef(null);
     const imageRef = useRef(null);
     const modalRef = useRef(null);
+    const storage = getStorage();
     const errorModalRef = useRef(null);
     const [inputValues, setInputValues] = useState({
         eventName: '',
@@ -43,7 +45,7 @@ export default function DatabaseManagement() {
         pickupLocation: '',
         returnDate: null,
         returnLocation: '',
-        year: null
+        year: null,
     });
 
     const isEventFormValid = () => {
@@ -106,12 +108,41 @@ export default function DatabaseManagement() {
         return true;
     };
 
+    const handleImageUpload = async (file) => {
+        const storageRef = ref(storage, file.name);
+
+        try {
+            await uploadBytes(storageRef, file);
+            inputValues.image = await getDownloadURL(storageRef);
+        } catch (error) {
+            console.error('Error uploading image: ', error);
+        }
+
+
+    };
+
     const handleEventSubmit = async (e) => {
         e.preventDefault();
         console.log('handleEventSubmit function is working!');
 
         if (!isEventFormValid()) {
             return;
+        }
+
+        const imageFile = imageRef.current.files[0];
+
+        if (imageFile) {
+            try {
+                // Wait for image upload to complete before proceeding
+                await handleImageUpload(imageFile);
+
+                // Continue with the rest of the form submission after image upload is successful
+            } catch (error) {
+                console.warn('Error uploading image:', error);
+                return; // Don't proceed with form submission if image upload fails
+            }
+        } else {
+            console.warn('No image file selected');
         }
 
         // Destructure input values
@@ -124,7 +155,8 @@ export default function DatabaseManagement() {
             eventEnd,
             location,
             price,
-            capacity
+            capacity,
+            image
         } = inputValues;
 
 
@@ -143,10 +175,9 @@ export default function DatabaseManagement() {
             eventStart: eventStart + ".000Z",
             eventEnd: eventEnd + ".000Z",
             price,
-            capacity
+            capacity,
+            image
         };
-
-        console.log(event);
 
         try {
             const response = await Axios.post('http://localhost:8080/api/event/', event);
@@ -413,11 +444,6 @@ export default function DatabaseManagement() {
         });
     };
 
-
-
-
-
-
     const handleInputChange = (event) => {
         const { id, value, type } = event.target;
 
@@ -589,7 +615,7 @@ export default function DatabaseManagement() {
                         </div>
                         <div className="col-12">
                             <label htmlFor="inputEventImage" className="form-label">Event Image Upload</label>
-                            <input type="file" className="form-control" id="inputEventImage" ref={imageRef} />
+                            <input type="file" className="form-control" id="image" ref={imageRef} />
                         </div>
                         <div className="col-12 d-flex justify-content-center">
                             <button type="submit" className="btn btn-success">Submit</button>
