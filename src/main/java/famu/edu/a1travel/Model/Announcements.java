@@ -1,12 +1,18 @@
 package famu.edu.a1travel.Model;
-
 import com.google.cloud.Timestamp;
+import com.google.protobuf.util.Timestamps;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public class Announcements extends BaseAnnouncements {
-    private Users adminID;
+import java.text.ParseException;
 
-    public Announcements(String body, String header, Timestamp timestamp, String type, Users adminID) {
-        super(body, header, timestamp, type);
-        this.adminID = adminID;
-    }
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Announcements {
+    private String header;
+    private String body;
+    private String type;
+    private Timestamp timestamp;
 }
