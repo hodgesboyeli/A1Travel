@@ -1,8 +1,6 @@
 package famu.edu.a1travel.Controller;
 
 import com.google.api.client.util.Value;
-import famu.edu.a1travel.Model.Announcements;
-import famu.edu.a1travel.Model.BaseAnnouncements;
 import famu.edu.a1travel.Model.RestAnnouncements;
 import famu.edu.a1travel.Service.AnnouncementsService;
 import famu.edu.a1travel.Util.ErrorMessage;

@@ -1,16 +1,12 @@
 package famu.edu.a1travel.Service;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
-import famu.edu.a1travel.Model.Announcements;
-import famu.edu.a1travel.Model.BaseAnnouncements;
 import famu.edu.a1travel.Model.RestAnnouncements;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.util.concurrent.ExecutionException;
 
 @Service
