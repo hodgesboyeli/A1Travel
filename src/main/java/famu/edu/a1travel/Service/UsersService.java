@@ -26,10 +26,8 @@ public class UsersService {
         if (querySnapshot.isEmpty()){
             return false;
         }
-        String docID = querySnapshot.getDocuments().get(0).getId();
-        DocumentReference docRef = collectionReference.document(docID);
-        DocumentSnapshot docSnap = docRef.get().get();
-
+        //
+        DocumentSnapshot docSnap = querySnapshot.getDocuments().get(0);
         return docSnap.contains(field);
     }
 
@@ -38,9 +36,10 @@ public class UsersService {
         Query query = db.collection("Users");
         //apply
         if (doesFieldExist(searchField)) {
+            System.out.println("worked");
             query = query.whereGreaterThanOrEqualTo(searchField, value)
                     .whereLessThan(searchField, value + "\uf8ff");
-        }
+        }else{System.out.println("Nope");}
 
         ApiFuture<QuerySnapshot> future = query.get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
@@ -67,19 +66,19 @@ public class UsersService {
         return userRef.getId();
     }
 
-    public void updateUser(String id, Map<String, String> updateValues) {
-        String[] allowed = {"email", "firstName", "lastName"};
+    public void updateUser(String id, Map<String, Object> updateValues) {
+        /*String[] allowed = {"email", "firstName", "lastName", "isActive"};
         List<String> list = Arrays.asList(allowed);
         Map<String, Object> formattedValues = new HashMap<>();
 
-        for (Map.Entry<String, String> entry : updateValues.entrySet()) {
+        for (Map.Entry<String, Object> entry : updateValues.entrySet()) {
             String key = entry.getKey();
             if (list.contains(key))
                 formattedValues.put(key, entry.getValue());
-        }
+        }*/
 
         DocumentReference userDoc = db.collection("Users").document(id);
-        userDoc.update(formattedValues);
+        userDoc.update(updateValues);
     }
 
     public void deleteUser(String userId) {

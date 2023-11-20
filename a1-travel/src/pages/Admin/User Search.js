@@ -119,7 +119,7 @@ export default function UserSearch() {
                                         <b>Active</b>
                                     </label>
                                     <input className="form-check-input me-auto ms-auto" type="checkbox" role="switch" id={`flexSwitchCheckDefault-${index}`}
-                                           checked={bool(user.isActive)} disabled={user.email===sessionStorage.getItem('email')}/>
+                                           checked={user.isActive} disabled={user.email===sessionStorage.getItem('email')}/>
                                 </div>
                                 <div className="col-md-1"/>
                             </div>
