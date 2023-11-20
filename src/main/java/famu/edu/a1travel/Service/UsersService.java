@@ -13,21 +13,41 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class UsersService {
     private final Firestore db = FirestoreClient.getFirestore();
+    private boolean doesFieldExist(String field) throws ExecutionException, InterruptedException {
+        //field can not be empty
+        if (field.isEmpty())
+            return false;
+        //get reference
+        CollectionReference collectionReference = db.collection("Users");
+        ApiFuture<QuerySnapshot> future = collectionReference.limit(1).get();
+        QuerySnapshot querySnapshot = future.get();
+
+        //return if no document
+        if (querySnapshot.isEmpty()){
+            return false;
+        }
+        String docID = querySnapshot.getDocuments().get(0).getId();
+        DocumentReference docRef = collectionReference.document(docID);
+        DocumentSnapshot docSnap = docRef.get().get();
+
+        return docSnap.contains(field);
+    }
 
     public ArrayList<Users> getUsers(String searchField, String value) throws ExecutionException, InterruptedException {
+        //get query of users
         Query query = db.collection("Users");
-        if (!searchField.isEmpty() && !value.isEmpty()) {
+        //apply
+        if (doesFieldExist(searchField)) {
             query = query.whereGreaterThanOrEqualTo(searchField, value)
                     .whereLessThan(searchField, value + "\uf8ff");
         }
+
         ApiFuture<QuerySnapshot> future = query.get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 
-        ArrayList<Users> users = !documents.isEmpty() ? new ArrayList<>() : null;
-
+        ArrayList<Users> users = new ArrayList<>();
         for (QueryDocumentSnapshot doc : documents)
             users.add(doc.toObject(Users.class));
-
         return users;
     }
 

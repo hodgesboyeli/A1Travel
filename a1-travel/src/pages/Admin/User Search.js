@@ -1,10 +1,9 @@
 import React, {useRef, useState} from 'react';
 import AdminNavbar from '../AdminNavbar';
-import {auth, db} from "../../Firebase";
-import {getDocs, query, collection, where} from 'firebase/firestore'
+import Axios from "axios";
 
 export default function UserSearch() {
-    const [searchBy, setSearchBy] = useState('global'); // Set the default search criteria
+    const [searchBy, setSearchBy] = useState(''); // Set the default search criteria
     const searchQuery = useRef();
     const [filteredUsers, setFilteredUsers] = useState([]);
 
@@ -15,14 +14,11 @@ export default function UserSearch() {
     const handleSearch = async(e) => {
         e.preventDefault();
         const search = searchQuery.current.value;
-        // Perform a Firestore query to find users that match the searchQuery
-        const querySnapshot = await getDocs(query(collection(
-                db, 'Users'),
-            where(searchBy, '>=', search),
-            where(searchBy, '<', search + '\uf8ff')));
-
-        const matchedUsers = querySnapshot.docs.map((doc) => doc.data());
-        console.log(matchedUsers);
+        // Perform a Firestore query from backend matching each user's field with a value
+        const response = await Axios.get('http://localhost:8080/api/user/?field='+searchBy+'&value='+search);
+        //returns an object with object array member "users"
+        const matchedUsers = response.data.users;
+        //console.log(matchedUsers);
         setFilteredUsers(matchedUsers);
     };
 
@@ -122,11 +118,10 @@ export default function UserSearch() {
                                     <label className="form-check-label" htmlFor={`flexSwitchCheckDefault-${index}`}>
                                         <b>Active</b>
                                     </label>
-                                    <input className="form-check-input me-auto ms-auto" type="checkbox" role="switch" id={`flexSwitchCheckDefault-${index}`}/>
+                                    <input className="form-check-input me-auto ms-auto" type="checkbox" role="switch" id={`flexSwitchCheckDefault-${index}`}
+                                           checked={bool(user.isActive)} disabled={user.email===sessionStorage.getItem('email')}/>
                                 </div>
-                                <div className="col-md-1">
-                                    Poop
-                                </div>
+                                <div className="col-md-1"/>
                             </div>
                         </div>
                     ))
