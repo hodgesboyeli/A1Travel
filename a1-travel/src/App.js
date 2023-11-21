@@ -12,6 +12,7 @@ import {AuthProvider} from "./pages/AuthContext";
 import CustomerRoutes from "./Routes/CustomerRoutes";
 import TravelAdminRoutes from "./Routes/TravelAdminRoutes";
 import AdminRoutes from "./Routes/AdminRoutes";
+import CustInbox from "./pages/Customer/CustInbox";
 
 function App() {
     return (
@@ -27,6 +28,7 @@ function App() {
 
                     <Route element={<CustomerRoutes/>}>
                         <Route element={<CustHome />} path='/home'/>
+                        <Route element={<CustInbox />} path='/inbox'/>
                     </Route>
 
                     <Route element={<TravelAdminRoutes/>}>
