@@ -62,10 +62,6 @@ public class MessagesService {
 
         if (receiverId != null) {
             message.setTimestamp(Timestamp.now());
-
-            /*String senderId = getLoggedInUserId();
-            message.setSenderID(senderId);*/
-
             message.setReceiverID(receiverId);
 
             ApiFuture<DocumentReference> future = db.collection("Messages").add(message);

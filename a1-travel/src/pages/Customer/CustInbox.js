@@ -3,6 +3,7 @@ import Navbar from '../Navbar';
 import 'firebase/firestore';
 import {Modal, Toast} from "bootstrap";
 import Axios from "axios";
+import {db} from "../../Firebase";
 
 export default function CustInbox() {
     const modalRef = useRef(null);
@@ -48,7 +49,13 @@ export default function CustInbox() {
         };
 
         try {
-            const response = await Axios.post('http://localhost:8080/api/message/' + receiverEmail, message);
+            const userResponse = await Axios.get('http://localhost:8080/api/user/email/'+sessionStorage.getItem('email'));
+            const userId = userResponse.data.userId;
+            console.log(userId);
+            const response = await Axios.post('http://localhost:8080/api/message/' + receiverEmail, {
+                'senderID':userId,
+                'messageContent':message.messageContent
+            });
             console.log('Message to be sent:', message);
             if (response.status === 201) {
                 // Registration successful, you can navigate to a success page or display a success message
