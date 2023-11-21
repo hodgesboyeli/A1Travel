@@ -5,6 +5,7 @@ import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
 import famu.edu.a1travel.Model.Messages;
@@ -61,6 +62,10 @@ public class MessagesService {
 
         if (receiverId != null) {
             message.setTimestamp(Timestamp.now());
+
+            /*String senderId = getLoggedInUserId();
+            message.setSenderID(senderId);*/
+
             message.setReceiverID(receiverId);
 
             ApiFuture<DocumentReference> future = db.collection("Messages").add(message);
@@ -73,15 +78,24 @@ public class MessagesService {
 
     private String getUserIdFromEmail(String email) {
         try {
-            // Use the Firebase Admin SDK to get user record based on email
             UserRecord userRecord = FirebaseAuth.getInstance().getUserByEmail(email);
             return userRecord.getUid();
         } catch (FirebaseAuthException e) {
-            // Handle the case where the user with the specified email is not found
-            // Log the error or perform appropriate error handling
             e.printStackTrace();
             return null;
         }
     }
+
+    /*private String getLoggedInUserId() {
+        try {
+            FirebaseToken token = FirebaseAuth.getInstance().verifyIdToken();
+            return token.getUid();
+        } catch (FirebaseAuthException e) {
+            // Handle exceptions (e.g., invalid or expired token)
+            return null;
+        }
+    }*/
+
+
 
 }

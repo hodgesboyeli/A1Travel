@@ -1,37 +1,105 @@
-import React, { useState, useEffect } from 'react';
+import React, {useRef, useState} from 'react';
 import Navbar from '../Navbar';
-import axios from 'axios';
-import { auth } from '../../Firebase';
 import 'firebase/firestore';
-import { Timestamp } from 'google-protobuf/google/protobuf/timestamp_pb';  // Adjust the import path
+import {Modal, Toast} from "bootstrap";
+import Axios from "axios";
 
 export default function CustInbox() {
-    const [messages, setMessages] = useState([]);
+    const modalRef = useRef(null);
+    const toastRef = useRef(null);
+    const [inputValues, setInputValues] = useState({
+        receiverEmail: '',
+        messageContent: '',
+    });
 
-    useEffect(() => {
-        const currentUser = auth.currentUser;
+    const isMessageFormValid = () => {
+        const requiredFields = ['receiver-email', 'message-content'];  // Update field names
 
-        const fetchData = async () => {
-            try {
-                if (currentUser) {
-                    const receiverId = currentUser.uid;
-                    const endpoint = `http://localhost:8080/api/message/${receiverId}`;
-
-                    // Make the API call
-                    const response = await axios.get(endpoint);
-
-                    // Assuming your API response has an array of messages
-                    const receivedMessages = response.data.messages;
-                    setMessages(receivedMessages);
-                }
-            } catch (error) {
-                console.error('Error fetching messages:', error);
-                // Handle error, show a message to the user, etc.
+        for (const field of requiredFields) {
+            if (!inputValues[field]) {
+                // Field is empty, show error and return false
+                console.error(`Error creating message: ${field} is empty`);
+                return false;
             }
+        }
+
+        // All required fields are filled, return true
+        return true;
+    };
+
+    const handleCreateMessage = async (e) => {
+
+        e.preventDefault();
+        console.log('handleCreateMessage function is working!');
+
+        if (!isMessageFormValid()) {
+            return;
+        }
+
+        const {
+            'receiver-email': receiverEmail,  // Update field names
+            'message-content': messageContent,  // Update field names
+        } = inputValues;
+
+        // Create a message object with input data
+        const message = {
+            receiverEmail,
+            messageContent,
         };
 
-        fetchData();
-    }, [auth]); // Include auth in the dependency array if auth is asynchronous
+        try {
+            const response = await Axios.post('http://localhost:8080/api/message/' + receiverEmail, message);
+            console.log('Message to be sent:', message);
+            if (response.status === 201) {
+                // Registration successful, you can navigate to a success page or display a success message
+                console.log('Message created successfully');
+                handleCloseModal();
+                showSuccessToast();
+            } else {
+                // Handle registration failure, show an error message to the user
+                console.error('Message create failed');
+            }
+        } catch (error) {
+            // Handle network errors or other issues
+            console.error('Error:', error.message);
+        }
+
+
+    };
+
+    const handleInputChange = (e) => {
+        const { id, value } = e.target;
+        setInputValues((prevInputValues) => ({
+            ...prevInputValues,
+            [id]: value,
+        }));
+    };
+
+
+
+    // Function to open the modal
+    const showModal = () => {
+        if (modalRef.current) {
+            const modal = new Modal(modalRef.current);
+            modal.show();
+        }
+    };
+
+    const handleCloseModal = () => {
+        if (modalRef.current) {
+            const modal = Modal.getInstance(modalRef.current);
+            if (modal) {
+                modal.hide();
+            }
+        }
+    };
+
+    const showSuccessToast = () => {
+        if (toastRef.current) {
+            const toast = new Toast(toastRef.current);
+            toast.show();
+        }
+    };
 
     return (
         <div>
@@ -39,12 +107,56 @@ export default function CustInbox() {
             <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
                 <h1>Messages</h1>
             </div>
-            <div className="message-list">
-                {messages.map(message => (
-                    <div>
-                        <p>{message.messageContent}</p>
+            <div className="col-12 d-flex justify-content-center">
+                <button type="button" className="btn btn-primary" onClick={showModal}>
+                    Create New Message
+                </button>
+                <div className="modal fade" ref={modalRef} id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="exampleModalLabel">
+                                    New message
+                                </h5>
+                                <button button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseModal}></button>
+                            </div>
+                            <div className="modal-body">
+                                <form>
+                                    <div className="form-group">
+                                        <label htmlFor="receiver-email" className="col-form-label">
+                                            Recipient Email:
+                                        </label>
+                                        <input type="text" className="form-control" id="receiver-email" onChange={handleInputChange} />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="message-content" className="col-form-label">
+                                            Message:
+                                        </label>
+                                        <textarea className="form-control" id="message-content" onChange={handleInputChange}></textarea>
+                                    </div>
+                                </form>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>
+                                    Close
+                                </button>
+                                <button type="button" className="btn btn-success" onClick={handleCreateMessage}>
+                                    Send message
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                ))}
+                </div>
+
+                <div className="toast-container position-fixed top-0 end-0 p-3">
+                    <div ref={toastRef} className="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div className="toast-header">
+                            <strong className="me-auto">Success!</strong>
+                            <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div className="toast-body">Message sent successfully!</div>
+                    </div>
+                </div>
             </div>
         </div>
     );
