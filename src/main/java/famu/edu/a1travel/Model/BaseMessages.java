@@ -13,8 +13,4 @@ import java.text.ParseException;
 public class BaseMessages {
     private String messageContent;
     private Timestamp timestamp;
-
-    public void setTimestamp(String timestamp) throws ParseException {
-        this.timestamp = Timestamp.fromProto(Timestamps.parse(timestamp));
-    }
 }
