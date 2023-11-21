@@ -1,6 +1,7 @@
 package famu.edu.a1travel.Service;
 
 import com.google.api.core.ApiFuture;
+import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
@@ -17,7 +18,7 @@ public class AnnouncementsService {
     }
     public String createAnnouncement(RestAnnouncements announcement) throws ExecutionException, InterruptedException{
         String announcementID = null;
-
+        announcement.setTimestamp(Timestamp.now());
         ApiFuture<DocumentReference> future = db.collection("Announcements").add(announcement);
         DocumentReference announcementRef = future.get();
         announcementID = announcementRef.getId();
