@@ -11,7 +11,10 @@ import java.util.concurrent.ExecutionException;
 
 @Service
 public class AnnouncementsService {
-    private final Firestore db = FirestoreClient.getFirestore();
+    private final Firestore db;
+    public AnnouncementsService(Firestore db){
+        this.db = db;
+    }
     public String createAnnouncement(RestAnnouncements announcement) throws ExecutionException, InterruptedException{
         String announcementID = null;
 

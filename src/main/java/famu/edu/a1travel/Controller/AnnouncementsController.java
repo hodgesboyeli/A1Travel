@@ -1,6 +1,7 @@
 package famu.edu.a1travel.Controller;
 
 import com.google.api.client.util.Value;
+import com.google.cloud.firestore.Firestore;
 import famu.edu.a1travel.Model.RestAnnouncements;
 import famu.edu.a1travel.Service.AnnouncementsService;
 import famu.edu.a1travel.Util.ErrorMessage;
@@ -25,8 +26,8 @@ public class AnnouncementsController {
     private Object payload;
     private ResponseWrapper response;
     private static final String CLASS_NAME = "AnnouncementsService";
-    public AnnouncementsController(AnnouncementsService announcementsService) {
-        this.announcementsService = announcementsService;
+    public AnnouncementsController(Firestore firestore) {
+        announcementsService = new AnnouncementsService(firestore);
         payload = null;
     }
 
