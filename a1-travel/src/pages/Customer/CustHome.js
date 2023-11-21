@@ -10,9 +10,10 @@ export default function CustHome() {
     useEffect(() => {
         async function getDests(){
             try {
-                const response = await Axios.get('http://localhost:8080/destination/');
+                const response = await Axios.get('http://localhost:8080/api/destination/');
                 setLocations(response.data.destinations);
                 setFilteredLocations(response.data.destinations);
+                console.log(locations);
             } catch (error){
                 console.error("Error fetching data:",error);
             }

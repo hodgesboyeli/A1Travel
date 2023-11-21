@@ -29,10 +29,8 @@ export default function UserSearch() {
     }
     const handleConfirm = async() =>{
         let email = '';
-        let uid = '';
         if (filteredUsers.length > 0){
             email = filteredUsers[userIndex].email;
-            uid = filteredUsers[userIndex].userId;
         } else {
             setShowModal(false);
             return;
@@ -40,7 +38,6 @@ export default function UserSearch() {
         try {
             const temp = filteredUsers[userIndex].isActive;
             const response = await Axios.put('http://localhost:8080/api/account/'+email+'?set='+temp);
-            await Axios.put('http://localhost:8080/api/user/'+uid,{'isActive':!response.data});
             filteredUsers[userIndex].isActive = !response.data;
         } catch (error) {
             console.log(error);

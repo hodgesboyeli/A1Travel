@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -85,10 +86,16 @@ public class AuthenticationController {
 
     @PutMapping("/account/{email}")
     public Boolean accountSwitchActive(@PathVariable String email,
-                                       @RequestParam(name="set", defaultValue = "true") boolean set) throws FirebaseAuthException {
+                                       @RequestParam(name="set", defaultValue = "true") boolean set) throws FirebaseAuthException, ExecutionException, InterruptedException {
+        //toggle disable user in auth
         UserRecord userRecord = firebaseAuth.getUserByEmail(email);
         UserRecord.UpdateRequest update = userRecord.updateRequest().setDisabled(set);
         firebaseAuth.updateUser(update);
+        //update Users document field isActive
+        String uid = userService.getUserByEmail(email).getUserId();
+        Map<String,Object> updates = new HashMap<>();
+        updates.put("isActive",!set);
+        userService.updateUser(uid,updates);
         return set;
     }
 }
