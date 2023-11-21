@@ -11,14 +11,36 @@ import java.util.concurrent.ExecutionException;
 
 @Service
 public class DestinationsService {
-    private final Firestore db = FirestoreClient.getFirestore();
+    private final Firestore db;
+    public DestinationsService(Firestore db){
+        this.db = db;
+    }
+    private boolean doesFieldExist(String field) throws ExecutionException, InterruptedException {
+        //field can not be empty
+        if (field.isEmpty())
+            return false;
+        //get reference
+        CollectionReference collectionReference = db.collection("Destinations");
+        ApiFuture<QuerySnapshot> future = collectionReference.limit(1).get();
+        QuerySnapshot querySnapshot = future.get();
 
-    public ArrayList<Destinations> getDestinations() throws ExecutionException, InterruptedException {
+        //return if no document
+        if (querySnapshot.isEmpty()){
+            return false;
+        }
+        //
+        DocumentSnapshot docSnap = querySnapshot.getDocuments().get(0);
+        return docSnap.contains(field);
+    }
+
+    public ArrayList<Destinations> getDestinations(int limit) throws ExecutionException, InterruptedException {
         Query query = db.collection("Destinations");
+        if (limit > 0)
+            query = query.limit(limit);
         ApiFuture<QuerySnapshot> future = query.get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 
-        ArrayList<Destinations> destinations = (documents.size() > 0) ? new ArrayList<>() : null;
+        ArrayList<Destinations> destinations = new ArrayList<>();
 
         for (QueryDocumentSnapshot doc : documents)
             destinations.add(doc.toObject(Destinations.class));
