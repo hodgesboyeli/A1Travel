@@ -38,8 +38,10 @@ export default function UserSearch() {
             return;
         }
         try {
-            const response = await Axios.put('http://localhost:8080/api/account/'+email);
-            filteredUsers[userIndex].isActive = response.data;
+            const temp = filteredUsers[userIndex].isActive;
+            const response = await Axios.put('http://localhost:8080/api/account/'+email+'?set='+temp);
+            await Axios.put('http://localhost:8080/api/user/'+uid,{'isActive':!response.data});
+            filteredUsers[userIndex].isActive = !response.data;
         } catch (error) {
             console.log(error);
         } finally {

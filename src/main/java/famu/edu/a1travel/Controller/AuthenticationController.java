@@ -84,11 +84,11 @@ public class AuthenticationController {
     }
 
     @PutMapping("/account/{email}")
-    public Boolean accountSwitchActive(@PathVariable String email) throws FirebaseAuthException {
+    public Boolean accountSwitchActive(@PathVariable String email,
+                                       @RequestParam(name="set", defaultValue = "true") boolean set) throws FirebaseAuthException {
         UserRecord userRecord = firebaseAuth.getUserByEmail(email);
-        boolean newActive = !userRecord.isDisabled();
-        UserRecord.UpdateRequest update = userRecord.updateRequest().setDisabled(newActive);
+        UserRecord.UpdateRequest update = userRecord.updateRequest().setDisabled(set);
         firebaseAuth.updateUser(update);
-        return newActive;
+        return set;
     }
 }
