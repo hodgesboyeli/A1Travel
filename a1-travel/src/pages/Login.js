@@ -29,7 +29,7 @@ export default function Login() {
 
                 if (fetchedUser.email !== emailRef.current.value) throw 'Invalid Credentials';
 
-                if (!fetchedUser.isActive) throw 'User is Deactivated or Paused';
+                //if (!fetchedUser.isActive) throw 'User is Deactivated or Paused';
 
                 sessionStorage.clear();
                 sessionStorage.setItem('email', fetchedUser.email);

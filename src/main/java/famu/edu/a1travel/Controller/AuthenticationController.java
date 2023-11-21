@@ -23,6 +23,7 @@ import java.util.concurrent.ExecutionException;
 @CrossOrigin(origins = "localhost:3000")
 public class AuthenticationController {
     private final FirebaseAuth firebaseAuth;
+    private final UsersService userService = new UsersService();
     private final Log logger = LogFactory.getLog(this.getClass());
     public AuthenticationController(FirebaseAuth firebaseAuth) {
         this.firebaseAuth = firebaseAuth;
@@ -30,8 +31,6 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public String register(@RequestBody Map<String,Object> userValues) throws ExecutionException, InterruptedException, FirebaseAuthException {
-        final UsersService usersService = new UsersService();
-
         Users user = new Users();
         UserRecord.CreateRequest request = new UserRecord.CreateRequest();
         for (Map.Entry<String,Object> entry : userValues.entrySet()){
@@ -60,7 +59,7 @@ public class AuthenticationController {
         user.setActive(Boolean.TRUE);
 
         //create user document and set auth uid to the user doc id
-        request.setUid(usersService.createUser(user));
+        request.setUid(userService.createUser(user));
         //create new user
         UserRecord userRecord = firebaseAuth.createUser(request);
 
@@ -82,5 +81,14 @@ public class AuthenticationController {
     public String logout() {
         SecurityContextHolder.getContext().setAuthentication(null);
         return "Logged out successfully";
+    }
+
+    @PutMapping("/account/{email}")
+    public Boolean accountSwitchActive(@PathVariable String email) throws FirebaseAuthException {
+        UserRecord userRecord = firebaseAuth.getUserByEmail(email);
+        boolean newActive = !userRecord.isDisabled();
+        UserRecord.UpdateRequest update = userRecord.updateRequest().setDisabled(newActive);
+        firebaseAuth.updateUser(update);
+        return newActive;
     }
 }

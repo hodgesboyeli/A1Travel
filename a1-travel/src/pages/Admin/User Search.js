@@ -3,9 +3,11 @@ import AdminNavbar from '../AdminNavbar';
 import Axios from "axios";
 
 export default function UserSearch() {
+    const [userIndex, setUserIndex] = useState(0);
     const [searchBy, setSearchBy] = useState(''); // Set the default search criteria
     const searchQuery = useRef();
     const [filteredUsers, setFilteredUsers] = useState([]);
+    const [showModal, setShowModal] = useState(false);
 
     const handleSearchByChange = (event) => {
         setSearchBy(event.target.value);
@@ -18,8 +20,31 @@ export default function UserSearch() {
         const response = await Axios.get('http://localhost:8080/api/user/?field='+searchBy+'&value='+search);
         //returns an object with object array member "users"
         const matchedUsers = response.data.users;
-        //console.log(matchedUsers);
+        console.log(matchedUsers);
         setFilteredUsers(matchedUsers);
+    };
+    const handleActiveSwitch = (index) => {
+        setUserIndex(index);
+        setShowModal(true);
+    }
+    const handleConfirm = async() =>{
+        let email = '';
+        let uid = '';
+        if (filteredUsers.length > 0){
+            email = filteredUsers[userIndex].email;
+            uid = filteredUsers[userIndex].userId;
+        } else {
+            setShowModal(false);
+            return;
+        }
+        try {
+            const response = await Axios.put('http://localhost:8080/api/account/'+email);
+            filteredUsers[userIndex].isActive = response.data;
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setShowModal(false);
+        }
     };
 
     return (
@@ -82,7 +107,6 @@ export default function UserSearch() {
                     ID
                 </label>
             </div>
-
             <div className="search-bar">
                 <form onSubmit={handleSearch}>
                     <input
@@ -118,16 +142,40 @@ export default function UserSearch() {
                                     <label className="form-check-label" htmlFor={`flexSwitchCheckDefault-${index}`}>
                                         <b>Active</b>
                                     </label>
-                                    <input className="form-check-input me-auto ms-auto" type="checkbox" role="switch" id={`flexSwitchCheckDefault-${index}`}
-                                           checked={user.isActive} disabled={user.email===sessionStorage.getItem('email')}/>
+                                    <input className="form-check-input me-auto ms-auto"
+                                           type="checkbox"
+                                           role="switch"
+                                           id={`flexSwitchCheckDefault-${index}`}
+                                           readOnly={1}
+                                           checked={user.isActive}
+                                           disabled={user.email===sessionStorage.getItem('email')}
+                                           onClick={()=>handleActiveSwitch(index)}
+                                    />
                                 </div>
                                 <div className="col-md-1"/>
                             </div>
                         </div>
                     ))
                 ) : (
-                    <div>No matching users found</div>
+                    <div className='text-center'>No matching users found</div>
                 )}
+            </div>
+            <div className={"modal fade" + (showModal ? " show" : "")} style={{display: showModal ? "block" : "none"}} tabIndex="-1">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title">Confirm Action</h5>
+                            <button type="button" className="btn-close" onClick={() => setShowModal(false)}></button>
+                        </div>
+                        <div className="modal-body">
+                            Are you sure you want to { (filteredUsers.length > 0) ? (filteredUsers[userIndex].isActive ? 'disable':'enable') : ''} this user account?
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>Close</button>
+                            <button type="button" className="btn btn-primary" onClick={handleConfirm}>Confirm</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

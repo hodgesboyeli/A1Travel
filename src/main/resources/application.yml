@@ -39,17 +39,14 @@ security:
     - /favicon.ico
     - /
     - /api/login
-    - /api/user/email/{email}
     - /api/logout
     - /api/register
     - /css/**
     - /js/**
     - /api/event/
-    - /api/user/
-    - /api/user/{userId}
     - /api/user/**
-    - /api/destination/
-    - /api/destination/{userId}
+    - /api/destination/**
+    - /api/account/**
   exposed-headers:
     - X-Xsrf-Token
     - X-Auth-Token

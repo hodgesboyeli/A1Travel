@@ -36,10 +36,9 @@ public class UsersService {
         Query query = db.collection("Users");
         //apply
         if (doesFieldExist(searchField)) {
-            System.out.println("worked");
             query = query.whereGreaterThanOrEqualTo(searchField, value)
                     .whereLessThan(searchField, value + "\uf8ff");
-        }else{System.out.println("Nope");}
+        }
 
         ApiFuture<QuerySnapshot> future = query.get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
