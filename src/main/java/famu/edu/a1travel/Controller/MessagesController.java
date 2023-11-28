@@ -44,7 +44,6 @@ public class MessagesController {
         return response.getResponse();
     }
 
-
     /*@PostMapping("/{receiverId}")
     public ResponseEntity<Map<String, Object>> createMessage(@RequestBody RestMessages message, @PathVariable(name = "receiverId") String receiverID) {
         try {
@@ -61,10 +60,10 @@ public class MessagesController {
         return response.getResponse();
     }*/
 
-    @PostMapping("/{receiverEmail}")
-    public ResponseEntity<Map<String, Object>> createMessage(@RequestBody RestMessages message, @PathVariable(name = "receiverEmail") String receiverEmail) {
+    @PostMapping("/")
+    public ResponseEntity<Map<String, Object>> createMessage(@RequestBody RestMessages message) {
         try {
-            payload = messagesService.createMessage(message, receiverEmail); // Pass the email instead of receiverId
+            payload = messagesService.createMessage(message); // Pass the email instead of receiverId
             statusCode = 201;
             name = "messageId";
         } catch (ExecutionException | InterruptedException e) {

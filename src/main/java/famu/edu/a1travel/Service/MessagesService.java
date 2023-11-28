@@ -42,34 +42,11 @@ public class MessagesService {
         return messages;
     }
 
-    /*public String createMessage(RestMessages message, String receiverId) throws ExecutionException, InterruptedException {
-        String messageId = null;
+    public String createMessage(RestMessages message) throws ExecutionException, InterruptedException {
         message.setTimestamp(Timestamp.now());
-        message.setReceiverID(receiverId);
-
         ApiFuture<DocumentReference> future = db.collection("Messages").add(message);
         DocumentReference messageRef = future.get();
-        messageId = messageRef.getId();
-
-        return messageId;
-    }*/
-
-    public String createMessage(RestMessages message, String receiverEmail) throws ExecutionException, InterruptedException {
-        String messageId = null;
-
-        // Get the user ID based on the email
-        String receiverId = getUserIdFromEmail(receiverEmail);
-
-        if (receiverId != null) {
-            message.setTimestamp(Timestamp.now());
-            message.setReceiverID(receiverId);
-
-            ApiFuture<DocumentReference> future = db.collection("Messages").add(message);
-            DocumentReference messageRef = future.get();
-            messageId = messageRef.getId();
-        }
-
-        return messageId;
+        return messageRef.getId();
     }
 
     private String getUserIdFromEmail(String email) {
