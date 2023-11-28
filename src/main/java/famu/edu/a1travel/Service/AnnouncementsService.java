@@ -17,12 +17,9 @@ public class AnnouncementsService {
         this.db = db;
     }
     public String createAnnouncement(RestAnnouncements announcement) throws ExecutionException, InterruptedException{
-        String announcementID = null;
         announcement.setTimestamp(Timestamp.now());
         ApiFuture<DocumentReference> future = db.collection("Announcements").add(announcement);
         DocumentReference announcementRef = future.get();
-        announcementID = announcementRef.getId();
-
-        return announcementID;
+        return announcementRef.getId();
     }
 }
