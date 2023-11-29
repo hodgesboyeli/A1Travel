@@ -1,7 +1,9 @@
 package famu.edu.a1travel.Controller;
 
 import com.google.api.client.util.Value;
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
 import famu.edu.a1travel.Model.RestAnnouncements;
 import famu.edu.a1travel.Service.AnnouncementsService;
 import famu.edu.a1travel.Util.ErrorMessage;

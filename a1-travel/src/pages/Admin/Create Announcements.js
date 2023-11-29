@@ -6,7 +6,6 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import {Modal} from "bootstrap";
 import {auth} from "../../Firebase";
 import "../../Firebase.js";
-
 export default function CreateAnnouncements() {
     const [inputValues, setInputValues] = useState({
         body: '',
@@ -34,8 +33,15 @@ export default function CreateAnnouncements() {
         };
 
         try {
-            const response = await Axios.post('http://localhost:8080/api/announcement/', announcement);
-            console.log(announcement);
+            const adminResponse = await Axios.get('http://localhost:8080/api/user/email/'+sessionStorage.getItem('email'));
+            const updatedAnnouncement = {
+                'body': announcement.body,
+                'header': announcement.header,
+                'type': announcement.type,
+                'adminID': adminResponse.data.userId
+            };
+            const response = await Axios.post('http://localhost:8080/api/announcement/', updatedAnnouncement);
+            console.log(updatedAnnouncement);
             if (response.status === 201) {
                 console.log('Announcement created successfully');
                 showModal();
