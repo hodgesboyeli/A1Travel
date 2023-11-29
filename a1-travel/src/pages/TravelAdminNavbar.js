@@ -40,7 +40,7 @@ export default function TravelAdminNavbar(){
                 </div>
             </div>
             <button type="inbox" className="admin-inbox-button btn-md">
-                <a className="nav-link" href="http://localhost:3000/inbox"><i className="fas fa-envelope"></i></a>
+                <a className="nav-link" href="http://localhost:3000/ta-inbox"><i className="fas fa-envelope"></i></a>
             </button>
             <button type="log-out" className="sign-out-button btn-md" onClick={handleLogout}>
                 <i className="fas fa-sign-out" style={{backgroundColor: "#FFF", color: "#000"}}></i>

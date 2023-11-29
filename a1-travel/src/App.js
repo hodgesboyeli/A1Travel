@@ -13,6 +13,8 @@ import CustomerRoutes from "./Routes/CustomerRoutes";
 import TravelAdminRoutes from "./Routes/TravelAdminRoutes";
 import AdminRoutes from "./Routes/AdminRoutes";
 import CustInbox from "./pages/Customer/CustInbox";
+import TAInbox from "./pages/Travel_Admin/TAInbox";
+import AdminInbox from "./pages/Admin/AdminInbox";
 
 function App() {
     return (
@@ -34,12 +36,14 @@ function App() {
                     <Route element={<TravelAdminRoutes/>}>
                         <Route element={<TAHome />} path='/ta-home'/>
                         <Route element={<DatabaseManagement />} path='/travel_admin/database-management'/>
+                        <Route element={<TAInbox />} path='/ta-inbox'/>
                     </Route>
 
 
                     <Route element={<AdminRoutes/>}>
                         <Route element={<AdminHome />} path='/admin-home'/>
                         <Route element={<UserSearch />} path='/admin/user-search'/>
+                        <Route element={<AdminInbox />} path='/admin-inbox'/>
                     </Route>
 
                 </Routes>
