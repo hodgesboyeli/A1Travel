@@ -6,7 +6,8 @@
 }
 
 .navbar a {
-    color: black;
+    /*color: black;*/
+    color: #FFFFFF;
     text-decoration: none;
     padding: 10px 20px;
     font-family: 'Bebas Neue', sans-serif;
@@ -19,7 +20,8 @@
 
 .sign-out-button{
     color : #FFFFFF;
-   background-color: #FFFFFF;
+    /*background-color: #FFFFFF;*/
+    background-color: #1E71EE;
     border : none;
     margin-left: auto;
     font-size : 25px;

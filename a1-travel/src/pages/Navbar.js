@@ -49,7 +49,7 @@ export default function Navbar(){
                 </div>
             </div>
             <button type="inbox" className="inbox-button btn-md">
-                <a className="nav-link" href="http://localhost:3000/inbox"><i className="fas fa-envelope"></i></a>
+                <a className="nav-link" href="http://localhost:3000/inbox"><i className="fas fa-envelope" style={{color: "black"}}></i></a>
             </button>
             <button type="log-out" className="sign-out-button btn-md" onClick={handleLogout}>
                 <i className="fas fa-sign-out"></i>
