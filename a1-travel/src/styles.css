@@ -6,15 +6,11 @@
 }
 
 .navbar a {
-    color: #fff;
+    color: black;
     text-decoration: none;
     padding: 10px 20px;
     font-family: 'Bebas Neue', sans-serif;
     font-size: 25px;
-}
-
-.navbar a:hover {
-    background-color: #0066FF;
 }
 
 .navbar-nav .nav-item {
@@ -23,11 +19,15 @@
 
 .sign-out-button{
     color : #FFFFFF;
-    background-color: #1E71EE;
+   background-color: #FFFFFF;
     border : none;
     margin-left: auto;
     font-size : 25px;
     padding-right: 20px;
+}
+
+.sign-out-button:hover{
+    color : #1E71EE;
 }
 
 .inbox-button{
@@ -39,8 +39,21 @@
     padding-right: 20px;
 }
 
+.admin-inbox-button{
+    color : black;
+   background-color: #FFFFFF;
+    border : none;
+    margin-left: auto;
+    font-size : 25px;
+    padding-right: 20px;
+}
+
 .sign-out-button:hover{
     color: black;
+}
+
+.admin-inbox-button:hover{
+    color: #1E71EE;
 }
 
 .inbox-button:hover{
