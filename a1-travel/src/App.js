@@ -15,6 +15,9 @@ import AdminRoutes from "./Routes/AdminRoutes";
 import CustInbox from "./pages/Customer/CustInbox";
 import TAInbox from "./pages/Travel_Admin/TAInbox";
 import AdminInbox from "./pages/Admin/AdminInbox";
+import CustNotifications from "./pages/Customer/CustNotifications";
+import AdminNotifications from "./pages/Admin/AdminNotifications";
+import TANotifications from "./pages/Travel_Admin/TANotifications";
 
 function App() {
     return (
@@ -31,12 +34,14 @@ function App() {
                     <Route element={<CustomerRoutes/>}>
                         <Route element={<CustHome />} path='/home'/>
                         <Route element={<CustInbox />} path='/inbox'/>
+                        <Route element={<CustNotifications />} path='/notifications'/>
                     </Route>
 
                     <Route element={<TravelAdminRoutes/>}>
                         <Route element={<TAHome />} path='/ta-home'/>
                         <Route element={<DatabaseManagement />} path='/travel_admin/database-management'/>
                         <Route element={<TAInbox />} path='/ta-inbox'/>
+                        <Route element={<TANotifications />} path='/ta-notifications'/>
                     </Route>
 
 
@@ -44,6 +49,7 @@ function App() {
                         <Route element={<AdminHome />} path='/admin-home'/>
                         <Route element={<UserSearch />} path='/admin/user-search'/>
                         <Route element={<AdminInbox />} path='/admin-inbox'/>
+                        <Route element={<AdminNotifications />} path='/admin-notifications'/>
                     </Route>
 
                 </Routes>
