@@ -46,7 +46,6 @@ export default function CustHome() {
                         <div><i className="fas fa-plane"></i></div>
                     </button>
                 </div>
-
                 <div className="container mt-5">
                     <div className="row">
                         {filteredLocations.map((item, index) => (
