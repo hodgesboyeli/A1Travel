@@ -42,6 +42,24 @@ public class MessagesService {
         return messages;
     }
 
+    public ArrayList<Messages> getSentMessagesForUser(String senderID) throws ExecutionException, InterruptedException {
+        // Create a query to filter messages based on the receiverID field
+        Query query = db.collection("Messages").whereEqualTo("senderID", db.collection("Users").document(senderID));
+
+        // Execute the query
+        ApiFuture<QuerySnapshot> future = query.get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+        // Process the documents and convert them to Messages objects
+        ArrayList<Messages> messages = !documents.isEmpty() ? new ArrayList<>() : null;
+
+        for (QueryDocumentSnapshot doc : documents) {
+            messages.add(doc.toObject(Messages.class));
+        }
+
+        return messages;
+    }
+
     public String createMessage(RestMessages message) throws ExecutionException, InterruptedException {
         message.setTimestamp(Timestamp.now());
         ApiFuture<DocumentReference> future = db.collection("Messages").add(message);

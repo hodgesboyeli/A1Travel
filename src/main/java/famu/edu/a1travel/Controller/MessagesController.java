@@ -44,6 +44,20 @@ public class MessagesController {
         return response.getResponse();
     }
 
+    @GetMapping("/{senderId}")
+    public ResponseEntity<Map<String, Object>> getSentMessagesForUser(@PathVariable(name = "senderId") String senderID) {
+        try {
+            payload = messagesService.getSentMessagesForUser(senderID);
+            statusCode = 200;
+            name = "sentMessages";
+        } catch (ExecutionException | InterruptedException e) {
+            payload = new ErrorMessage("Cannot fetch sent messages from the database", CLASS_NAME, e.getStackTrace().toString());
+        }
+
+        response = new ResponseWrapper(statusCode, name, payload);
+        return response.getResponse();
+    }
+
     /*@PostMapping("/{receiverId}")
     public ResponseEntity<Map<String, Object>> createMessage(@RequestBody RestMessages message, @PathVariable(name = "receiverId") String receiverID) {
         try {

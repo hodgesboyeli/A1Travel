@@ -12,6 +12,24 @@ export default function CustInbox() {
         message: '',
     });
 
+    // Add this state above your return statement
+    const [activeTab, setActiveTab] = useState('received');
+
+// Modify the handleTabClick function to set the active tab
+    const handleTabClick = async (tab) => {
+        setActiveTab(tab);
+        try {
+            const userId = sessionStorage.getItem('userId');
+            console.log('User ID:', userId);
+            const response = await Axios.get(`http://localhost:8080/api/message/${userId}`);
+            // Update the state or do something with the response data
+            console.log(response.data);
+        } catch (error) {
+            console.error('Error fetching messages:', error.message);
+        }
+    };
+
+
     const isMessageFormValid = () => {
         return Object.values(messageData).every(value => value.trim() !== '');
     };
@@ -131,6 +149,7 @@ export default function CustInbox() {
                     </div>
                 </div>
 
+
                 <div className="toast-container position-fixed top-0 end-0 p-3">
                     <div ref={toastRef} className="toast" role="alert" aria-live="assertive" aria-atomic="true">
                         <div className="toast-header">
@@ -139,6 +158,46 @@ export default function CustInbox() {
                         </div>
                         <div className="toast-body">Message sent successfully!</div>
                     </div>
+                </div>
+
+            </div>
+
+            <div className="row justify-content-center">
+                <div className="col-12 d-flex justify-content-center">
+                    <ul className="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                        <li className="nav-item" role="presentation">
+                            <button
+                                className={`nav-link ${activeTab === 'received' ? 'active' : ''}`}
+                                onClick={() => handleTabClick('received')}
+                            >
+                                Received Messages
+                            </button>
+                        </li>
+                        <li className="nav-item" role="presentation">
+                            <button
+                                className={`nav-link ${activeTab === 'sent' ? 'active' : ''}`}
+                                onClick={() => handleTabClick('sent')}
+                            >
+                                Sent Messages
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div className="tab-content" id="pills-tabContent">
+                <div
+                    className={`tab-pane fade show ${activeTab === 'received' ? 'active' : ''}`}
+                    id="pills-home"
+                    role="tabpanel"
+                >
+                    Received Messages
+                </div>
+                <div
+                    className={`tab-pane fade ${activeTab === 'sent' ? 'show active' : ''}`}
+                    id="pills-profile"
+                    role="tabpanel"
+                >
+                    Sent Messages
                 </div>
             </div>
         </div>
