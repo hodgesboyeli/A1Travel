@@ -1,13 +1,7 @@
 package famu.edu.a1travel.Service;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.*;
-import com.google.firebase.cloud.FirestoreClient;
-import famu.edu.a1travel.Model.Announcements;
-import famu.edu.a1travel.Model.Destinations;
-import famu.edu.a1travel.Model.Messages;
-import famu.edu.a1travel.Model.RestAnnouncements;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
