@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.text.ParseException;
+import java.util.concurrent.TimeoutException;
 
 @Data
 @NoArgsConstructor
@@ -15,8 +16,4 @@ public class BaseAnnouncements {
     private String header;
     private Timestamp timestamp;
     private String type;
-
-    public void setTimestamp(String timestamp) throws ParseException {
-        this.timestamp = Timestamp.fromProto(Timestamps.parse(timestamp));
-    }
 }
