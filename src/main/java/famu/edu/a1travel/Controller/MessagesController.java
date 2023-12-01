@@ -44,7 +44,7 @@ public class MessagesController {
         return response.getResponse();
     }
 
-    @GetMapping("/{senderId}")
+    @GetMapping("/sent/{senderId}")
     public ResponseEntity<Map<String, Object>> getSentMessagesForUser(@PathVariable(name = "senderId") String senderID) {
         try {
             payload = messagesService.getSentMessagesForUser(senderID);

@@ -21,13 +21,22 @@ export default function CustInbox() {
         try {
             const userId = sessionStorage.getItem('userId');
             console.log('User ID:', userId);
-            const response = await Axios.get(`http://localhost:8080/api/message/${userId}`);
+
+            let endpoint;
+            if (tab === 'received') {
+                endpoint = `http://localhost:8080/api/message/${userId}`;
+            } else if (tab === 'sent') {
+                endpoint = `http://localhost:8080/api/message/sent/${userId}`;
+            }
+
+            const response = await Axios.get(endpoint);
             // Update the state or do something with the response data
             console.log(response.data);
         } catch (error) {
             console.error('Error fetching messages:', error.message);
         }
     };
+
 
 
     const isMessageFormValid = () => {

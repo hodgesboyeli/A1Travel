@@ -55,7 +55,7 @@ security:
     - /api/destination/{userId}
     - /api/message/
     - /api/message/{receiverId}
-    - /api/message/{senderId}
+    - /api/message/sent/{senderId}
     - /api/message/{receiverEmail}
   exposed-headers:
     - X-Xsrf-Token
