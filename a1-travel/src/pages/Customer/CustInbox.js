@@ -39,17 +39,6 @@ export default function CustInbox() {
 
             const response = await Axios.get(endpoint);
 
-            // Ensure the response.data is an array
-            const messagesArray = Array.isArray(response.data) ? response.data : [];
-
-            console.log('Messages Array:', messagesArray);
-
-            if (tab === 'received') {
-                setReceivedMessages(messagesArray);
-            } else if (tab === 'sent') {
-                setSentMessages(messagesArray);
-            }
-
         } catch (error) {
             console.error('Error fetching messages:', error.message);
         }
@@ -218,12 +207,10 @@ export default function CustInbox() {
                     role="tabpanel"
                 >
                     {receivedMessages.length > 0 ? (
-                        receivedMessages.map((message) => (
-                            <div key={message.id}>
-                                {/* Render the content of each received message */}
-                                <p>{message.messageContent}</p>
-                            </div>
-                        ))
+                        <div>
+                            {/* Render the content of the first received message */}
+                            <p>{receivedMessages[0].messageContent}</p>
+                        </div>
                     ) : (
                         <p>No received messages</p>
                     )}
@@ -234,12 +221,10 @@ export default function CustInbox() {
                     role="tabpanel"
                 >
                     {sentMessages.length > 0 ? (
-                        sentMessages.map((message) => (
-                            <div key={message.id}>
-                                {/* Render the content of each sent message */}
-                                <p>{message.messageContent}</p>
-                            </div>
-                        ))
+                        <div>
+                            {/* Render the content of the first sent message */}
+                            <p>{sentMessages[0].messageContent}</p>
+                        </div>
                     ) : (
                         <p>No sent messages</p>
                     )}
