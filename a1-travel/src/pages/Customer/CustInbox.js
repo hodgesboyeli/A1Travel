@@ -21,9 +21,6 @@ export default function CustInbox() {
         handleTabClick(activeTab);
     }, [activeTab]); // Trigger the effect whenever activeTab changes
 
-    // Add this state above your return statement
-
-// Modify the handleTabClick function to set the active tab
     const handleTabClick = async (tab) => {
         setActiveTab(tab);
         try {
