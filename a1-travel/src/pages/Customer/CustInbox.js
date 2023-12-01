@@ -39,10 +39,23 @@ export default function CustInbox() {
 
             const response = await Axios.get(endpoint);
 
+            if (tab === 'received') {
+                console.log('Received Messages:', response.data); // Log received messages
+                setReceivedMessages(response.data);
+                setSentMessages([]); // Clear sent messages state
+            } else if (tab === 'sent') {
+                console.log('Sent Messages:', response.data); // Log sent messages
+                setSentMessages(response.data);
+                setReceivedMessages([]); // Clear received messages state
+            }
         } catch (error) {
             console.error('Error fetching messages:', error.message);
         }
     };
+
+
+
+
 
 
 
@@ -206,29 +219,26 @@ export default function CustInbox() {
                     id="pills-home"
                     role="tabpanel"
                 >
-                    {receivedMessages.length > 0 ? (
-                        <div>
-                            {/* Render the content of the first received message */}
-                            <p>{receivedMessages[0].messageContent}</p>
+                    {activeTab === 'received' && Array.isArray(receivedMessages) && receivedMessages.map((message) => (
+                        <div key={message.id}>
+                            {/* Render the content of each received message */}
+                            <p>{message.messageContent}</p>
                         </div>
-                    ) : (
-                        <p>No received messages</p>
-                    )}
+                    ))}
+                    {activeTab === 'received' && (!Array.isArray(receivedMessages) || receivedMessages.length === 0) && <p>No received messages</p>}
                 </div>
                 <div
                     className={`tab-pane fade ${activeTab === 'sent' ? 'show active' : ''}`}
                     id="pills-profile"
                     role="tabpanel"
                 >
-                    {sentMessages.length > 0 ? (
-                        <div>
-                            {/* Render the content of the first sent message */}
-                            <p>{sentMessages[0].messageContent}</p>
+                    {activeTab === 'sent' && Array.isArray(sentMessages) && sentMessages.map((message) => (
+                        <div key={message.id}>
+                            {/* Render the content of each sent message */}
+                            <p>{message.messageContent}</p>
                         </div>
-                    ) : (
-                        <p>No sent messages</p>
-                    )}
-                </div>
+                    ))}
+                    {activeTab === 'sent' && (!Array.isArray(sentMessages) || sentMessages.length === 0) && <p>No sent messages</p>}</div>
             </div>
         </div>
     );
