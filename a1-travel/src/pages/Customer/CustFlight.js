@@ -17,16 +17,16 @@ export default function CustFlight() {
     return (
         <>
         <Navbar/>
-        <div className="container">
-            <h2>Flight Search</h2>
+        <div className="container mx-auto">
+            <h1 className="mt-3 text-center">
+                Flight Search
+            </h1>
             <form onSubmit={handleSubmit}>
                 <div className="row">
                     <div className="col">
                         <label htmlFor="departure">Depart</label>
                         <div className="input-group">
-                            <div className="input-group-prepend">
-                                <span className="input-group-text">faPlaneDeparture</span>
-                            </div>
+
                             <input type="text" className="form-control" id="departure" placeholder="Departure city"
                                    value={departure} onChange={(e) => setDeparture(e.target.value)}/>
                         </div>
@@ -35,9 +35,6 @@ export default function CustFlight() {
                     <div className="col">
                         <label htmlFor="arrival">Arrive</label>
                         <div className="input-group">
-                            <div className="input-group-prepend">
-                                <span className="input-group-text">faPlaneArrival</span>
-                            </div>
                             <input type="text" className="form-control" id="arrival" placeholder="Arrival city"
                                    value={arrival} onChange={(e) => setArrival(e.target.value)}/>
                         </div>
@@ -82,16 +79,13 @@ export default function CustFlight() {
                     <div className="col">
                         <label htmlFor="passengers">Passengers</label>
                         <div className="input-group">
-                            <div className="input-group-prepend">
-                                <span className="input-group-text">faUsers</span>
-                            </div>
                             <input type="number" className="form-control" id="passengers" min="1" value={passengers}
                                    onChange={(e) => setPassengers(e.target.value)}/>
                         </div>
                     </div>
 
-                    <div className="col d-flex align-items-end">
-                        <button type="submit" className="btn btn-primary">
+                    <div className="col d-flex align-items-end mb-1">
+                        <button type="submit" className="btn btn-primary btn-sm">
                             Search
                         </button>
                     </div>
