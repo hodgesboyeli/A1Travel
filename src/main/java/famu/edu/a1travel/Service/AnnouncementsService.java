@@ -2,6 +2,7 @@ package famu.edu.a1travel.Service;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
+import famu.edu.a1travel.Model.RestAnnouncements;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,16 +15,16 @@ public class AnnouncementsService {
     public AnnouncementsService(Firestore db){
         this.db = db;
     }
-    public ArrayList<Announcements> getAnnouncements() throws ExecutionException, InterruptedException {
+    public ArrayList<RestAnnouncements> getAnnouncements() throws ExecutionException, InterruptedException {
 
         Query query = db.collection("Announcements");
         ApiFuture<QuerySnapshot> future = query.get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 
-        ArrayList<Announcements> destinations = (documents.size() > 0) ? new ArrayList<>() : null;
+        ArrayList<RestAnnouncements> destinations = (documents.size() > 0) ? new ArrayList<>() : null;
 
         for (QueryDocumentSnapshot doc : documents)
-            destinations.add(doc.toObject(Announcements.class));
+            destinations.add(doc.toObject(RestAnnouncements.class));
 
         return destinations;
     }
