@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import Navbar from '../Navbar';
 import 'firebase/firestore';
 import {Modal, Toast} from "bootstrap";
@@ -11,9 +11,17 @@ export default function CustInbox() {
         receiver: '',
         message: '',
     });
+    const [receivedMessages, setReceivedMessages] = useState([]);
+    const [sentMessages, setSentMessages] = useState([]);
+    const [activeTab, setActiveTab] = useState('received');
+
+
+    useEffect(() => {
+        // Fetch initial data when the component mounts
+        handleTabClick(activeTab);
+    }, [activeTab]); // Trigger the effect whenever activeTab changes
 
     // Add this state above your return statement
-    const [activeTab, setActiveTab] = useState('received');
 
 // Modify the handleTabClick function to set the active tab
     const handleTabClick = async (tab) => {
@@ -30,8 +38,18 @@ export default function CustInbox() {
             }
 
             const response = await Axios.get(endpoint);
-            // Update the state or do something with the response data
-            console.log(response.data);
+
+            // Ensure the response.data is an array
+            const messagesArray = Array.isArray(response.data) ? response.data : [];
+
+            console.log('Messages Array:', messagesArray);
+
+            if (tab === 'received') {
+                setReceivedMessages(messagesArray);
+            } else if (tab === 'sent') {
+                setSentMessages(messagesArray);
+            }
+
         } catch (error) {
             console.error('Error fetching messages:', error.message);
         }
@@ -199,14 +217,32 @@ export default function CustInbox() {
                     id="pills-home"
                     role="tabpanel"
                 >
-                    Received Messages
+                    {receivedMessages.length > 0 ? (
+                        receivedMessages.map((message) => (
+                            <div key={message.id}>
+                                {/* Render the content of each received message */}
+                                <p>{message.messageContent}</p>
+                            </div>
+                        ))
+                    ) : (
+                        <p>No received messages</p>
+                    )}
                 </div>
                 <div
                     className={`tab-pane fade ${activeTab === 'sent' ? 'show active' : ''}`}
                     id="pills-profile"
                     role="tabpanel"
                 >
-                    Sent Messages
+                    {sentMessages.length > 0 ? (
+                        sentMessages.map((message) => (
+                            <div key={message.id}>
+                                {/* Render the content of each sent message */}
+                                <p>{message.messageContent}</p>
+                            </div>
+                        ))
+                    ) : (
+                        <p>No sent messages</p>
+                    )}
                 </div>
             </div>
         </div>
