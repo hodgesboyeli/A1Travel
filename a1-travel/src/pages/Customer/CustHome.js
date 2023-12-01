@@ -19,7 +19,7 @@ export default function CustHome() {
             }
         }
         getDests().then();
-    }, []);
+    }, [locations]);
 
     const handleSearch = (searchTerm) => {
         if (searchTerm) {
