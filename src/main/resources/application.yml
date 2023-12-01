@@ -57,6 +57,7 @@ security:
     - /api/message/{receiverId}
     - /api/message/sent/{senderId}
     - /api/message/{receiverEmail}
+    - /api/announcement/
   exposed-headers:
     - X-Xsrf-Token
     - X-Auth-Token
