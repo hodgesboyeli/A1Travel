@@ -3,7 +3,6 @@ package famu.edu.a1travel.Service;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.*;
-import com.google.firebase.cloud.FirestoreClient;
 import famu.edu.a1travel.Model.Users;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +11,11 @@ import java.util.concurrent.ExecutionException;
 
 @Service
 public class UsersService {
-    private final Firestore db = FirestoreClient.getFirestore();
+    private final Firestore db;
+
+    public UsersService(Firestore db){
+        this.db = db;
+    }
 
     public ArrayList<Users> getUsers(String searchField, String value) throws ExecutionException, InterruptedException {
         Query query = db.collection("Users");
@@ -90,12 +93,4 @@ public class UsersService {
             return null; // User not found
         }
     }
-
-
-    /*public void updateLastLogin(String id) {
-        DocumentReference docRef = db.collection("Users").document(id);
-        ApiFuture<WriteResult> writeResult = docRef.update("lastLogin", FieldValue.serverTimestamp());
-
-
-    }*/
 }

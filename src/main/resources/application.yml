@@ -48,15 +48,8 @@ security:
     - /api/flight/
     - /api/train/
     - /api/car/
-    - /api/user/
-    - /api/user/{userId}
-    - /api/user/**
-    - /api/destination/
-    - /api/destination/{userId}
-    - /api/message/
-    - /api/message/{receiverId}
-    - /api/message/sent/{senderId}
-    - /api/message/{receiverEmail}
+    - /api/destination/**
+    - /api/message/**
     - /api/announcement/
   exposed-headers:
     - X-Xsrf-Token

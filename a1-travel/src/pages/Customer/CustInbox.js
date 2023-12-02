@@ -35,6 +35,7 @@ export default function CustInbox() {
             }
 
             const response = await Axios.get(endpoint);
+            console.log(response.data.messages);
 
             if (tab === 'received') {
                 console.log('Received Messages:', response.data); // Log received messages
@@ -49,12 +50,6 @@ export default function CustInbox() {
             console.error('Error fetching messages:', error.message);
         }
     };
-
-
-
-
-
-
 
     const isMessageFormValid = () => {
         return Object.values(messageData).every(value => value.trim() !== '');

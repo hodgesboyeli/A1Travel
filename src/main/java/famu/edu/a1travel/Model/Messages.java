@@ -1,16 +1,19 @@
 package famu.edu.a1travel.Model;
 
 import com.google.cloud.Timestamp;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
+@NoArgsConstructor
 public class Messages extends BaseMessages {
-    private Users receiverID;
-    private Users senderID;
+    private String receiverID;
+    private String senderID;
 
-    public Messages() {
-    }
-
-    public Messages(String messageContent, Timestamp timestamp, Users receiverID, Users senderID) {
-        super(messageContent, timestamp);
+    public Messages(String messageId, String messageContent, Timestamp timestamp, String receiverID, String senderID) {
+        super(messageId, messageContent, timestamp);
         this.receiverID = receiverID;
         this.senderID = senderID;
     }

@@ -2,7 +2,6 @@ package famu.edu.a1travel.Controller;
 
 import com.google.api.client.util.Value;
 import com.google.cloud.firestore.Firestore;
-import famu.edu.a1travel.Model.Messages;
 import famu.edu.a1travel.Model.RestMessages;
 import famu.edu.a1travel.Service.MessagesService;
 import famu.edu.a1travel.Util.ErrorMessage;
@@ -10,6 +9,7 @@ import famu.edu.a1travel.Util.ResponseWrapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -37,7 +37,7 @@ public class MessagesController {
             name = "messages";
         } catch (ExecutionException | InterruptedException e) {
             payload = new ErrorMessage("Cannot fetch messages from database", CLASS_NAME,
-                    e.getStackTrace().toString());
+                    Arrays.toString(e.getStackTrace()));
         }
 
         response = new ResponseWrapper(statusCode, name, payload);
@@ -49,9 +49,9 @@ public class MessagesController {
         try {
             payload = messagesService.getSentMessagesForUser(senderID);
             statusCode = 200;
-            name = "sentMessages";
+            name = "messages";
         } catch (ExecutionException | InterruptedException e) {
-            payload = new ErrorMessage("Cannot fetch sent messages from the database", CLASS_NAME, e.getStackTrace().toString());
+            payload = new ErrorMessage("Cannot fetch sent messages from the database", CLASS_NAME, Arrays.toString(e.getStackTrace()));
         }
 
         response = new ResponseWrapper(statusCode, name, payload);
