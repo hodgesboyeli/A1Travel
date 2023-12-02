@@ -4,6 +4,7 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
+import famu.edu.a1travel.Model.RestTrips;
 import famu.edu.a1travel.Model.Trips;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ public class TripsService {
     public TripsService(Firestore db){
         this.db = db;
     }
-    public String createTrip(Trips trip) throws ExecutionException, InterruptedException {
+    public String createTrip(RestTrips trip) throws ExecutionException, InterruptedException {
         String tripId = null;
 
         ApiFuture<DocumentReference> future = db.collection("Trips").add(trip);
