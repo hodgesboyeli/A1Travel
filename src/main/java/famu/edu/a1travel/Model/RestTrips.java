@@ -15,8 +15,8 @@ public class RestTrips extends BaseTrips {
     private ArrayList<DocumentReference> lodgingID;
     private ArrayList<DocumentReference> trainID;
 
-    public RestTrips(@Nullable float budget, float cartTotal, String destination, DocumentReference userID, DocumentReference carID, ArrayList<DocumentReference> eventID, ArrayList<DocumentReference> flightID, ArrayList<DocumentReference> lodgingID, ArrayList<DocumentReference> trainID) {
-        super(budget, cartTotal, destination);
+    public RestTrips(String tripId, double budget, double cartTotal, String destination, DocumentReference userID, DocumentReference carID, ArrayList<DocumentReference> eventID, ArrayList<DocumentReference> flightID, ArrayList<DocumentReference> lodgingID, ArrayList<DocumentReference> trainID) {
+        super(tripId, budget, cartTotal, destination);
         this.userID = userID;
         this.carID = carID;
         this.eventID = eventID;
