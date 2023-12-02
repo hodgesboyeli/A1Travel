@@ -12,7 +12,10 @@ import java.util.concurrent.ExecutionException;
 //get all, get all by id, etc.
 @Service
 public class TripsService {
-    private Firestore db = FirestoreClient.getFirestore();
+    private final Firestore db;
+    public TripsService(Firestore db){
+        this.db = db;
+    }
     public String createTrip(Trips trip) throws ExecutionException, InterruptedException {
         String tripId = null;
 
