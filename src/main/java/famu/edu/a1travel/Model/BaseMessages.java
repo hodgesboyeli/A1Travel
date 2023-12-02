@@ -13,5 +13,5 @@ public class BaseMessages {
     @DocumentId
     protected @Nullable String messageId;
     protected String messageContent;
-    protected Timestamp timestamp;
+    protected @Nullable Timestamp timestamp;
 }

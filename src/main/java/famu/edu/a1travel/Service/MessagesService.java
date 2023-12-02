@@ -30,6 +30,7 @@ public class MessagesService {
         //vice versa for sender
         DocumentReference sendDoc = (DocumentReference) doc.get("senderID");
         String sender = usersService.getUserById(Objects.requireNonNull(sendDoc).getId()).getEmail();
+
         return new Messages(
                 doc.getId(),
                 doc.getString("messageContent"),
@@ -37,47 +38,65 @@ public class MessagesService {
                 receiver,
                 sender);
     }
-    public ArrayList<Messages> getMessagesForUser(String receiverID) throws ExecutionException, InterruptedException {
+    public ArrayList<Messages> getMessages(String receiverId, String senderId) throws ExecutionException, InterruptedException {
         // Create a query to filter messages based on the receiverID field
-        DocumentReference user = db.collection("Users").document(receiverID);
-        Query query = db.collection("Messages").whereEqualTo("receiverID",user);
+        Query query = db.collection("Messages");
 
-        // Execute the query
+        //check to make sure at least one of the id strings provided isn't empty, else return an empty array
+        if (!receiverId.isEmpty() && !senderId.isEmpty()) {
+            // Both receiverId and senderId are provided
+            DocumentReference receiverRef = db.collection("Users").document(receiverId);
+            DocumentReference senderRef = db.collection("Users").document(senderId);
+            query = query.whereEqualTo("receiverID", receiverRef).whereEqualTo("senderID", senderRef);
+        } else if (!receiverId.isEmpty()) {
+            // Only receiverId is provided
+            DocumentReference receiverRef = db.collection("Users").document(receiverId);
+            query = query.whereEqualTo("receiverID", receiverRef);
+        } else if (!senderId.isEmpty()) {
+            // Only senderId is provided
+            DocumentReference senderRef = db.collection("Users").document(senderId);
+            query = query.whereEqualTo("senderID", senderRef);
+        } else {
+            // If both IDs are empty, return an empty list
+            return new ArrayList<>();
+        }
+
+        // Execute query
         ApiFuture<QuerySnapshot> future = query.get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 
         // Process the documents and convert them to Messages objects
         ArrayList<Messages> messages = new ArrayList<>();
-
         for (QueryDocumentSnapshot doc : documents) {
             messages.add(getMessage(doc));
         }
         return messages;
     }
 
-    public ArrayList<Messages> getSentMessagesForUser(String senderID) throws ExecutionException, InterruptedException {
-        // Create a query to filter messages based on the receiverID field
-        DocumentReference user = db.collection("Users").document(senderID);
-        Query query = db.collection("Messages").whereEqualTo("senderID", user);
+    public String createMessage(Messages message) throws ExecutionException, InterruptedException {
+        //create actual RestMessages object based on passed Messages param
+        RestMessages restMessage = new RestMessages();
+        restMessage.setMessageContent(message.getMessageContent());
 
-        // Execute the query
-        ApiFuture<QuerySnapshot> future = query.get();
-        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+        //Use function from UsersService
+        UsersService usersService = new UsersService(db);
+        //set the references based on email
+        String rId = usersService.getUserIdByEmail(message.getReceiverID());
+        restMessage.setReceiverID(rId,db);
 
-        // Process the documents and convert them to Messages objects
-        ArrayList<Messages> messages = new ArrayList<>();
+        String sId = usersService.getUserIdByEmail(message.getSenderID());
+        restMessage.setSenderID(sId,db);
 
-        for (QueryDocumentSnapshot doc : documents) {
-            messages.add(getMessage(doc));
-        }
+        //set timestamp to this current moment
+        restMessage.setTimestamp(Timestamp.now());
 
-        return messages;
-    }
-
-    public String createMessage(RestMessages message) throws ExecutionException, InterruptedException {
-        message.setTimestamp(Timestamp.now());
-        ApiFuture<DocumentReference> future = db.collection("Messages").add(message);
+        ApiFuture<DocumentReference> future = db.collection("Messages").add(restMessage);
         DocumentReference messageRef = future.get();
         return messageRef.getId();
+    }
+
+    public void deleteMessage(String messageID){
+        DocumentReference postDoc = db.collection("Messages").document(messageID);
+        postDoc.delete();
     }
 }
