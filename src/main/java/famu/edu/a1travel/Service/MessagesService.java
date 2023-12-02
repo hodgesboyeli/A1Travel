@@ -3,9 +3,6 @@ package famu.edu.a1travel.Service;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.*;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.UserRecord;
 import famu.edu.a1travel.Model.Messages;
 import famu.edu.a1travel.Model.RestMessages;
 import org.springframework.stereotype.Service;
@@ -24,10 +21,12 @@ public class MessagesService {
     private Messages getMessage(DocumentSnapshot doc) throws ExecutionException, InterruptedException {
         //getUserById function needed
         UsersService usersService = new UsersService(db);
+
         //get id of reference field in doc
         DocumentReference recDoc = (DocumentReference) doc.get("receiverID");
         //acquire receiver email
         String receiver = usersService.getUserById(Objects.requireNonNull(recDoc).getId()).getEmail();
+
         //vice versa for sender
         DocumentReference sendDoc = (DocumentReference) doc.get("senderID");
         String sender = usersService.getUserById(Objects.requireNonNull(sendDoc).getId()).getEmail();
