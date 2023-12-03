@@ -5,7 +5,10 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import famu.edu.a1travel.Model.RestTrips;
+import famu.edu.a1travel.Service.CarsService;
+import famu.edu.a1travel.Service.LodgingsService;
 import famu.edu.a1travel.Service.TripsService;
+import famu.edu.a1travel.Service.UsersService;
 import famu.edu.a1travel.Util.ErrorMessage;
 import famu.edu.a1travel.Util.ResponseWrapper;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +28,11 @@ public class TripsController {
     private Object payload;
     private ResponseWrapper response;
     private static final String CLASS_NAME = "TripsService";
-    public TripsController(Firestore firestore) {
-        tripsService = new TripsService(firestore);
+    public TripsController(Firestore firestore, UsersService usersService, CarsService carsService, LodgingsService lodgingsService) {
+        tripsService = new TripsService(firestore, usersService, carsService, lodgingsService);
         payload = null;
     }
+
 
     @GetMapping("/")
     public ResponseEntity<Map<String,Object>> getTrips()

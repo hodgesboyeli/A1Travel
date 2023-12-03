@@ -14,11 +14,17 @@ import java.util.concurrent.ExecutionException;
 public class TripsService {
 
     UsersService usersService;
+    CarsService carsService;
+
+    LodgingsService lodgingsService;
+
 
     private final Firestore db;
-    public TripsService(Firestore db){
+    public TripsService(Firestore db, UsersService usersService, CarsService carsService, LodgingsService lodgingsService) {
         this.db = db;
-        this.usersService = new UsersService(db);
+        this.usersService = usersService;
+        this.carsService = carsService;
+        this.lodgingsService = lodgingsService;
     }
 
 
@@ -39,8 +45,9 @@ public class TripsService {
 
         Users user = usersService.getUserById(recDoc.getId());
 
-        CarsService carsService = new CarsService();
-        Cars car = carsService.getCarById(doc.getString("carID"));
+        DocumentReference carDoc = (DocumentReference) doc.get("carID");
+
+        Cars car = carsService.getCarById(carDoc.getId());
 
         ArrayList<Events> events = new ArrayList<>();
         ArrayList<DocumentReference> eventRefs = (ArrayList<DocumentReference>) doc.get("eventID");
@@ -62,15 +69,9 @@ public class TripsService {
             flights.add(flight);
         }
 
-        ArrayList<Lodgings> lodgings = new ArrayList<>();
-        ArrayList<DocumentReference> lodgingRefs = (ArrayList<DocumentReference>) doc.get("lodgingID");
-        for(DocumentReference ref : lodgingRefs)
-        {
-            ApiFuture<DocumentSnapshot> lodgingQuery = ref.get();
-            DocumentSnapshot lodgingDoc = lodgingQuery.get();
-            Lodgings lodging = lodgingDoc.toObject(Lodgings.class);
-            lodgings.add(lodging);
-        }
+        DocumentReference lodgingDoc = (DocumentReference) doc.get("lodgingID");
+
+        Lodgings lodging = lodgingsService.getLodgingById(lodgingDoc.getId());
 
         ArrayList<Trains> trains = new ArrayList<>();
         ArrayList<DocumentReference> trainRefs = (ArrayList<DocumentReference>) doc.get("trainID");
@@ -82,10 +83,16 @@ public class TripsService {
             trains.add(train);
         }
 
-        return new Trips(doc.getId(), doc.getDouble("budget"), doc.getDouble("cartTotal"),
-                        doc.getString("destination"), user, car,
-                (ArrayList<Events>) doc.get("eventID"), (ArrayList<Flights>) doc.get("flightID"), (ArrayList<Lodgings>) doc.get("lodgingID"),
-                (ArrayList<Trains>) doc.get("trainID"));
+        return new Trips(doc.getId(),
+                         doc.getDouble("budget"),
+                         doc.getDouble("cartTotal"),
+                         doc.getString("destination"),
+                         user,
+                         car,
+                         lodging,
+                         (ArrayList<Events>) doc.get("eventID"),
+                         (ArrayList<Flights>) doc.get("flightID"),
+                         (ArrayList<Trains>) doc.get("trainID"));
     }
 
 
@@ -96,15 +103,15 @@ public class TripsService {
         ApiFuture<QuerySnapshot> future = query.get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 
-        ArrayList<Trips> posts = (documents.size() > 0) ?  new ArrayList<>() : null;
+        ArrayList<Trips> trips = (documents.size() > 0) ?  new ArrayList<>() : null;
 
         for(QueryDocumentSnapshot doc : documents)
         {
 
-            posts.add(getTrip(doc));
+            trips.add(getTrip(doc));
         }
 
-        return posts;
+        return trips;
     }
 
 

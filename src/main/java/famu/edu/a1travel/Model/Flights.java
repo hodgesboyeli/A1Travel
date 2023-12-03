@@ -21,11 +21,20 @@ public class Flights {
     private String status;
     private int stops;
 
-    public void setArriveTime(String arriveTime) throws ParseException {
+    /*public void setArriveTime(String arriveTime) throws ParseException {
         this.arriveTime = Timestamp.fromProto(Timestamps.parse(arriveTime));
     }
 
     public void setDepartTime(String departTime) throws ParseException {
         this.departTime = Timestamp.fromProto(Timestamps.parse(departTime));
+    }*/
+
+    public void setArriveTime(Timestamp timestamp) {
+        this.arriveTime = timestamp;
+    }
+
+
+    public void setDepartTime(Timestamp timestamp) {
+        this.departTime = timestamp;
     }
 }
