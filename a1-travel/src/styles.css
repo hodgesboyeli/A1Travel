@@ -196,3 +196,7 @@ a:hover {
     position:fixed;
     bottom:0;
 }
+
+.email-item:hover {
+    background-color: #3b73ab; /* Bootstrap light grey for hover */
+}

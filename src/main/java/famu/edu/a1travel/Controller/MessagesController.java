@@ -48,18 +48,16 @@ public class MessagesController {
 
     @PostMapping("/")
     public ResponseEntity<Map<String, Object>> createMessage(@RequestBody Messages message) {
+        Map<String,Object> returnVal = new HashMap<>();
+        statusCode = 500;
         try {
             payload = messagesService.createMessage(message); // Pass the email instead of receiverId
             statusCode = 201;
-            name = "messageId";
+            returnVal.put("message",payload);
         } catch (ExecutionException | InterruptedException e) {
-            payload = new ErrorMessage("Cannot create a new message in the database.", CLASS_NAME, e.toString());
-            name = "error";
+            returnVal.put("error","Cannot create a new message in the database: "+ Arrays.toString(e.getStackTrace()));
         }
-
-        response = new ResponseWrapper(statusCode, name, payload);
-
-        return response.getResponse();
+        return ResponseEntity.status(statusCode).body(returnVal);
     }
 
     @DeleteMapping("/{id}")

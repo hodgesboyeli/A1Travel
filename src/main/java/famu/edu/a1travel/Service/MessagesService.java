@@ -76,24 +76,21 @@ public class MessagesService {
         return messages;
     }
 
-    public String createMessage(Messages message) throws ExecutionException, InterruptedException {
+    public Messages createMessage(Messages message) throws ExecutionException, InterruptedException {
         //create actual RestMessages object based on passed Messages param
-        RestMessages restMessage = new RestMessages();
-        restMessage.setMessageContent(message.getMessageContent());
+        Timestamp rn = Timestamp.now();
+        RestMessages restMessage = new RestMessages(message.getMessageId(), message.getMessageContent(), rn, null, null);
+        message.setTimestamp(rn);
 
         //set the references based on email
         String rId = usersService.getUserIdByEmail(message.getReceiverID());
         restMessage.setReceiverID(rId,db);
-
         String sId = usersService.getUserIdByEmail(message.getSenderID());
         restMessage.setSenderID(sId,db);
 
-        //set timestamp to this current moment
-        restMessage.setTimestamp(Timestamp.now());
-
         ApiFuture<DocumentReference> future = db.collection("Messages").add(restMessage);
-        DocumentReference messageRef = future.get();
-        return messageRef.getId();
+        message.setMessageId(future.get().getId());
+        return message;
     }
 
     public void deleteMessage(String messageID){

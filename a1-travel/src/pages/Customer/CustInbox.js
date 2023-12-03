@@ -22,22 +22,29 @@ export default function CustInbox() {
     });
     const [activeView, setActiveView] = useState('received');
 
-    useEffect(() => {
-        if (!messages.fetched[activeView]) {
-            fetchMessages(activeView).then();
-        }
-    }, [activeView]);
+
+    const sortMessages = (messages) => {
+        return messages.sort((a, b) => {
+            // First, compare the seconds.
+            const diff = b.timestamp.seconds - a.timestamp.seconds;
+            if (diff !== 0) return diff;
+
+            // If seconds are equal, compare nanoseconds.
+            return b.timestamp.nanoseconds - a.timestamp.nanoseconds;
+        });
+    };
+
 
     const fetchMessages = async (view) => {
         setIsLoading(true);
         const email = sessionStorage.getItem('email');
         const endpoint = `http://localhost:8080/api/message/?${view === 'received' ? 'receiver' : 'sender'}=${email}`;
         try {
-
             const response = await Axios.get(endpoint);
+            const sortedMessages = sortMessages(response.data.messages);
             setMessages(prevState => ({
                 ...prevState,
-                [view]: response.data.messages,
+                [view]: sortedMessages,
                 fetched: { ...prevState.fetched, [view]: true }
             }));
         } catch (error) {
@@ -47,15 +54,22 @@ export default function CustInbox() {
         }
     };
 
+    useEffect(() => {
+        if (!messages.fetched[activeView]) {
+            fetchMessages(activeView).then();
+        }
+    }, [activeView, messages.fetched]);
+
     const handleTabClick = (view) => {
         setActiveView(view);
     };
-
+    //check if message data is not empty
     const isMessageFormValid = () => {
         return Object.values(messageData).every(value => value.trim() !== '');
     };
 
     const handleCreateMessage = async (e) => {
+        //prevent page from refreshing
         e.preventDefault();
         console.log(messageData);
 
@@ -71,12 +85,28 @@ export default function CustInbox() {
                 'messageContent': messageData.message
             };
             const messageResponse = await Axios.post('http://localhost:8080/api/message/',updatedMessageData);
-            console.log('Message to be sent:', updatedMessageData.message);
+            const newMessage = messageResponse.data.message;
+            console.log(newMessage);
             if (messageResponse.status === 201) {
                 // Registration successful, you can navigate to a success page or display a success message
                 console.log('Message created successfully');
                 handleCloseModal();
                 showSuccessToast();
+                setMessages(prevMessages => {
+                    // Clone the existing state
+                    const updatedMessages = { ...prevMessages };
+
+                    // Add the new message to the 'sent' messages array
+                    updatedMessages.sent = sortMessages([...updatedMessages.sent, newMessage]);
+
+                    // Optionally, if you also need to update 'received' messages
+                    // Optionally update 'received' messages
+                    if (newMessage.receiverID === sessionStorage.getItem('email')) {
+                        updatedMessages.received = sortMessages([...updatedMessages.received, newMessage]);
+                    }
+
+                    return updatedMessages;
+                });
                 setMessageData({
                     receiver:'',
                     message: ''
@@ -245,9 +275,12 @@ export default function CustInbox() {
                 ) : (<>
                         <div className={`tab-pane fade show ${activeView === 'received' ? 'active' : ''}`} role="tabpanel">
                             {activeView === 'received' && (messages.received.length > 0 ? (
-                                    messages.received.map((message, index) => (
-                                        <div key={index} className="pt-2 pb-2 ps-1 pe-1 text-bg-secondary d-flex justify-content-between">
-                                            {/* Render the content of each sent message */}
+                                    sortMessages(messages.received).map((message, index) => (
+                                        <div key={index}
+                                             className="pt-2 pb-2 ps-1 pe-1 text-bg-secondary d-flex justify-content-between email-item"
+                                             style={{ cursor: 'pointer', transition: 'background-color 0.3s' }}
+                                             onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#bd2828'}
+                                             onMouseOut={(e) => e.currentTarget.style.backgroundColor = ''}>
                                             <span className="ps-4 pe-5 fw-bold">
                                         {message.senderID}
                                     </span>
@@ -263,8 +296,12 @@ export default function CustInbox() {
                         </div>
                         <div className={`tab-pane fade show ${activeView === 'sent' ? 'active' : ''}`} role="tabpanel">
                             {activeView === 'sent' && (messages.sent.length > 0 ? (
-                                    messages.sent.map((message, index) => (
-                                        <div key={index} className="pt-2 pb-2 ps-1 pe-1 text-bg-secondary d-flex justify-content-between">
+                                    sortMessages(messages.sent).map((message, index) => (
+                                        <div key={index}
+                                             className="pt-2 pb-2 ps-1 pe-1 text-bg-secondary d-flex justify-content-between email-item"
+                                             style={{ cursor: 'pointer', transition: 'background-color 0.3s' }}
+                                             onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#c40c0c'}
+                                             onMouseOut={(e) => e.currentTarget.style.backgroundColor = ''}>
                                             {/* Render the content of each sent message */}
                                             <span className="ps-4 pe-5 fw-bold">
                                         {message.senderID}
