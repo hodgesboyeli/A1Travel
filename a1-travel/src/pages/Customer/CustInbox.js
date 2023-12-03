@@ -7,48 +7,48 @@ import Axios from "axios";
 export default function CustInbox() {
     const modalRef = useRef(null);
     const toastRef = useRef(null);
+    const [isLoading, setIsLoading] = useState(false);
     const [messageData, setMessageData] = useState({
         receiver: '',
         message: '',
     });
-    const [receivedMessages, setReceivedMessages] = useState([]);
-    const [sentMessages, setSentMessages] = useState([]);
-    const [activeTab, setActiveTab] = useState('received');
-
+    const [messages, setMessages] = useState({
+        received: [],
+        sent: [],
+        fetched: {
+            received: false,
+            sent: false,
+        }
+    });
+    const [activeView, setActiveView] = useState('received');
 
     useEffect(() => {
-        // Fetch initial data when the component mounts
-        handleTabClick(activeTab);
-    }, [activeTab]); // Trigger the effect whenever activeTab changes
+        if (!messages.fetched[activeView]) {
+            fetchMessages(activeView).then();
+        }
+    }, [activeView]);
 
-    const handleTabClick = async (tab) => {
-        setActiveTab(tab);
+    const fetchMessages = async (view) => {
+        setIsLoading(true);
+        const email = sessionStorage.getItem('email');
+        const endpoint = `http://localhost:8080/api/message/?${view === 'received' ? 'receiver' : 'sender'}=${email}`;
         try {
-            const userId = sessionStorage.getItem('userId');
-            console.log('User ID:', userId);
-
-            let endpoint;
-            if (tab === 'received') {
-                endpoint = `http://localhost:8080/api/message/${userId}`;
-            } else if (tab === 'sent') {
-                endpoint = `http://localhost:8080/api/message/sent/${userId}`;
-            }
 
             const response = await Axios.get(endpoint);
-            console.log(response.data.messages);
-
-            if (tab === 'received') {
-                console.log('Received Messages:', response.data); // Log received messages
-                setReceivedMessages(response.data);
-                setSentMessages([]); // Clear sent messages state
-            } else if (tab === 'sent') {
-                console.log('Sent Messages:', response.data); // Log sent messages
-                setSentMessages(response.data);
-                setReceivedMessages([]); // Clear received messages state
-            }
+            setMessages(prevState => ({
+                ...prevState,
+                [view]: response.data.messages,
+                fetched: { ...prevState.fetched, [view]: true }
+            }));
         } catch (error) {
             console.error('Error fetching messages:', error.message);
+        } finally {
+            setIsLoading(false);
         }
+    };
+
+    const handleTabClick = (view) => {
+        setActiveView(view);
     };
 
     const isMessageFormValid = () => {
@@ -65,12 +65,9 @@ export default function CustInbox() {
         }
 
         try {
-            const sender = sessionStorage.getItem('email');
-            const senderResponse = await Axios.get('http://localhost:8080/api/user/email/'+sender);
-            const receiverResponse = await Axios.get('http://localhost:8080/api/user/email/'+messageData.receiver);
             const updatedMessageData = {
-                'senderID': senderResponse.data.userId,
-                'receiverID': receiverResponse.data.userId,
+                'senderID': sessionStorage.getItem('email'),
+                'receiverID': messageData.receiver,
                 'messageContent': messageData.message
             };
             const messageResponse = await Axios.post('http://localhost:8080/api/message/',updatedMessageData);
@@ -80,6 +77,10 @@ export default function CustInbox() {
                 console.log('Message created successfully');
                 handleCloseModal();
                 showSuccessToast();
+                setMessageData({
+                    receiver:'',
+                    message: ''
+                });
             } else {
                 // Handle registration failure, show an error message to the user
                 console.error('Message create failed');
@@ -96,7 +97,6 @@ export default function CustInbox() {
             ...prevData,
             [id]: value,
         }));
-        console.log(messageData);
     };
 
     // Function to open the modal
@@ -123,6 +123,36 @@ export default function CustInbox() {
         }
     };
 
+    function formatTimestamp(timestamp) {
+        const messageDate = new Date(timestamp.seconds * 1000);
+        const now = new Date();
+
+        // Check if the date is today
+        if (messageDate.toDateString() === now.toDateString()) {
+            return messageDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Check if the date is within this week
+        if (isSameWeek(messageDate, now)) {
+            return messageDate.toLocaleDateString([], { weekday: 'long' });
+        }
+
+        // Default format for dates older than a week
+        return messageDate.toLocaleDateString([], { weekday: 'short', month: '2-digit', day: '2-digit' });
+    }
+
+    function isSameWeek(date1, date2) {
+        const startOfWeek = (date) => {
+            const diff = date.getDate() - date.getDay() + (date.getDay() === 0 ? -6 : 1); // adjust when week starts
+            return new Date(date.setDate(diff));
+        }
+
+        const startOfDate1 = startOfWeek(new Date(date1));
+        const startOfDate2 = startOfWeek(new Date(date2));
+
+        return startOfDate1.toDateString() === startOfDate2.toDateString();
+    }
+
     return (
         <div>
             <Navbar />
@@ -148,13 +178,13 @@ export default function CustInbox() {
                                         <label htmlFor="receiver" className="col-form-label">
                                             Recipient Email:
                                         </label>
-                                        <input type="text" className="form-control" id="receiver" onChange={handleInputChange} />
+                                        <input type="email" className="form-control" id="receiver" value={messageData.receiver} onChange={handleInputChange} />
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="message" className="col-form-label">
                                             Message:
                                         </label>
-                                        <textarea className="form-control" id="message" onChange={handleInputChange}></textarea>
+                                        <textarea className="form-control" id="message" value={messageData.message} onChange={handleInputChange}></textarea>
                                     </div>
                                 </form>
                             </div>
@@ -188,7 +218,7 @@ export default function CustInbox() {
                     <ul className="nav nav-pills mb-3" id="pills-tab" role="tablist">
                         <li className="nav-item" role="presentation">
                             <button
-                                className={`nav-link ${activeTab === 'received' ? 'active' : ''}`}
+                                className={`nav-link ${activeView === 'received' ? 'active' : ''}`}
                                 onClick={() => handleTabClick('received')}
                             >
                                 Received Messages
@@ -196,7 +226,7 @@ export default function CustInbox() {
                         </li>
                         <li className="nav-item" role="presentation">
                             <button
-                                className={`nav-link ${activeTab === 'sent' ? 'active' : ''}`}
+                                className={`nav-link ${activeView === 'sent' ? 'active' : ''}`}
                                 onClick={() => handleTabClick('sent')}
                             >
                                 Sent Messages
@@ -206,31 +236,51 @@ export default function CustInbox() {
                 </div>
             </div>
             <div className="tab-content" id="pills-tabContent">
-                <div
-                    className={`tab-pane fade show ${activeTab === 'received' ? 'active' : ''}`}
-                    id="pills-home"
-                    role="tabpanel"
-                >
-                    {activeTab === 'received' && Array.isArray(receivedMessages) && receivedMessages.map((message) => (
-                        <div key={message.id}>
-                            {/* Render the content of each received message */}
-                            <p>{message.messageContent}</p>
+                {isLoading ? (
+                    <div className="d-flex justify-content-center align-items-center" style={{ height: "100px" }}>
+                        <div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Loading...</span>
                         </div>
-                    ))}
-                    {activeTab === 'received' && (!Array.isArray(receivedMessages) || receivedMessages.length === 0) && <p>No received messages</p>}
-                </div>
-                <div
-                    className={`tab-pane fade ${activeTab === 'sent' ? 'show active' : ''}`}
-                    id="pills-profile"
-                    role="tabpanel"
-                >
-                    {activeTab === 'sent' && Array.isArray(sentMessages) && sentMessages.map((message) => (
-                        <div key={message.id}>
-                            {/* Render the content of each sent message */}
-                            <p>{message.messageContent}</p>
+                    </div>
+                ) : (<>
+                        <div className={`tab-pane fade show ${activeView === 'received' ? 'active' : ''}`} role="tabpanel">
+                            {activeView === 'received' && (messages.received.length > 0 ? (
+                                    messages.received.map((message, index) => (
+                                        <div key={index} className="pt-2 pb-2 ps-1 pe-1 text-bg-secondary d-flex justify-content-between">
+                                            {/* Render the content of each sent message */}
+                                            <span className="ps-4 pe-5 fw-bold">
+                                        {message.senderID}
+                                    </span>
+                                            <span className="text-truncate flex-fill pe-2">
+                                        {message.messageContent}
+                                    </span>
+                                            <span className="ps-4 pe-3 text-nowrap fw-bold">
+                                        <b>{formatTimestamp(message.timestamp)}</b>
+                                    </span>
+                                        </div>
+                                    ))) : <p className="text-center">No received messages</p>
+                            )}
                         </div>
-                    ))}
-                    {activeTab === 'sent' && (!Array.isArray(sentMessages) || sentMessages.length === 0) && <p>No sent messages</p>}</div>
+                        <div className={`tab-pane fade show ${activeView === 'sent' ? 'active' : ''}`} role="tabpanel">
+                            {activeView === 'sent' && (messages.sent.length > 0 ? (
+                                    messages.sent.map((message, index) => (
+                                        <div key={index} className="pt-2 pb-2 ps-1 pe-1 text-bg-secondary d-flex justify-content-between">
+                                            {/* Render the content of each sent message */}
+                                            <span className="ps-4 pe-5 fw-bold">
+                                        {message.senderID}
+                                    </span>
+                                            <span className="text-truncate flex-fill pe-2">
+                                        {message.messageContent}
+                                    </span>
+                                            <span className="ps-4 pe-3 text-nowrap fw-bold">
+                                        <b>{formatTimestamp(message.timestamp)}</b>
+                                    </span>
+                                        </div>
+                                    ))) : <p className="text-center">No sent messages</p>
+                            )}
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );

@@ -99,6 +99,23 @@ public class UsersService {
 
         Query query = usersCollection.whereEqualTo("email", email);
         ApiFuture<QuerySnapshot> future = query.get();
-        return future.get().getDocuments().get(0).getId();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+        if (documents.isEmpty()) {
+            return "";
+        }
+        return documents.get(0).getId();
+    }
+
+    public DocumentReference getUserDocByEmail(String email) throws ExecutionException, InterruptedException {
+        CollectionReference usersCollection = db.collection("Users");
+
+        Query query = usersCollection.whereEqualTo("email", email);
+        ApiFuture<QuerySnapshot> future = query.get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+        if (documents.isEmpty())
+            return null;
+        return documents.get(0).getReference();
     }
 }

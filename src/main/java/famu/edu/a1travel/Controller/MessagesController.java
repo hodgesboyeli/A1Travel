@@ -32,19 +32,18 @@ public class MessagesController {
 
     @GetMapping("/")
     public ResponseEntity<Map<String, Object>> getMessagesForUser(
-            @RequestParam(name = "receiver", required = false, defaultValue = "") String receiverID,
-            @RequestParam(name = "sender", required = false, defaultValue = "") String senderID) {
+            @RequestParam(name = "receiver", required = false, defaultValue = "") String receiverEmail,
+            @RequestParam(name = "sender", required = false, defaultValue = "") String senderEmail) {
+        Map<String,Object> returnVal = new HashMap<>();
+        statusCode = 500;
         try {
-            payload = messagesService.getMessages(receiverID,senderID);
+            payload = messagesService.getMessages(receiverEmail,senderEmail);
             statusCode = 200;
-            name = "messages";
+            returnVal.put("messages", payload);
         } catch (ExecutionException | InterruptedException e) {
-            payload = new ErrorMessage("Cannot fetch messages from database", CLASS_NAME,
-                    Arrays.toString(e.getStackTrace()));
+            returnVal.put("error", "Cannot fetch messages from database: "+ Arrays.toString(e.getStackTrace()));
         }
-
-        response = new ResponseWrapper(statusCode, name, payload);
-        return response.getResponse();
+        return ResponseEntity.status(statusCode).body(returnVal);
     }
 
     @PostMapping("/")
@@ -66,15 +65,15 @@ public class MessagesController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String,Object>> deleteMessage(@PathVariable(name = "id") String id){
         Map<String,Object> returnVal = new HashMap<>();
-        int sCode = 500;
+        statusCode = 500;
 
         try{
             messagesService.deleteMessage(id);
-            sCode = 204;
+            statusCode = 200;
             returnVal.put("message","Deleted message with id "+id);
         } catch (Exception e) {
             returnVal.put("error","Cannot delete message with id "+id+": "+ Arrays.toString(e.getStackTrace()));
         }
-        return ResponseEntity.status(sCode).body(returnVal);
+        return ResponseEntity.status(statusCode).body(returnVal);
     }
 }

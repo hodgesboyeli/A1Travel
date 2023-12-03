@@ -15,46 +15,49 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class MessagesService {
     private final Firestore db;
+    private final UsersService usersService;
     public MessagesService (Firestore db){
+        usersService = new UsersService(db);
         this.db = db;
     }
+    //create Messages object
     private Messages getMessage(DocumentSnapshot doc) throws ExecutionException, InterruptedException {
-        //getUserById function needed
-        UsersService usersService = new UsersService(db);
-
         //get id of reference field in doc
         DocumentReference recDoc = (DocumentReference) doc.get("receiverID");
         //acquire receiver email
-        String receiver = usersService.getUserById(Objects.requireNonNull(recDoc).getId()).getEmail();
-
+        String receiver = "";
+        if (recDoc != null) {
+            receiver = usersService.getUserById(Objects.requireNonNull(recDoc).getId()).getEmail();
+        }
         //vice versa for sender
         DocumentReference sendDoc = (DocumentReference) doc.get("senderID");
-        String sender = usersService.getUserById(Objects.requireNonNull(sendDoc).getId()).getEmail();
-
+        String sender = "";
+        if (sendDoc != null) {
+            sender = usersService.getUserById(Objects.requireNonNull(sendDoc).getId()).getEmail();
+        }
         return new Messages(
                 doc.getId(),
                 doc.getString("messageContent"),
                 doc.getTimestamp("timestamp"),
-                receiver,
-                sender);
+                receiver, sender);
     }
-    public ArrayList<Messages> getMessages(String receiverId, String senderId) throws ExecutionException, InterruptedException {
-        // Create a query to filter messages based on the receiverID field
+    public ArrayList<Messages> getMessages(String receiverEmail, String senderEmail) throws ExecutionException, InterruptedException {
+        // Create a query to filter messages
         Query query = db.collection("Messages");
 
         //check to make sure at least one of the id strings provided isn't empty, else return an empty array
-        if (!receiverId.isEmpty() && !senderId.isEmpty()) {
-            // Both receiverId and senderId are provided
-            DocumentReference receiverRef = db.collection("Users").document(receiverId);
-            DocumentReference senderRef = db.collection("Users").document(senderId);
+        if (!receiverEmail.isEmpty() && !senderEmail.isEmpty()) {
+            // Both receiverEmail and senderEmail are provided
+            DocumentReference receiverRef = usersService.getUserDocByEmail(receiverEmail);
+            DocumentReference senderRef = usersService.getUserDocByEmail(senderEmail);
             query = query.whereEqualTo("receiverID", receiverRef).whereEqualTo("senderID", senderRef);
-        } else if (!receiverId.isEmpty()) {
-            // Only receiverId is provided
-            DocumentReference receiverRef = db.collection("Users").document(receiverId);
+        } else if (!receiverEmail.isEmpty()) {
+            // Only receiverEmail is provided
+            DocumentReference receiverRef = usersService.getUserDocByEmail(receiverEmail);
             query = query.whereEqualTo("receiverID", receiverRef);
-        } else if (!senderId.isEmpty()) {
-            // Only senderId is provided
-            DocumentReference senderRef = db.collection("Users").document(senderId);
+        } else if (!senderEmail.isEmpty()) {
+            // Only senderEmail is provided
+            DocumentReference senderRef = usersService.getUserDocByEmail(senderEmail);
             query = query.whereEqualTo("senderID", senderRef);
         } else {
             // If both IDs are empty, return an empty list
@@ -78,8 +81,6 @@ public class MessagesService {
         RestMessages restMessage = new RestMessages();
         restMessage.setMessageContent(message.getMessageContent());
 
-        //Use function from UsersService
-        UsersService usersService = new UsersService(db);
         //set the references based on email
         String rId = usersService.getUserIdByEmail(message.getReceiverID());
         restMessage.setReceiverID(rId,db);
