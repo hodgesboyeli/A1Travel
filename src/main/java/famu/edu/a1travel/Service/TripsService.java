@@ -15,7 +15,6 @@ public class TripsService {
 
     UsersService usersService;
     CarsService carsService;
-
     LodgingsService lodgingsService;
 
 
@@ -39,60 +38,78 @@ public class TripsService {
     }
 
     private Trips getTrip(DocumentSnapshot doc) throws ExecutionException, InterruptedException {
-
-
         DocumentReference recDoc = (DocumentReference) doc.get("userID");
-
         Users user = usersService.getUserById(recDoc.getId());
 
-        DocumentReference carDoc = (DocumentReference) doc.get("carID");
+        //System.out.println("Fetched user: " + user);
 
-        Cars car = carsService.getCarById(carDoc.getId());
+        //DocumentReference carDoc = (DocumentReference) doc.get("carID");
+        //Cars car = carsService.getCarById(carDoc.getId());
 
-        ArrayList<Events> events = new ArrayList<>();
-        ArrayList<DocumentReference> eventRefs = (ArrayList<DocumentReference>) doc.get("eventID");
-        for(DocumentReference ref : eventRefs)
-        {
-            ApiFuture<DocumentSnapshot> eventQuery = ref.get();
-            DocumentSnapshot eventDoc = eventQuery.get();
-            Events event = eventDoc.toObject(Events.class);
-            events.add(event);
+        ArrayList<Events> events = getOptionalList(doc, "eventID", Events.class);
+        ArrayList<Flights> flights = getOptionalList(doc, "flightID", Flights.class);
+        Cars car = getOptionalObject(doc, "carID", Cars.class);
+        Lodgings lodging = getOptionalObject(doc, "lodgingID", Lodgings.class);
+        ArrayList<Trains> trains = getOptionalList(doc, "trainID", Trains.class);
+
+        return new Trips(
+                doc.getId(),
+                doc.getDouble("budget"),
+                doc.getDouble("cartTotal"),
+                doc.getString("destination"),
+                user,
+                car,
+                lodging,
+                events,
+                flights,
+                trains
+        );
+    }
+
+    // Generic method to fetch a list of related objects from DocumentReferences
+    private <T> ArrayList<T> getOptionalList(DocumentSnapshot doc, String fieldName, Class<T> objectClass)
+            throws ExecutionException, InterruptedException {
+        ArrayList<T> objects = new ArrayList<>();
+        if (doc.contains(fieldName)) {
+            ArrayList<DocumentReference> refs = (ArrayList<DocumentReference>) doc.get(fieldName);
+
+            // Log statements for debugging
+            //System.out.println("Fetching optional list for field: " + fieldName);
+            //System.out.println("References: " + refs);
+
+            for (DocumentReference ref : refs) {
+                ApiFuture<DocumentSnapshot> query = ref.get();
+                DocumentSnapshot objectDoc = query.get();
+                T object = objectDoc.toObject(objectClass);
+
+                // Log statements for debugging
+                //System.out.println("Fetched optional object: " + object);
+
+                objects.add(object);
+            }
         }
+        return objects;
+    }
 
-        ArrayList<Flights> flights = new ArrayList<>();
-        ArrayList<DocumentReference> flightRefs = (ArrayList<DocumentReference>) doc.get("flightID");
-        for(DocumentReference ref : flightRefs)
-        {
-            ApiFuture<DocumentSnapshot> flightQuery = ref.get();
-            DocumentSnapshot flightDoc = flightQuery.get();
-            Flights flight = flightDoc.toObject(Flights.class);
-            flights.add(flight);
+    private <T> T getOptionalObject(DocumentSnapshot doc, String fieldName, Class<T> objectClass)
+            throws ExecutionException, InterruptedException {
+        if (doc.contains(fieldName)) {
+            DocumentReference ref = (DocumentReference) doc.get(fieldName);
+
+            // Log statements for debugging
+            //System.out.println("Fetching optional object for field: " + fieldName);
+            //System.out.println("Reference: " + ref);
+
+            ApiFuture<DocumentSnapshot> query = ref.get();
+            DocumentSnapshot objectDoc = query.get();
+            T object = objectDoc.toObject(objectClass);
+
+            // Log statements for debugging
+            //System.out.println("Fetched optional object: " + object);
+
+            return object;
         }
-
-        DocumentReference lodgingDoc = (DocumentReference) doc.get("lodgingID");
-
-        Lodgings lodging = lodgingsService.getLodgingById(lodgingDoc.getId());
-
-        ArrayList<Trains> trains = new ArrayList<>();
-        ArrayList<DocumentReference> trainRefs = (ArrayList<DocumentReference>) doc.get("trainID");
-        for(DocumentReference ref : trainRefs)
-        {
-            ApiFuture<DocumentSnapshot> trainQuery = ref.get();
-            DocumentSnapshot trainDoc = trainQuery.get();
-            Trains train = trainDoc.toObject(Trains.class);
-            trains.add(train);
-        }
-
-        return new Trips(doc.getId(),
-                         doc.getDouble("budget"),
-                         doc.getDouble("cartTotal"),
-                         doc.getString("destination"),
-                         user,
-                         car,
-                         lodging,
-                         (ArrayList<Events>) doc.get("eventID"),
-                         (ArrayList<Flights>) doc.get("flightID"),
-                         (ArrayList<Trains>) doc.get("trainID"));
+        return null;
     }
 
 

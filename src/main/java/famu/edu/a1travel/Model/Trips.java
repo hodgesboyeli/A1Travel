@@ -20,5 +20,13 @@ public class Trips extends BaseTrips {
         this.eventID = eventID;
         this.flightID = flightID;
         this.trainID = trainID;
+
+        /*System.out.println("Creating Trips object:");
+        System.out.println("UserID: " + userID);
+        System.out.println("CarID: " + carID);
+        System.out.println("LodgingID: " + lodgingID);
+        System.out.println("EventID: " + eventID);
+        System.out.println("FlightID: " + flightID);
+        System.out.println("TrainID: " + trainID);*/
     }
 }
