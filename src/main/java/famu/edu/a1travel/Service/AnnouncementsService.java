@@ -19,7 +19,7 @@ public class AnnouncementsService {
         this.db = db;
     }
     public RestAnnouncements getAnnouncements(QueryDocumentSnapshot doc) throws ExecutionException, InterruptedException {
-        UsersService usersService = new UsersService();
+        UsersService usersService = new UsersService(db);
 
         DocumentReference admin = (DocumentReference) doc.get("userID");
 
