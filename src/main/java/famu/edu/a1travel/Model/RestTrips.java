@@ -3,10 +3,16 @@ package famu.edu.a1travel.Model;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
 import java.util.ArrayList;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
+@NoArgsConstructor
 public class RestTrips extends BaseTrips {
     private DocumentReference userID;
     private DocumentReference carID;

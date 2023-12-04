@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaseTrips {
+public abstract class BaseTrips {
     @DocumentId
     private @Nullable String tripId;
-    private @Nullable double budget;
+    private double budget;
     private double cartTotal;
     private String destination;
 }

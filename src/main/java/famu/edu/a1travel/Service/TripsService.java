@@ -12,43 +12,35 @@ import java.util.concurrent.ExecutionException;
 //get all, get all by id, etc.
 @Service
 public class TripsService {
-
     UsersService usersService;
     CarsService carsService;
     LodgingsService lodgingsService;
-
-
     private final Firestore db;
-    public TripsService(Firestore db, UsersService usersService, CarsService carsService, LodgingsService lodgingsService) {
+    public TripsService(Firestore db) {
         this.db = db;
-        this.usersService = usersService;
-        this.carsService = carsService;
-        this.lodgingsService = lodgingsService;
+        this.usersService = new UsersService(db);
+        this.carsService = new CarsService(db);
+        this.lodgingsService = new LodgingsService(db);
     }
 
 
     public String createTrip(RestTrips trip) throws ExecutionException, InterruptedException {
-        String tripId = null;
-
         ApiFuture<DocumentReference> future = db.collection("Trips").add(trip);
-        DocumentReference tripRef = future.get();
-        tripId = tripRef.getId();
-
-        return tripId;
+        DocumentReference tripRef = future.get()
+        return tripRef.getId();
     }
 
     private Trips getTrip(DocumentSnapshot doc) throws ExecutionException, InterruptedException {
         DocumentReference recDoc = (DocumentReference) doc.get("userID");
-        Users user = usersService.getUserById(recDoc.getId());
+        Users user = null;
+        if (recDoc != null) {
+            user = usersService.getUserById(recDoc.getId());
+        }
 
-        //System.out.println("Fetched user: " + user);
-
-        //DocumentReference carDoc = (DocumentReference) doc.get("carID");
-        //Cars car = carsService.getCarById(carDoc.getId());
-
+        DocumentReference carDoc = (DocumentReference) doc.get("carID");
+        Cars car = carDoc != null ? carsService.getCarById(carDoc.getId()) : null;
         ArrayList<Events> events = getOptionalList(doc, "eventID", Events.class);
         ArrayList<Flights> flights = getOptionalList(doc, "flightID", Flights.class);
-        Cars car = getOptionalObject(doc, "carID", Cars.class);
         Lodgings lodging = getOptionalObject(doc, "lodgingID", Lodgings.class);
         ArrayList<Trains> trains = getOptionalList(doc, "trainID", Trains.class);
 

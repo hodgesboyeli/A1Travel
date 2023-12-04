@@ -47,7 +47,6 @@ public class UsersService {
 
     public String createUser(Users user) throws ExecutionException, InterruptedException {
         user.setCreatedAt(Timestamp.now());
-        //user.setLastLogin(Timestamp.now());
 
         ApiFuture<DocumentReference> future = db.collection("Users").add(user);
         DocumentReference userRef = future.get();
@@ -98,12 +97,4 @@ public class UsersService {
             return null; // User not found
         }
     }
-
-
-    /*public void updateLastLogin(String id) {
-        DocumentReference docRef = db.collection("Users").document(id);
-        ApiFuture<WriteResult> writeResult = docRef.update("lastLogin", FieldValue.serverTimestamp());
-
-
-    }*/
 }

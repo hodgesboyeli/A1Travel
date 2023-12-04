@@ -1,9 +1,15 @@
 package famu.edu.a1travel.Model;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
 import java.util.ArrayList;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
+@NoArgsConstructor
 public class Trips extends BaseTrips {
     private Users userID;
     private Cars carID;
@@ -20,13 +26,5 @@ public class Trips extends BaseTrips {
         this.eventID = eventID;
         this.flightID = flightID;
         this.trainID = trainID;
-
-        /*System.out.println("Creating Trips object:");
-        System.out.println("UserID: " + userID);
-        System.out.println("CarID: " + carID);
-        System.out.println("LodgingID: " + lodgingID);
-        System.out.println("EventID: " + eventID);
-        System.out.println("FlightID: " + flightID);
-        System.out.println("TrainID: " + trainID);*/
     }
 }
