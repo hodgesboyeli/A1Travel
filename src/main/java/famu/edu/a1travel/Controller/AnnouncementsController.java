@@ -31,7 +31,8 @@ public class AnnouncementsController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<Map<String,Object>> getAnnouncements(){
+    public ResponseEntity<Map<String,Object>> getAnnouncements()
+    {
         try {
             payload = announcementsService.getAnnouncements();
             statusCode = 200;
