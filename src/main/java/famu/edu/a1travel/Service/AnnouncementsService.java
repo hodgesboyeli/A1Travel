@@ -18,6 +18,20 @@ public class AnnouncementsService {
     public AnnouncementsService(Firestore db){
         this.db = db;
     }
+    public RestAnnouncements getAnnouncements(QueryDocumentSnapshot doc) throws ExecutionException, InterruptedException {
+        UsersService usersService = new UsersService();
+
+        DocumentReference admin = (DocumentReference) doc.get("userID");
+
+        return new RestAnnouncements(
+                doc.getString("body"),
+                doc.getString("header"),
+                doc.getTimestamp("timestamp"),
+                doc.getString("type"),
+                admin
+        );
+    }
+
     public ArrayList<RestAnnouncements> getAnnouncements() throws ExecutionException, InterruptedException {
         Query query = db.collection("Announcements");
         ApiFuture<QuerySnapshot> future = query.get();
