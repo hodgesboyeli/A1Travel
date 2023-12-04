@@ -1,4 +1,5 @@
 package famu.edu.a1travel.Model;
+import com.google.cloud.firestore.annotation.DocumentId;
 import org.springframework.lang.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BaseTrips {
-    private @Nullable float budget;
-    private float cartTotal;
-    private String destination;
+    @DocumentId
+    protected @Nullable String tripID;
+    protected float budget;
+    protected float cartTotal;
+    protected String destination;
 }

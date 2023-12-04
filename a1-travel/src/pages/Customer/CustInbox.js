@@ -3,6 +3,7 @@ import Navbar from '../Navbar';
 import 'firebase/firestore';
 import {Modal, Toast} from "bootstrap";
 import Axios from "axios";
+import EmailRows from "./EmailRows";
 
 export default function CustInbox() {
     const modalRef = useRef(null);
@@ -153,36 +154,6 @@ export default function CustInbox() {
         }
     };
 
-    function formatTimestamp(timestamp) {
-        const messageDate = new Date(timestamp.seconds * 1000);
-        const now = new Date();
-
-        // Check if the date is today
-        if (messageDate.toDateString() === now.toDateString()) {
-            return messageDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        }
-
-        // Check if the date is within this week
-        if (isSameWeek(messageDate, now)) {
-            return messageDate.toLocaleDateString([], { weekday: 'long' });
-        }
-
-        // Default format for dates older than a week
-        return messageDate.toLocaleDateString([], { weekday: 'short', month: '2-digit', day: '2-digit' });
-    }
-
-    function isSameWeek(date1, date2) {
-        const startOfWeek = (date) => {
-            const diff = date.getDate() - date.getDay() + (date.getDay() === 0 ? -6 : 1); // adjust when week starts
-            return new Date(date.setDate(diff));
-        }
-
-        const startOfDate1 = startOfWeek(new Date(date1));
-        const startOfDate2 = startOfWeek(new Date(date2));
-
-        return startOfDate1.toDateString() === startOfDate2.toDateString();
-    }
-
     return (
         <div>
             <Navbar />
@@ -274,46 +245,15 @@ export default function CustInbox() {
                     </div>
                 ) : (<>
                         <div className={`tab-pane fade show ${activeView === 'received' ? 'active' : ''}`} role="tabpanel">
-                            {activeView === 'received' && (messages.received.length > 0 ? (
-                                    sortMessages(messages.received).map((message, index) => (
-                                        <div key={index}
-                                             className="pt-2 pb-2 ps-1 pe-1 text-bg-secondary d-flex justify-content-between email-item"
-                                             style={{ cursor: 'pointer', transition: 'background-color 0.3s' }}
-                                             onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#bd2828'}
-                                             onMouseOut={(e) => e.currentTarget.style.backgroundColor = ''}>
-                                            <span className="ps-4 pe-5 fw-bold">
-                                        {message.senderID}
-                                    </span>
-                                            <span className="text-truncate flex-fill pe-2">
-                                        {message.messageContent}
-                                    </span>
-                                            <span className="ps-4 pe-3 text-nowrap fw-bold">
-                                        <b>{formatTimestamp(message.timestamp)}</b>
-                                    </span>
-                                        </div>
-                                    ))) : <p className="text-center">No received messages</p>
+                            {activeView === 'received' && (messages.received.length > 0 ?
+                                    <EmailRows emails={sortMessages(messages.received)}/> :
+                                    <p className="text-center">No sent messages</p>
                             )}
                         </div>
                         <div className={`tab-pane fade show ${activeView === 'sent' ? 'active' : ''}`} role="tabpanel">
-                            {activeView === 'sent' && (messages.sent.length > 0 ? (
-                                    sortMessages(messages.sent).map((message, index) => (
-                                        <div key={index}
-                                             className="pt-2 pb-2 ps-1 pe-1 text-bg-secondary d-flex justify-content-between email-item"
-                                             style={{ cursor: 'pointer', transition: 'background-color 0.3s' }}
-                                             onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#c40c0c'}
-                                             onMouseOut={(e) => e.currentTarget.style.backgroundColor = ''}>
-                                            {/* Render the content of each sent message */}
-                                            <span className="ps-4 pe-5 fw-bold">
-                                        {message.senderID}
-                                    </span>
-                                            <span className="text-truncate flex-fill pe-2">
-                                        {message.messageContent}
-                                    </span>
-                                            <span className="ps-4 pe-3 text-nowrap fw-bold">
-                                        <b>{formatTimestamp(message.timestamp)}</b>
-                                    </span>
-                                        </div>
-                                    ))) : <p className="text-center">No sent messages</p>
+                            {activeView === 'sent' && (messages.sent.length > 0 ?
+                                    <EmailRows emails={sortMessages(messages.sent)}/> :
+                                    <p className="text-center">No sent messages</p>
                             )}
                         </div>
                     </>

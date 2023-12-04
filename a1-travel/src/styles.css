@@ -197,6 +197,12 @@ a:hover {
     bottom:0;
 }
 
+.email-item {
+    background-color: white;
+    color: black;
+}
+
 .email-item:hover {
-    background-color: #3b73ab; /* Bootstrap light grey for hover */
+    background-color: #1E71EE;
+    color: white; /* Bootstrap light grey for hover */
 }
