@@ -12,116 +12,80 @@ import java.util.concurrent.ExecutionException;
 //get all, get all by id, etc.
 @Service
 public class TripsService {
-    UsersService usersService;
-    CarsService carsService;
-    LodgingsService lodgingsService;
     private final Firestore db;
     public TripsService(Firestore db) {
         this.db = db;
-        this.usersService = new UsersService(db);
-        this.carsService = new CarsService(db);
-        this.lodgingsService = new LodgingsService(db);
     }
-
 
     public String createTrip(RestTrips trip) throws ExecutionException, InterruptedException {
         ApiFuture<DocumentReference> future = db.collection("Trips").add(trip);
-        DocumentReference tripRef = future.get()
+        DocumentReference tripRef = future.get();
         return tripRef.getId();
     }
 
-    private Trips getTrip(DocumentSnapshot doc) throws ExecutionException, InterruptedException {
-        DocumentReference recDoc = (DocumentReference) doc.get("userID");
+    public Trips getTrip(DocumentSnapshot doc) throws ExecutionException, InterruptedException {
+        // Get the User
+        DocumentReference userRef = (DocumentReference) doc.get("userID");
         Users user = null;
-        if (recDoc != null) {
-            user = usersService.getUserById(recDoc.getId());
+        if (userRef != null){
+            user = userRef.get().get().toObject(Users.class);
         }
 
-        DocumentReference carDoc = (DocumentReference) doc.get("carID");
-        Cars car = carDoc != null ? carsService.getCarById(carDoc.getId()) : null;
-        ArrayList<Events> events = getOptionalList(doc, "eventID", Events.class);
-        ArrayList<Flights> flights = getOptionalList(doc, "flightID", Flights.class);
-        Lodgings lodging = getOptionalObject(doc, "lodgingID", Lodgings.class);
-        ArrayList<Trains> trains = getOptionalList(doc, "trainID", Trains.class);
+        // Get the Car
+        DocumentReference carRef = (DocumentReference) doc.get("carID");
+        Cars car = null;
+        if (carRef != null){
+            car = carRef.get().get().toObject(Cars.class);
+        }
 
-        return new Trips(
-                doc.getId(),
-                doc.getDouble("budget"),
-                doc.getDouble("cartTotal"),
-                doc.getString("destination"),
-                user,
-                car,
-                lodging,
-                events,
-                flights,
-                trains
-        );
-    }
-
-    // Generic method to fetch a list of related objects from DocumentReferences
-    private <T> ArrayList<T> getOptionalList(DocumentSnapshot doc, String fieldName, Class<T> objectClass)
-            throws ExecutionException, InterruptedException {
-        ArrayList<T> objects = new ArrayList<>();
-        if (doc.contains(fieldName)) {
-            ArrayList<DocumentReference> refs = (ArrayList<DocumentReference>) doc.get(fieldName);
-
-            // Log statements for debugging
-            //System.out.println("Fetching optional list for field: " + fieldName);
-            //System.out.println("References: " + refs);
-
-            for (DocumentReference ref : refs) {
-                ApiFuture<DocumentSnapshot> query = ref.get();
-                DocumentSnapshot objectDoc = query.get();
-                T object = objectDoc.toObject(objectClass);
-
-                // Log statements for debugging
-                //System.out.println("Fetched optional object: " + object);
-
-                objects.add(object);
+        // Get the Events
+        ArrayList<Events> events = new ArrayList<>();
+        List<DocumentReference> eventRefs = (List<DocumentReference>) doc.get("eventID");
+        if (eventRefs != null) {
+            for (DocumentReference ref : eventRefs) {
+                events.add(ref.get().get().toObject(Events.class));
             }
         }
-        return objects;
-    }
 
-    private <T> T getOptionalObject(DocumentSnapshot doc, String fieldName, Class<T> objectClass)
-            throws ExecutionException, InterruptedException {
-        if (doc.contains(fieldName)) {
-            DocumentReference ref = (DocumentReference) doc.get(fieldName);
-
-            // Log statements for debugging
-            //System.out.println("Fetching optional object for field: " + fieldName);
-            //System.out.println("Reference: " + ref);
-
-            ApiFuture<DocumentSnapshot> query = ref.get();
-            DocumentSnapshot objectDoc = query.get();
-            T object = objectDoc.toObject(objectClass);
-
-            // Log statements for debugging
-            //System.out.println("Fetched optional object: " + object);
-
-            return object;
+        // Get the Flights
+        ArrayList<Flights> flights = new ArrayList<>();
+        List<DocumentReference> flightRefs = (List<DocumentReference>) doc.get("flightID");
+        if (flightRefs != null) {
+            for (DocumentReference ref : flightRefs) {
+                flights.add(ref.get().get().toObject(Flights.class));
+            }
         }
-        return null;
-    }
 
+        // Get the Lodging
+        DocumentReference lodgingRef = (DocumentReference) doc.get("lodgingID");
+        Lodgings lodging = null;
+        if (lodgingRef != null){
+            lodging = lodgingRef.get().get().toObject(Lodgings.class);
+        }
+
+        // Get the Trains
+        ArrayList<Trains> trains = new ArrayList<>();
+        List<DocumentReference> trainRefs = (List<DocumentReference>) doc.get("trainID");
+        if (trainRefs != null) {
+            for (DocumentReference ref : trainRefs) {
+                trains.add(ref.get().get().toObject(Trains.class));
+            }
+        }
+
+        // Create and return the Trips object
+        return new Trips(doc.getId(), doc.getDouble("budget"), doc.getDouble("cartTotal"), doc.getString("destination"), user, car, lodging, events, flights, trains);
+    }
 
     public ArrayList<Trips> getTrips() throws ExecutionException, InterruptedException {
-
-
         Query query = db.collection("Trips");
         ApiFuture<QuerySnapshot> future = query.get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 
-        ArrayList<Trips> trips = (documents.size() > 0) ?  new ArrayList<>() : null;
-
+        ArrayList<Trips> trips = new ArrayList<>();
         for(QueryDocumentSnapshot doc : documents)
         {
-
             trips.add(getTrip(doc));
         }
-
         return trips;
     }
-
-
 }

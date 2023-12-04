@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 public abstract class BaseTrips {
     @DocumentId
     private @Nullable String tripId;
-    private double budget;
-    private double cartTotal;
+    private Double budget;
+    private Double cartTotal;
     private String destination;
 }

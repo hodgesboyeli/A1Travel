@@ -13,6 +13,6 @@ public class Lodgings {
     private @Nullable String lodgingId;
     private String address;
     private String details;
-    private float price;
+    private Double price;
     private String type;
 }

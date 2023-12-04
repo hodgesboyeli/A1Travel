@@ -1,16 +1,17 @@
 package famu.edu.a1travel.Model;
 import com.google.cloud.Timestamp;
-import com.google.protobuf.util.Timestamps;
+import com.google.cloud.firestore.annotation.DocumentId;
+import com.google.firebase.database.annotations.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.text.ParseException;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Flights {
+    @DocumentId
+    private @Nullable String flightId;
     private String airline;
     private String arriveLocation;
     private Timestamp arriveTime;

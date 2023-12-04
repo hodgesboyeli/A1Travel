@@ -1,19 +1,15 @@
 package famu.edu.a1travel.Controller;
 
 import com.google.api.client.util.Value;
-import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
 import famu.edu.a1travel.Model.RestTrips;
-import famu.edu.a1travel.Service.CarsService;
-import famu.edu.a1travel.Service.LodgingsService;
 import famu.edu.a1travel.Service.TripsService;
-import famu.edu.a1travel.Service.UsersService;
 import famu.edu.a1travel.Util.ErrorMessage;
 import famu.edu.a1travel.Util.ResponseWrapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -28,12 +24,10 @@ public class TripsController {
     private Object payload;
     private ResponseWrapper response;
     private static final String CLASS_NAME = "TripsService";
-    public TripsController(Firestore firestore, UsersService usersService, CarsService carsService, LodgingsService lodgingsService) {
-        tripsService = new TripsService(firestore, usersService, carsService, lodgingsService);
+    public TripsController(Firestore firestore) {
+        tripsService = new TripsService(firestore);
         payload = null;
     }
-
-
     @GetMapping("/")
     public ResponseEntity<Map<String,Object>> getTrips()
     {
@@ -43,7 +37,7 @@ public class TripsController {
             name = "trips";
         } catch (ExecutionException | InterruptedException e) {
             payload = new ErrorMessage("Cannot fetch trips from database", CLASS_NAME,
-                    e.getStackTrace().toString());
+                    Arrays.toString(e.getStackTrace()));
         }
 
         response = new ResponseWrapper(statusCode, name, payload);

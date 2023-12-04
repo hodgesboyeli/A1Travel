@@ -14,6 +14,10 @@ public class CarsService {
     public CarsService(Firestore db){
         this.db = db;
     }
+    public Cars getCarByRef(DocumentReference ref) throws ExecutionException, InterruptedException {
+        ApiFuture<DocumentSnapshot> future = ref.get();
+        return future.get().toObject(Cars.class);
+    }
     public Cars getCarById(String id) throws ExecutionException, InterruptedException {
         DocumentReference doc = db.collection("Cars").document(id);
         ApiFuture<DocumentSnapshot> future = doc.get();

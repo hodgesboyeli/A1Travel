@@ -19,4 +19,8 @@ public class LodgingsService {
         ApiFuture<DocumentSnapshot> future = doc.get();
         return future.get().toObject(Lodgings.class);
     }
+    public Lodgings getLodgingByRef(DocumentReference ref) throws ExecutionException, InterruptedException {
+        ApiFuture<DocumentSnapshot> future = ref.get();
+        return future.get().toObject(Lodgings.class);
+    }
 }

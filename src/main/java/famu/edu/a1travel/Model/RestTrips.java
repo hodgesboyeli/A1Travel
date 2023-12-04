@@ -6,7 +6,6 @@ import com.google.firebase.cloud.FirestoreClient;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.Nullable;
 
 import java.util.ArrayList;
 
@@ -21,7 +20,7 @@ public class RestTrips extends BaseTrips {
     private ArrayList<DocumentReference> lodgingID;
     private ArrayList<DocumentReference> trainID;
 
-    public RestTrips(String tripId, double budget, double cartTotal, String destination, DocumentReference userID, DocumentReference carID, ArrayList<DocumentReference> eventID, ArrayList<DocumentReference> flightID, ArrayList<DocumentReference> lodgingID, ArrayList<DocumentReference> trainID) {
+    public RestTrips(String tripId, Double budget, Double cartTotal, String destination, DocumentReference userID, DocumentReference carID, ArrayList<DocumentReference> eventID, ArrayList<DocumentReference> flightID, ArrayList<DocumentReference> lodgingID, ArrayList<DocumentReference> trainID) {
         super(tripId, budget, cartTotal, destination);
         this.userID = userID;
         this.carID = carID;

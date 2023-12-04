@@ -3,7 +3,6 @@ package famu.edu.a1travel.Service;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.*;
-import com.google.firebase.cloud.FirestoreClient;
 import famu.edu.a1travel.Model.Users;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +42,10 @@ public class UsersService {
         ApiFuture<DocumentSnapshot> future = doc.get();
         return future.get().toObject(Users.class);
     }
-
+    public Users getUserByRef(DocumentReference ref) throws ExecutionException, InterruptedException {
+        ApiFuture<DocumentSnapshot> future = ref.get();
+        return future.get().toObject(Users.class);
+    }
 
     public String createUser(Users user) throws ExecutionException, InterruptedException {
         user.setCreatedAt(Timestamp.now());

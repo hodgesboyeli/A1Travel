@@ -3,7 +3,6 @@ package famu.edu.a1travel.Model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.Nullable;
 
 import java.util.ArrayList;
 
@@ -18,7 +17,7 @@ public class Trips extends BaseTrips {
     private ArrayList<Flights> flightID;
     private ArrayList<Trains> trainID;
 
-    public Trips(String tripId, double budget, double cartTotal, String destination, Users userID, Cars carID, Lodgings lodgingID, ArrayList<Events> eventID, ArrayList<Flights> flightID, ArrayList<Trains> trainID) {
+    public Trips(String tripId, Double budget, Double cartTotal, String destination, Users userID, Cars carID, Lodgings lodgingID, ArrayList<Events> eventID, ArrayList<Flights> flightID, ArrayList<Trains> trainID) {
         super(tripId, budget, cartTotal, destination);
         this.userID = userID;
         this.carID = carID;
