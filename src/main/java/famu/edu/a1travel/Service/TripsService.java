@@ -17,12 +17,6 @@ public class TripsService {
         this.db = db;
     }
 
-    public String createTrip(RestTrips trip) throws ExecutionException, InterruptedException {
-        ApiFuture<DocumentReference> future = db.collection("Trips").add(trip);
-        DocumentReference tripRef = future.get();
-        return tripRef.getId();
-    }
-
     public Trips getTrip(DocumentSnapshot doc) throws ExecutionException, InterruptedException {
         // Get the User
         DocumentReference userRef = (DocumentReference) doc.get("userID");
@@ -74,6 +68,57 @@ public class TripsService {
 
         // Create and return the Trips object
         return new Trips(doc.getId(), doc.getDouble("budget"), doc.getDouble("cartTotal"), doc.getString("destination"), user, car, lodging, events, flights, trains);
+    }
+
+    public String createTrip(Trips trip) throws ExecutionException, InterruptedException {
+        RestTrips restTrip = new RestTrips(
+                trip.getTripId(),trip.getBudget(),trip.getCartTotal(),trip.getDestination(),
+                null,null,null,null,null,null);
+
+        //set fields using string ids
+        //user id
+        String userId = trip.getUserID().getUserId();
+        if (userId != null) {
+            restTrip.setUserID(userId);
+        }
+        //car id
+        String carId = trip.getCarID().getCarId();
+        if (carId != null) {
+            restTrip.setCarID(carId);
+        }
+        //lodgings id
+        String lodgingId = trip.getLodgingID().getLodgingId();
+        if (lodgingId != null){
+            restTrip.setLodgingID(lodgingId);
+        }
+        //event strings
+        ArrayList<String> eventIds = new ArrayList<>();
+        for (Events e : trip.getEventID()) {
+            if (e.getEventId() != null) {
+                eventIds.add(e.getEventId());
+            }
+        }
+        restTrip.setEventID(eventIds);
+        //flight strings
+        ArrayList<String> flightIds = new ArrayList<>();
+        for (Flights e : trip.getFlightID()) {
+            if (e.getFlightId() != null) {
+                flightIds.add(e.getFlightId());
+            }
+        }
+        restTrip.setFlightID(flightIds);
+        //train strings
+        ArrayList<String> trainIds = new ArrayList<>();
+        for (Trains e : trip.getTrainID()) {
+            if (e.getTrainId() != null) {
+                trainIds.add(e.getTrainId());
+            }
+        }
+        restTrip.setTrainID(trainIds);
+
+        ApiFuture<DocumentReference> future = db.collection("Trips").add(restTrip);
+        DocumentReference tripRef = future.get();
+        return tripRef.getId();
     }
 
     public ArrayList<Trips> getTrips() throws ExecutionException, InterruptedException {

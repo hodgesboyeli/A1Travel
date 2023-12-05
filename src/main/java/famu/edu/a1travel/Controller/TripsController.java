@@ -3,6 +3,7 @@ package famu.edu.a1travel.Controller;
 import com.google.api.client.util.Value;
 import com.google.cloud.firestore.Firestore;
 import famu.edu.a1travel.Model.RestTrips;
+import famu.edu.a1travel.Model.Trips;
 import famu.edu.a1travel.Service.TripsService;
 import famu.edu.a1travel.Util.ErrorMessage;
 import famu.edu.a1travel.Util.ResponseWrapper;
@@ -45,7 +46,7 @@ public class TripsController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Map<String,Object>> createTrip(@RequestBody RestTrips trip){
+    public ResponseEntity<Map<String,Object>> createTrip(@RequestBody Trips trip){
         try{
             payload = tripsService.createTrip(trip);
             statusCode = 201;
