@@ -85,29 +85,33 @@ public class UsersService {
 
     public DocumentReference getUserDocByEmail(String email) throws ExecutionException, InterruptedException {
         CollectionReference usersCollection = db.collection("Users");
-        Query query = usersCollection.whereEqualTo("email", email);
+        Query query = usersCollection.whereEqualTo("email", email).limit(1);
         ApiFuture<QuerySnapshot> future = query.get();
-        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
-
-        if (!documents.isEmpty()) {
-            System.out.println("not empty!");
-            // Assuming email is unique, there should be at most one user
-            return documents.get(0).getReference();
+        try {
+            List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+            if (!documents.isEmpty()) {
+                System.out.println("not empty!");
+                return documents.get(0).getReference();
+            } else {
+                System.out.println("WTF!");
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            // Log and handle the exception appropriately
+            e.printStackTrace();
         }
-        System.out.println("WTF!");
         return null; // User not found
     }
 
     public String getUserIdByEmail(String email) throws ExecutionException, InterruptedException {
         CollectionReference usersCollection = db.collection("Users");
-        Query query = usersCollection.whereEqualTo("email", email);
+        Query query = usersCollection.whereEqualTo("email", email).limit(1);
         ApiFuture<QuerySnapshot> future = query.get();
         return future.get().getDocuments().get(0).getId();
     }
 
     public Users getUserByEmail(String email) throws ExecutionException, InterruptedException {
         CollectionReference usersCollection = db.collection("Users");
-        Query query = usersCollection.whereEqualTo("email", email);
+        Query query = usersCollection.whereEqualTo("email", email).limit(1);
         ApiFuture<QuerySnapshot> future = query.get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 

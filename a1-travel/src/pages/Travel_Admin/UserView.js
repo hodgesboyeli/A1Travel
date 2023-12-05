@@ -4,7 +4,7 @@ export default function UserView({ user }) {
     const [showTrips, setShowTrips] = useState(false);
 
     return (
-        <div className="card mb-3 w-auto">
+        <div className="card mb-3 w-50 align-self-center">
             <div className="card-body" onClick={() => setShowTrips(!showTrips)}>
                 <h5 className="card-title">{user.firstName} {user.lastName}</h5>
                 <p className="card-text">{user.email}</p>

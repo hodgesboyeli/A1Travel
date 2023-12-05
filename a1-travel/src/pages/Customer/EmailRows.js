@@ -1,6 +1,15 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 export default function EmailRows({emails}){
+    const [toggleViews, setToggleViews] = useState(new Array(emails.length).fill(true));
+
+    const toggleViewAtIndex = (index) => {
+        const updatedToggleViews = toggleViews.map((item, idx) =>
+            idx === index ? !item : item
+        );
+        setToggleViews(updatedToggleViews);
+    };
+
     const formatTimestamp = (timestamp) => {
         const messageDate = new Date(timestamp.seconds * 1000);
         const now = new Date();
@@ -39,7 +48,8 @@ export default function EmailRows({emails}){
                 <span className="ps-4 pe-5 fw-bold">
                     {message.senderID}
                 </span>
-                <span className="text-truncate flex-fill pe-2">
+                <span className={`${ !toggleViews[index] && 'text-truncate'} flex-fill pe-2`}
+                    onClick={()=>toggleViewAtIndex(index)}>
                     {message.messageContent}
                 </span>
                 <span className="ps-4 pe-3 text-nowrap fw-bold">

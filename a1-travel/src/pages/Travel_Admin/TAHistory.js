@@ -11,14 +11,22 @@ export default function TAHistory(){
             trips: [
                 // ...trips data
             ],
+        },
+        {
+            firstName: "Joasdasdn",
+            lastName: "Doeas",
+            email: "john1.doasde@famu.edu",
+            trips: [
+                // ...trips data
+            ],
         }
     ]);
 
     return (
         <>
             <TravelAdminNavbar/>
-            <div className="d-grid text-center">
-                <h1>Travel History</h1>
+            <h1 className="text-center">Travel History</h1>
+            <div className="d-flex flex-column align-content-center">
                 {users.map((user, index) => (
                     <UserView key={index} user={user} />
                 ))}
