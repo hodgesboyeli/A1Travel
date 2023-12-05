@@ -1,19 +1,17 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
+import Navbar from "../../Navbars/Navbar";
 
-export default function UserView({ user }) {
-    const [showTrips, setShowTrips] = useState(false);
+export default function CustBookings(){
+    const [trips, setTrips] = useState([]);
 
     return (
-        <div className="card mb-3 w-50 align-self-center">
-            <div className="card-body" onClick={() => setShowTrips(!showTrips)}>
-                <h5 className="card-title">{user.firstName} {user.lastName}</h5>
-                <p className="card-text">{user.email}</p>
-            </div>
-            {showTrips && (
+        <>
+            <Navbar/>
+            <div className="d-flex flex-column align-content-center">
                 <div className="card-body bg-light">
                     <h6 className="card-title">Trips:</h6>
                     <ul className="list-group list-group-flush">
-                        {user.trips.map((trip, index) => (
+                        {trips.map((trip, index) => (
                             <li key={index} className="list-group-item">
                                 Destination: {trip.destination}, Budget: {trip.budget}, Total Spent: {trip.cartTotal}
                                 {/* Add more details about flight and car here if needed */}
@@ -21,7 +19,8 @@ export default function UserView({ user }) {
                         ))}
                     </ul>
                 </div>
-            )}
-        </div>
+
+            </div>
+        </>
     );
 }

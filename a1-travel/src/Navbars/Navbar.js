@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from "axios";
 import {auth} from "../Firebase";
-
+import {Link} from "react-router-dom";
 export default function Navbar(){
 
     const handleLogout = async () => {
@@ -33,9 +33,9 @@ export default function Navbar(){
                         <li className="nav-item">
                             <a className="nav-link" href="http://localhost:3000/home">Home</a>
                         </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="#">Past Bookings</a>
-                        </li>
+                        <Link to="/history">
+                            Past Bookings
+                        </Link>
                         <li className="nav-item">
                             <a className="nav-link" href="#">Support</a>
                         </li>
