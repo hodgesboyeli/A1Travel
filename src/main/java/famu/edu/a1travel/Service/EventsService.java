@@ -7,6 +7,7 @@ import famu.edu.a1travel.Model.Flights;
 import famu.edu.a1travel.Model.Lodgings;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -21,15 +22,20 @@ public class EventsService {
         DocumentReference eventRef = future.get();
         return eventRef.getId();
     }
-    public Events getEventsByCityState(String cityState) throws ExecutionException, InterruptedException {
+    public ArrayList<Events> getEventsByCityState(String cityState) throws ExecutionException, InterruptedException {
         CollectionReference eventsCollection = db.collection("Events");
         Query query = eventsCollection.whereEqualTo("cityState", cityState);
         ApiFuture<QuerySnapshot> future = query.get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 
         if (!documents.isEmpty()) {
+            ArrayList<Events> events = new ArrayList<>();
+            for (QueryDocumentSnapshot doc : documents)
+            {
+                events.add(doc.toObject(Events.class));
+            }
             System.out.println("All good with get events by cityState");
-            return documents.get(0).toObject(Events.class);
+            return events;
         }
         System.out.println("Get events by cityState NOT working!");
         return null;

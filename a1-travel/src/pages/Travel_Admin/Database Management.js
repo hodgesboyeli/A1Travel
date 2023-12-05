@@ -187,6 +187,7 @@ export default function DatabaseManagement() {
                 // Registration successful, you can navigate to a success page or display a success message
                 console.log('Event created successfully');
                 showModal();
+                handleEventReset();
             } else {
                 // Handle registration failure, show an error message to the user
                 console.error('Event create failed');

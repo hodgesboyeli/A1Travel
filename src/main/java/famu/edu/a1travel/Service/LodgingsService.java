@@ -6,6 +6,7 @@ import famu.edu.a1travel.Model.Lodgings;
 import famu.edu.a1travel.Model.Users;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 @Service
@@ -19,7 +20,7 @@ public class LodgingsService {
         ApiFuture<DocumentSnapshot> future = doc.get();
         return future.get().toObject(Lodgings.class);
     }
-    public Lodgings getLodgingByCityState(String cityState) throws ExecutionException, InterruptedException {
+    public ArrayList<Lodgings> getLodgingByCityState(String cityState) throws ExecutionException, InterruptedException {
         CollectionReference lodgingsCollection = db.collection("Lodgings");
         Query query = lodgingsCollection.whereEqualTo("cityState", cityState);
         ApiFuture<QuerySnapshot> future = query.get();
@@ -27,7 +28,14 @@ public class LodgingsService {
 
         if (!documents.isEmpty()) {
             System.out.println("All good with get lodgings by cityState");
-            return documents.get(0).toObject(Lodgings.class);
+            ArrayList<Lodgings> lodgings = new ArrayList<>();
+            for (QueryDocumentSnapshot document : documents) {
+                lodgings.add(document.toObject(Lodgings.class));
+                System.out.println("Document data: " + document.getData());
+            }
+
+            return lodgings;
+
         }
         System.out.println("Get lodging by cityState NOT working!");
         return null; // Lodging not found
