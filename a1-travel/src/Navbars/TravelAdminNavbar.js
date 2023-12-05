@@ -1,7 +1,6 @@
 import React from 'react';
 import {auth} from "../Firebase";
 import axios from "axios";
-
 export default function TravelAdminNavbar(){
 
     const handleLogout = async () => {
@@ -31,7 +30,7 @@ export default function TravelAdminNavbar(){
                 <div className="collapse navbar-collapse " id="navbarNav">
                     <ul className="navbar-nav justify-content-center">
                         <li className="nav-item">
-                            <a className="nav-link" href="http://localhost:3000/ta-home" style={{color: "#000"}}>Home</a>
+                            <a className="nav-link" href="http://localhost:3000/ta" style={{color: "#000"}}>Home</a>
                         </li>
                         <li className="nav-item">
                             <a className="nav-link" href="#" style={{color: "#000"}}>Inbox</a>
@@ -40,10 +39,10 @@ export default function TravelAdminNavbar(){
                 </div>
             </div>
             <button type="inbox" className="admin-inbox-button btn-md">
-                <a className="nav-link" href="http://localhost:3000/ta-inbox"><i className="fas fa-envelope" style={{color: "black"}}></i></a>
+                <a className="nav-link" href="http://localhost:3000/ta/inbox"><i className="fas fa-envelope" style={{color: "black"}}></i></a>
             </button>
             <button type="notifications" className="admin-inbox-button btn-md">
-                <a className="nav-link" href="http://localhost:3000/ta-notifications"><i className="fas fa-bell" style={{color: "black"}}></i></a>
+                <a className="nav-link" href="http://localhost:3000/ta/notifications"><i className="fas fa-bell" style={{color: "black"}}></i></a>
             </button>
             <button type="log-out" className="sign-out-button btn-md" onClick={handleLogout}>
                 <i className="fas fa-sign-out" style={{backgroundColor: "#FFF", color: "#000"}}></i>

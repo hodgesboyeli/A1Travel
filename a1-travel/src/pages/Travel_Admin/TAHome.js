@@ -10,16 +10,18 @@ export default function TAHome(){
                 <h1 style={{color : "#FFF"}}>Travel Administrator Dashboard</h1>
             </div>
             <div className="container-fluid d-flex justify-content-center mt-5">
-                <Link to={"/travel_admin/database-management"}>
+                <Link to={"/ta/database-management"}>
                     <button type="button" className="admin-button" style={{marginRight: 20}}>
                         <i className="fas fa-database d-flex justify-content-center" style={{fontSize: 80}}></i>
                         Database Management
                     </button>
                 </Link>
-                <button type="button" className="admin-button">
-                    <i className="fas fa-clock-rotate-left d-flex justify-content-center" style={{fontSize: 80}}></i>
-                    Travel History
-                </button>
+                <Link to="/ta/travel-history">
+                    <button type="button" className="admin-button">
+                        <i className="fas fa-clock-rotate-left d-flex justify-content-center" style={{fontSize: 80}}></i>
+                        Travel History
+                    </button>
+                </Link>
             </div>
             <div className="container-fluid d-flex justify-content-center mt-3">
                 <button type="button" className="admin-button">

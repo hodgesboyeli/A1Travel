@@ -19,6 +19,7 @@ import CustNotifications from "./pages/Customer/CustNotifications";
 import AdminNotifications from "./pages/Admin/AdminNotifications";
 import TANotifications from "./pages/Travel_Admin/TANotifications";
 import CreateAnnouncements from "./pages/Admin/Create Announcements";
+import TAHistory from "./pages/Travel_Admin/TAHistory";
 
 function App() {
     return (
@@ -39,10 +40,11 @@ function App() {
                     </Route>
 
                     <Route element={<TravelAdminRoutes/>}>
-                        <Route element={<TAHome />} path='/ta-home'/>
-                        <Route element={<DatabaseManagement />} path='/travel_admin/database-management'/>
-                        <Route element={<TAInbox />} path='/ta-inbox'/>
-                        <Route element={<TANotifications />} path='/ta-notifications'/>
+                        <Route element={<TAHistory />} path='/ta/travel-history'/>
+                        <Route element={<DatabaseManagement />} path='/ta/database-management'/>
+                        <Route element={<TAInbox />} path='/ta/inbox'/>
+                        <Route element={<TANotifications />} path='/ta/notifications'/>
+                        <Route element={<TAHome />} path='/ta'/>
                     </Route>
 
 
