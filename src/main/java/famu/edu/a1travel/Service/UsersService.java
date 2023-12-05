@@ -98,6 +98,13 @@ public class UsersService {
         return null; // User not found
     }
 
+    public String getUserIdByEmail(String email) throws ExecutionException, InterruptedException {
+        CollectionReference usersCollection = db.collection("Users");
+        Query query = usersCollection.whereEqualTo("email", email);
+        ApiFuture<QuerySnapshot> future = query.get();
+        return future.get().getDocuments().get(0).getId();
+    }
+
     public Users getUserByEmail(String email) throws ExecutionException, InterruptedException {
         CollectionReference usersCollection = db.collection("Users");
         Query query = usersCollection.whereEqualTo("email", email);
