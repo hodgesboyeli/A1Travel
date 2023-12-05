@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
 //get all, get all by id, etc.
@@ -15,12 +16,18 @@ import java.util.concurrent.ExecutionException;
 public class TripsService {
     private final Firestore db;
     private final UsersService usersService;
+    private final ConcurrentHashMap<String, Trips> tripsCache = new ConcurrentHashMap<>();
     public TripsService(Firestore db) {
         usersService = new UsersService(db);
         this.db = db;
     }
 
     public Trips getTrip(DocumentSnapshot doc) throws ExecutionException, InterruptedException {
+        String tripId = doc.getId();
+        if (tripsCache.containsKey(tripId)) {
+            return tripsCache.get(tripId);
+        }
+
         // Get the User
         DocumentReference userRef = (DocumentReference) doc.get("userID");
         Users user = null;
@@ -70,7 +77,9 @@ public class TripsService {
         }
 
         // Create and return the Trips object
-        return new Trips(doc.getId(), doc.getDouble("budget"), doc.getDouble("cartTotal"), doc.getString("destination"), user, car, lodging, events, flights, trains);
+        Trips trip = new Trips(doc.getId(), doc.getDouble("budget"), doc.getDouble("cartTotal"), doc.getString("destination"), user, car, lodging, events, flights, trains);
+        tripsCache.put(tripId, trip);
+        return trip;
     }
 
     public String createTrip(Trips trip) throws ExecutionException, InterruptedException {
@@ -128,7 +137,7 @@ public class TripsService {
     public ArrayList<Trips> getTrips(String user) throws ExecutionException, InterruptedException {
         Query query = db.collection("Trips");
         if (!user.isEmpty()){
-            DocumentReference doc = (DocumentReference) usersService.getUserByEmail(user,true);
+            DocumentReference doc = usersService.getUserDocByEmail(user);
             query = query.whereEqualTo("userID",doc);
         }
         return getRef(query);

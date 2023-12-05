@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -33,17 +34,16 @@ public class TripsController {
     public ResponseEntity<Map<String,Object>> getTrips(
             @RequestParam(name="user", required = false, defaultValue = "") String user)
     {
-        try {
+        Map<String, Object> returnVal = new HashMap<>();
+        statusCode = 500;
+        try{
             payload = tripsService.getTrips(user);
             statusCode = 200;
-            name = "trips";
-        } catch (ExecutionException | InterruptedException e) {
-            payload = new ErrorMessage("Cannot fetch trips from database", CLASS_NAME,
-                    Arrays.toString(e.getStackTrace()));
+            returnVal.put("trips",payload);
+        } catch (Exception e) {
+            returnVal.put("error","Cannot get trips: "+Arrays.toString(e.getStackTrace()));
         }
-
-        response = new ResponseWrapper(statusCode, name, payload);
-        return response.getResponse();
+        return ResponseEntity.status(statusCode).body(returnVal);
     }
     @PostMapping("/")
     public ResponseEntity<Map<String,Object>> createTrip(@RequestBody Trips trip){

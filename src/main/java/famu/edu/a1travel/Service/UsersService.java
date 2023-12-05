@@ -83,20 +83,33 @@ public class UsersService {
         return future.get().toObject(Users.class);
     }
 
-    public Object getUserByEmail(String email) throws ExecutionException, InterruptedException {
-        return getUserByEmail(email, false);
-    }
-
-    public Object getUserByEmail(String email, boolean giveRef) throws ExecutionException, InterruptedException {
+    public DocumentReference getUserDocByEmail(String email) throws ExecutionException, InterruptedException {
         CollectionReference usersCollection = db.collection("Users");
         Query query = usersCollection.whereEqualTo("email", email);
         ApiFuture<QuerySnapshot> future = query.get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 
         if (!documents.isEmpty()) {
+            System.out.println("not empty!");
             // Assuming email is unique, there should be at most one user
-            return giveRef ? documents.get(0).getReference() : documents.get(0).toObject(Users.class);
+            return documents.get(0).getReference();
         }
+        System.out.println("WTF!");
+        return null; // User not found
+    }
+
+    public Users getUserByEmail(String email) throws ExecutionException, InterruptedException {
+        CollectionReference usersCollection = db.collection("Users");
+        Query query = usersCollection.whereEqualTo("email", email);
+        ApiFuture<QuerySnapshot> future = query.get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+        if (!documents.isEmpty()) {
+            System.out.println("not empty!");
+            // Assuming email is unique, there should be at most one user
+            return documents.get(0).toObject(Users.class);
+        }
+        System.out.println("WTF!");
         return null; // User not found
     }
 }
