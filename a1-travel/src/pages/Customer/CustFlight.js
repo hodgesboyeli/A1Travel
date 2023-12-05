@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from '../Navbar';
+import Navbar from "../../Navbars/Navbar";
 import { Link, useNavigate } from 'react-router-dom';
 import { app } from '../../Firebase';
 import { getFirestore, collection, where, query, getDocs } from 'firebase/firestore';
@@ -7,7 +7,6 @@ import { getFirestore, collection, where, query, getDocs } from 'firebase/firest
 export default function CustFlight() {
     const [flights, setFlights] = useState([]);
     const [selectedDestination, setSelectedDestination] = useState(null);
-    const [selectedFlight, setSelectedFlight] = useState(null); // Track selected flight
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -37,13 +36,6 @@ export default function CustFlight() {
         }
     }, [selectedDestination, navigate]);
 
-    const handleFlightSelect = (selectedFlight) => {
-        setSelectedFlight(selectedFlight);
-        console.log('Selected Flight:', selectedFlight);
-    };
-
-    const isBookButtonDisabled = !selectedFlight;
-
     return (
         <>
             <Navbar />
@@ -53,20 +45,17 @@ export default function CustFlight() {
                 </div>
                 <div className="container-fluid mt-3">
                     {flights.map((flight, index) => (
-                        <div
-                            key={index}
-                            className={`destination-option ${selectedFlight === flight ? 'selected-destination' : ''}`}
-                            onClick={() => handleFlightSelect(flight)}
-                        >
-                            <p>{flight.departLocation} to {flight.arriveLocation}</p>
+                        <div key={index} className="flight-item">
+                            {/* Display flight information as needed */}
                             <p>{flight.airline}</p>
+                            <p>{flight.departLocation} to {flight.arriveLocation}</p>
                             <p>{/* Add more flight details */}</p>
                         </div>
                     ))}
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
                     <Link to="/booking">
-                        <button type="submit" className="btn btn-md custom-button" disabled={isBookButtonDisabled}>
+                        <button type="submit" className="btn btn-md custom-button">
                             Book Flight
                         </button>
                     </Link>

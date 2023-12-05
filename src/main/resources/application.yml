@@ -46,7 +46,7 @@ security:
     - /js/**
     - /api/event/**
     - /api/trip/**
-    - /api/flight/
+    - /api/flight/**
     - /api/train/
     - /api/car/
     - /api/destination/**

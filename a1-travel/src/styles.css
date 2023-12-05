@@ -162,6 +162,21 @@ a:hover {
     border-bottom-right-radius: 25px;
 }
 
+.destination-option {
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease; /* Add transitions for background color and text color */
+}
+
+.destination-option:hover:not(.selected-destination) {
+    background-color: #f0f0f0; /* Light gray background on hover for non-selected destinations */
+}
+
+.selected-destination {
+    background-color: #1e71ee;
+    opacity: 0.8; /* Adjust the opacity as needed */
+    color: white; /* Text color for selected destination */
+}
+
 .custom-button:hover{
     background-color: #FA4705;
 }

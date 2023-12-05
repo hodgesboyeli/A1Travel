@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from "../Navbar";
+import Navbar from "../../Navbars/Navbar";
 import { Link, useNavigate } from "react-router-dom";
 import { app } from '../../Firebase';
-import axios from 'axios';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
 
 export default function CustDestination() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -13,12 +13,11 @@ export default function CustDestination() {
     useEffect(() => {
         const fetchDestinations = async () => {
             try {
-                // Make a request to your backend API to get flights by arriveLocation
-                const response = await axios.get(`/api/flight/${selectedDestination}`);
-                const flightsData = response.data.flights;
+                const db = getFirestore(app);
+                const flightsCollection = await getDocs(collection(db, 'Flights'));
+                const allFlights = flightsCollection.docs.map(doc => doc.data());
 
-                // Extract unique destinations from the fetched flights
-                const uniqueDestinations = [...new Set(flightsData.flatMap(flight => [flight.arriveLocation, flight.departLocation]))];
+                const uniqueDestinations = [...new Set(allFlights.flatMap(flight => [flight.arriveLocation, flight.departLocation]))];
 
                 const filteredDestinations = uniqueDestinations.filter(destination =>
                     destination.toLowerCase().includes(searchQuery.toLowerCase())
@@ -31,7 +30,7 @@ export default function CustDestination() {
         };
 
         fetchDestinations();
-    }, [searchQuery, selectedDestination]);
+    }, [searchQuery]);
 
     const handleDestinationSelect = (selectedDestination) => {
         sessionStorage.setItem('selectedDestination', selectedDestination);
