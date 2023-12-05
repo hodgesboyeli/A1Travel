@@ -11,6 +11,7 @@ import org.springframework.lang.Nullable;
 public class Lodgings {
     @DocumentId
     private @Nullable String lodgingId;
+    private String cityState;
     private String address;
     private String details;
     private Double price;

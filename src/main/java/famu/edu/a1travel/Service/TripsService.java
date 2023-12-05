@@ -122,10 +122,10 @@ public class TripsService {
     //@Cacheable(value = "tripsByUserCache", key = "#user")
     public ArrayList<Trips> getTrips(String user) throws ExecutionException, InterruptedException {
         Query query = db.collection("Trips");
-        if (!user.isEmpty()){
+        /*if (!user.isEmpty()){
             DocumentReference doc = usersService.getUserDocByEmail(user);
             query = query.whereEqualTo("userID",doc);
-        }
+        }*/
         ApiFuture<QuerySnapshot> future = query.get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 
