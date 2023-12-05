@@ -40,7 +40,7 @@ export default function Login() {
                 } else if (sessionStorage.getItem('role') === "Administrator") {
                     navigate('/admin-home');
                 } else if (sessionStorage.getItem('role') === "Travel Administrator") {
-                    navigate('/ta-home/');
+                    navigate('/ta/');
                 } else {
                     console.log("Invalid user role value, returning to login.")
                     navigate('/login');
