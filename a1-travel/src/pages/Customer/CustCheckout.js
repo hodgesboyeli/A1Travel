@@ -14,7 +14,9 @@ export default function CustCheckout() {
                 </div>
                 <div className="container-fluid d-flex justify-content-center">
                     <Link to="/home">
-                        <p>Pay Now</p>
+                        <button type="submit" className="btn btn-md custom-button">
+                            Pay Now
+                        </button>
                     </Link>
                 </div>
             </div>

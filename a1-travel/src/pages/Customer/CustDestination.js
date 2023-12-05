@@ -13,7 +13,7 @@ export default function CustDestination() {
                 </div>
                 <div className="text-center" style={{marginTop: 40}}>
                     <Link to="/flight">
-                        <button type="submit" className="btn btn-md custom-button" style={{fontSize: 32}}>
+                        <button type="submit" className="btn btn-md custom-button">
                             Next
                         </button>
                     </Link>

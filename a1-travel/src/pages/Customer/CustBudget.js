@@ -20,7 +20,10 @@ export default function CustBudget() {
 
     const handleSubmit = () => {
         // Handle the submit action here
+        // add logic for storing budget number into session storage
         console.log('Budget submitted:', budget);
+
+        navigate('/destination');
     };
 
     return (
@@ -40,17 +43,19 @@ export default function CustBudget() {
                                 placeholder='Enter amount'
                                 onChange={handleBudgetChange}
                             />
-                            <Link to="/destination">
                                 <button className="btn btn-success" onClick={handleSubmit}>
                                     Confirm
                                 </button>
-                            </Link>
                         </div>
                     </div>
                 </section>
-                <button className="btn custom-button ms-5 align-content-center">
-                    Next
-                </button>
+                <div className="container-fluid d-flex justify-content-center">
+                    <Link to="/destination">
+                        <button type="submit" className="btn btn-md custom-button">
+                            Next
+                        </button>
+                    </Link>
+                </div>
             </div>
         </>
     );

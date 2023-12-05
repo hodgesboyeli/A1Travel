@@ -14,7 +14,9 @@ export default function CustEvent() {
                 </div>
                 <div className="container-fluid d-flex justify-content-center">
                     <Link to="/checkout">
-                        <p>Next</p>
+                        <button type="submit" className="btn btn-md custom-button">
+                            Next
+                        </button>
                     </Link>
                 </div>
             </div>

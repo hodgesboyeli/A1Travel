@@ -21,9 +21,11 @@ export default function CustLodging() {
                             <button className="btn btn-lg other-button" type="button">HOTEL</button>
                             <button className="btn btn-lg custom-button" type="button">AIRBNB</button>
                             <Link to="/event">
-                                <button className="btn btn-link" type="button">
-                                    STAYING ELSEWHERE? CONTINUE HERE
-                                </button>
+                                <div className="container-fluid d-flex justify-content-center">
+                                    <button className="btn btn-link" type="button">
+                                        STAYING ELSEWHERE? CONTINUE HERE
+                                    </button>
+                                </div>
                             </Link>
 
                         </div>
