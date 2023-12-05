@@ -13,7 +13,9 @@ import java.util.concurrent.ExecutionException;
 @Service
 public class TripsService {
     private final Firestore db;
+    private final UsersService usersService;
     public TripsService(Firestore db) {
+        usersService = new UsersService(db);
         this.db = db;
     }
 
@@ -84,6 +86,23 @@ public class TripsService {
         ArrayList<Trips> trips = new ArrayList<>();
         for(QueryDocumentSnapshot doc : documents)
         {
+            trips.add(getTrip(doc));
+        }
+        return trips;
+    }
+
+    public ArrayList<Trips> getTripsByUser(String userId) throws ExecutionException, InterruptedException {
+        Query query = db.collection("Trips");
+
+        // Assuming "userID" is a string field in your Trips documents
+        query = query.whereEqualTo("userID", userId);
+
+        ApiFuture<QuerySnapshot> future = query.get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+        // Process the documents and convert them to Trips objects
+        ArrayList<Trips> trips = new ArrayList<>();
+        for (QueryDocumentSnapshot doc : documents) {
             trips.add(getTrip(doc));
         }
         return trips;
