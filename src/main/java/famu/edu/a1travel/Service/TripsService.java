@@ -20,7 +20,7 @@ public class TripsService {
     }
 
     //@Cacheable(value = "tripCache", key = "#doc.id")
-    public Trips getTrip(DocumentSnapshot doc) throws ExecutionException, InterruptedException {
+    private Trips getTrip(DocumentSnapshot doc) throws ExecutionException, InterruptedException {
 
         // Use batch retrieval for subdocuments
         List<ApiFuture<DocumentSnapshot>> futures = new ArrayList<>();
@@ -71,48 +71,66 @@ public class TripsService {
         //create new thing
         RestTrips restTrip = new RestTrips(
                 trip.getTripId(),trip.getBudget(),trip.getCartTotal(),trip.getDestination(),
-                null,null,null,null,null,null);
+                null,null,null,new ArrayList<>(),new ArrayList<>(),new ArrayList<>());
 
+        ArrayList<String> eventIds = new ArrayList<>();
+        ArrayList<String> flightIds = new ArrayList<>();
+        ArrayList<String> trainIds = new ArrayList<>();
         //set fields using string ids
         //user id
+        if (trip.getUserID() != null){
+
         String userId = trip.getUserID().getUserId();
         if (userId != null) {
             restTrip.setUserID(userId);
         }
+        }
         //car id
-        String carId = trip.getCarID().getCarId();
-        if (carId != null) {
-            restTrip.setCarID(carId);
+        if (trip.getCarID() != null){
+            String carId = trip.getCarID().getCarId();
+            if (carId != null) {
+                restTrip.setCarID(carId);
+            }
         }
         //lodgings id
+        if (trip.getLodgingID() != null){
+
         String lodgingId = trip.getLodgingID().getLodgingId();
         if (lodgingId != null){
             restTrip.setLodgingID(lodgingId);
         }
+        }
         //event strings
-        ArrayList<String> eventIds = new ArrayList<>();
+        if (trip.getEventID() != null){
+
         for (Events e : trip.getEventID()) {
             if (e.getEventId() != null) {
                 eventIds.add(e.getEventId());
             }
         }
         restTrip.setEventID(eventIds);
+        }
         //flight strings
-        ArrayList<String> flightIds = new ArrayList<>();
+        if (trip.getFlightID() != null){
+
         for (Flights e : trip.getFlightID()) {
             if (e.getFlightId() != null) {
                 flightIds.add(e.getFlightId());
             }
         }
         restTrip.setFlightID(flightIds);
+        }
+
         //train strings
-        ArrayList<String> trainIds = new ArrayList<>();
+        if (trip.getTrainID() != null){
+
         for (Trains e : trip.getTrainID()) {
             if (e.getTrainId() != null) {
                 trainIds.add(e.getTrainId());
             }
         }
         restTrip.setTrainID(trainIds);
+        }
 
         ApiFuture<DocumentReference> future = db.collection("Trips").add(restTrip);
         DocumentReference tripRef = future.get();
