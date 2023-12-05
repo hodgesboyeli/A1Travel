@@ -4,10 +4,12 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.Nullable;
 
 import java.util.ArrayList;
+
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 public class RestTrips extends BaseTrips {
@@ -15,11 +17,11 @@ public class RestTrips extends BaseTrips {
     private DocumentReference carID;
     private ArrayList<DocumentReference> eventID;
     private ArrayList<DocumentReference> flightID;
-    private ArrayList<DocumentReference> lodgingID;
+    private DocumentReference lodgingID;
     private ArrayList<DocumentReference> trainID;
 
-    public RestTrips(@Nullable String tripID, float budget, float cartTotal, String destination, DocumentReference userID, DocumentReference carID, ArrayList<DocumentReference> eventID, ArrayList<DocumentReference> flightID, ArrayList<DocumentReference> lodgingID, ArrayList<DocumentReference> trainID) {
-        super(tripID, budget, cartTotal, destination);
+    public RestTrips(String tripId, Double budget, Double cartTotal, String destination, DocumentReference userID, DocumentReference carID, ArrayList<DocumentReference> eventID, ArrayList<DocumentReference> flightID, DocumentReference lodgingID, ArrayList<DocumentReference> trainID) {
+        super(tripId, budget, cartTotal, destination);
         this.userID = userID;
         this.carID = carID;
         this.eventID = eventID;
@@ -54,12 +56,9 @@ public class RestTrips extends BaseTrips {
         }
     }
 
-    public void setLodgingID(ArrayList<String> lodgingID) {
+    public void setLodgingID(String lodgingID) {
         Firestore db = FirestoreClient.getFirestore();
-        this.lodgingID = new ArrayList<>();
-        for(String cat : lodgingID) {
-            this.lodgingID.add(db.collection("Lodgings").document(cat));
-        }
+        this.lodgingID = db.collection("Lodgings").document(lodgingID);
     }
 
     public void setTrainID(ArrayList<String> trainID) {

@@ -39,13 +39,13 @@ security:
     - /favicon.ico
     - /
     - /api/login
-    - /api/user/
-    - /api/user/email/{email}
+    - /api/user/**
     - /api/logout
     - /api/register
     - /css/**
     - /js/**
     - /api/event/
+    - /api/trip/**
     - /api/flight/
     - /api/train/
     - /api/car/

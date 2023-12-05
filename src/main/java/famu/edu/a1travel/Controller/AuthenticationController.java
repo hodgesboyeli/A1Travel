@@ -33,6 +33,8 @@ public class AuthenticationController {
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     private final UsersService usersService;
 
+    private final UsersService usersService;
+
     @Value("${response.status}")
     private int statusCode;
     @Value("${response.name}")
