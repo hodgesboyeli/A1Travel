@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import Navbar from '../Navbar';
 import Axios from 'axios';
-import AdminNavbar from "../AdminNavbar";
-import TravelAdminNavbar from "../TravelAdminNavbar";
+import TravelAdminNavbar from "../../Navbars/TravelAdminNavbar";
 
 export default function TANotifications() {
     const [announcements, setAnnouncements] = useState([]);

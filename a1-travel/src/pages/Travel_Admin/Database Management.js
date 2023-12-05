@@ -1,12 +1,23 @@
 import React, {useEffect, useRef, useState} from 'react';
-import TravelAdminNavbar from "../TravelAdminNavbar";
+import TravelAdminNavbar from "../../Navbars/TravelAdminNavbar";
 import Axios from "axios";
+import 'firebase/compat/firestore';
+import { Modal } from 'bootstrap';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 export default function DatabaseManagement() {
     const [showEventForm, setShowEventForm] = useState(false);
+    const [showTransportationForm, setShowTransportationForm] = useState(false);
+    const [showFlightForm, setShowFlightForm] = useState(false);
+    const [showTrainForm, setShowTrainForm] = useState(false);
+    const [showCarForm, setShowCarForm] = useState(false);
+    const [showDestinationForm, setShowDestinationForm] = useState(false);
     const phoneRef = useRef(null);
     const emailRef = useRef(null);
     const imageRef = useRef(null);
+    const modalRef = useRef(null);
+    const storage = getStorage();
+    const errorModalRef = useRef(null);
     const [inputValues, setInputValues] = useState({
         eventName: '',
         eventType: '',
@@ -14,11 +25,123 @@ export default function DatabaseManagement() {
         organizer: '',
         phoneNumber: '',
         email: '',
+        eventStart: null,
+        eventEnd: null,
+        location: '',
+        price: null,
+        capacity: null,
+        airline: '',
+        departLocation: '',
+        arriveLocation: '',
+        departTime: null,
+        arriveTime: null,
+        duration: '',
+        status: '',
+        stops: null,
+        color: '',
+        make: '',
+        model: '',
+        pickupDate: null,
+        pickupLocation: '',
+        returnDate: null,
+        returnLocation: '',
+        year: null,
     });
 
-    const handleSignUp = async (e) => {
+    const isEventFormValid = () => {
+        const requiredFields = ['eventName', 'eventType', 'description', 'organizer', 'eventStart', 'eventEnd', 'location', 'price', 'capacity'];
+
+        for (const field of requiredFields) {
+            if (!inputValues[field]) {
+                // Field is empty, show error and return false
+                showErrorModal();
+                return false;
+            }
+        }
+
+        // All required fields are filled, return true
+        return true;
+    };
+
+    const isFlightFormValid = () => {
+        const requiredFields = ['airline', 'departLocation', 'arriveLocation', 'departTime', 'arriveTime', 'price', 'duration', 'status', 'stops'];
+
+        for (const field of requiredFields) {
+            if (!inputValues[field]) {
+                // Field is empty, show error and return false
+                showErrorModal();
+                return false;
+            }
+        }
+
+        // All required fields are filled, return true
+        return true;
+    };
+
+    const isTrainFormValid = () => {
+        const requiredFields = ['departLocation', 'arriveLocation', 'departTime', 'arriveTime', 'price', 'duration', 'status', 'stops'];
+
+        for (const field of requiredFields) {
+            if (!inputValues[field]) {
+                // Field is empty, show error and return false
+                showErrorModal();
+                return false;
+            }
+        }
+
+        // All required fields are filled, return true
+        return true;
+    };
+
+    const isCarFormValid = () => {
+        const requiredFields = ['color', 'make', 'model', 'pickupDate', 'pickupLocation', 'price', 'returnDate', 'returnLocation', 'year'];
+
+        for (const field of requiredFields) {
+            if (!inputValues[field]) {
+                // Field is empty, show error and return false
+                showErrorModal();
+                return false;
+            }
+        }
+
+        // All required fields are filled, return true
+        return true;
+    };
+
+    const handleImageUpload = async (file) => {
+        const storageRef = ref(storage, file.name);
+
+        try {
+            await uploadBytes(storageRef, file);
+            inputValues.image = await getDownloadURL(storageRef);
+        } catch (error) {
+            console.error('Error uploading image: ', error);
+        }
+    };
+
+    const handleEventSubmit = async (e) => {
         e.preventDefault();
-        console.log('handleSignUp function is working!');
+        console.log('handleEventSubmit function is working!');
+
+        if (!isEventFormValid()) {
+            return;
+        }
+
+        const imageFile = imageRef.current.files[0];
+
+        if (imageFile) {
+            try {
+                // Wait for image upload to complete before proceeding
+                await handleImageUpload(imageFile);
+
+                // Continue with the rest of the form submission after image upload is successful
+            } catch (error) {
+                console.warn('Error uploading image:', error);
+                return; // Don't proceed with form submission if image upload fails
+            }
+        } else {
+            console.warn('No image file selected');
+        }
 
         // Destructure input values
         const {
@@ -26,7 +149,14 @@ export default function DatabaseManagement() {
             eventType,
             description,
             organizer,
+            eventStart,
+            eventEnd,
+            location,
+            price,
+            capacity,
+            image
         } = inputValues;
+
 
         const phoneNumber = phoneRef.current.value;
         const email = emailRef.current.value;
@@ -39,6 +169,12 @@ export default function DatabaseManagement() {
             organizer,
             phoneNumber,
             email,
+            location,
+            eventStart: eventStart + ".000Z",
+            eventEnd: eventEnd + ".000Z",
+            price,
+            capacity,
+            image
         };
 
         try {
@@ -47,15 +183,210 @@ export default function DatabaseManagement() {
             if (response.status === 201) {
                 // Registration successful, you can navigate to a success page or display a success message
                 console.log('Event created successfully');
+                showModal();
             } else {
                 // Handle registration failure, show an error message to the user
                 console.error('Event create failed');
+                showErrorModal();
             }
         } catch (error) {
             // Handle network errors or other issues
             console.error('Error:', error);
+            showErrorModal();
         }
     };
+
+    const handleFlightSubmit = async (e) => {
+        e.preventDefault();
+        console.log('handleFlightSubmit function is working!');
+
+        if (!isFlightFormValid()) {
+            return;
+        }
+
+        const {
+            airline,
+            departLocation,
+            arriveLocation,
+            departTime,
+            arriveTime,
+            price,
+            duration,
+            status,
+            stops
+        } = inputValues;
+
+        const flight = {
+            airline,
+            departLocation,
+            arriveLocation,
+            departTime: departTime + ".000Z",
+            arriveTime: arriveTime + ".000Z",
+            price,
+            duration,
+            status,
+            stops
+        };
+
+        console.log(flight);
+
+        try {
+            const response = await Axios.post('http://localhost:8080/api/flight/', flight);
+            console.log(flight);
+            if (response.status === 201) {
+                console.log('Flight created successfully');
+                showModal();
+            } else {
+                console.error('Flight create failed');
+                showErrorModal();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showErrorModal();
+        }
+    };
+
+    const handleTrainSubmit = async (e) => {
+        e.preventDefault();
+        console.log('handleTrainSubmit function is working!');
+
+        if (!isTrainFormValid()) {
+            return;
+        }
+
+        const {
+            departLocation,
+            arriveLocation,
+            departTime,
+            arriveTime,
+            price,
+            duration,
+            status,
+            stops
+        } = inputValues;
+
+        const train = {
+            departLocation,
+            arriveLocation,
+            departTime: departTime + ".000Z",
+            arriveTime: arriveTime + ".000Z",
+            price,
+            duration,
+            status,
+            stops
+        };
+
+        console.log(train);
+
+        try {
+            const response = await Axios.post('http://localhost:8080/api/train/', train);
+            console.log(train);
+            if (response.status === 201) {
+                console.log('Train created successfully');
+                showModal();
+            } else {
+                console.error('Train create failed');
+                showErrorModal();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showErrorModal();
+        }
+    };
+
+    const handleCarSubmit = async (e) => {
+        e.preventDefault();
+        console.log('handleCarSubmit function is working!');
+
+        if (!isCarFormValid()) {
+            return;
+        }
+
+        const {
+            color,
+            make,
+            model,
+            pickupDate,
+            pickupLocation,
+            price,
+            returnDate,
+            returnLocation,
+            year
+        } = inputValues;
+
+        const car = {
+            color,
+            make,
+            model,
+            pickupDate: pickupDate + ".000Z",
+            returnDate: returnDate + ".000Z",
+            pickupLocation,
+            price,
+            returnLocation,
+            year
+        };
+
+        console.log(car);
+
+        try {
+            const response = await Axios.post('http://localhost:8080/api/car/', car);
+            console.log(car);
+            if (response.status === 201) {
+                console.log('Car created successfully');
+                showModal();
+            } else {
+                console.error('Car create failed');
+                showErrorModal();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showErrorModal();
+        }
+    };
+
+    const showModal = () => {
+        if (modalRef.current) {
+            const modal = new Modal(modalRef.current);
+            modal.show();
+        }
+    };
+
+    const handleCloseModal = () => {
+        if (modalRef.current) {
+            const modal = Modal.getInstance(modalRef.current);
+            if (modal) {
+                modal.hide();
+            }
+        }
+    };
+
+    const showErrorModal = () => {
+        if (errorModalRef.current) {
+            const modal = new Modal(errorModalRef.current);
+            modal.show();
+        }
+    };
+
+    const handleCloseErrorModal = () => {
+        if (errorModalRef.current) {
+            const modal = Modal.getInstance(errorModalRef.current);
+            if (modal) {
+                modal.hide();
+            }
+        }
+    };
+
+    useEffect(() => {
+        return () => {
+            handleCloseModal();
+        };
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            handleCloseErrorModal();
+        };
+    }, []);
 
     const handleRadioChange = (event) => {
         if (event.target.id === "radioEvent") {
@@ -63,22 +394,79 @@ export default function DatabaseManagement() {
         } else {
             setShowEventForm(false);
         }
+
+        if (event.target.id === "radioTransportation") {
+            setShowTransportationForm(true);
+        } else {
+            setShowTransportationForm(false);
+        }
+
+        if (event.target.id === "radioFlight") {
+            setShowFlightForm(true);
+            setShowTransportationForm(true);
+        } else {
+            setShowFlightForm(false);
+        }
+
+        if (event.target.id === "radioTrain") {
+            setShowTrainForm(true);
+            setShowTransportationForm(true);
+        } else {
+            setShowTrainForm(false);
+        }
+
+        if (event.target.id === "radioCar") {
+            setShowCarForm(true);
+            setShowTransportationForm(true);
+        } else {
+            setShowCarForm(false);
+        }
+
+        if (event.target.id === "radioDestination") {
+            setShowDestinationForm(true);
+        } else {
+            setShowDestinationForm(false);
+        }
     };
 
-    const handleInputChange = (event) => {
-        const { id, value } = event.target;
+    const handleDateChange = (date, id) => {
+
+        // Convert the local date to UTC before formatting
+        const formattedDate = date
+            ? new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, -5)
+            : null;
+
         setInputValues({
             ...inputValues,
-            [id]: value,
+            [id]: formattedDate,
         });
     };
 
-    const handleReset = () => {
+    const handleInputChange = (event) => {
+        const { id, value, type } = event.target;
+
+        if (type === 'datetime-local') {
+            handleDateChange(new Date(value), id);
+        } else {
+            setInputValues({
+                ...inputValues,
+                [id]: value,
+            });
+        }
+    };
+
+
+    const handleEventReset = () => {
         setInputValues({
             eventName: '',
             eventType: '',
             description: '',
             organizer: '',
+            eventStart: '',
+            eventEnd: '',
+            location: '',
+            price: '',
+            capacity: ''
         });
 
         // Clear Phone Number and Email input fields
@@ -93,6 +481,47 @@ export default function DatabaseManagement() {
         if (imageRef.current) {
             imageRef.current.value = '';
         }
+    };
+
+    const handleFlightReset = () => {
+        setInputValues({
+            airline: '',
+            departLocation: '',
+            arriveLocation: '',
+            departTime: '',
+            arriveTime: '',
+            price: '',
+            duration: '',
+            status: '',
+            stops: ''
+        });
+    };
+
+    const handleTrainReset = () => {
+        setInputValues({
+            departLocation: '',
+            arriveLocation: '',
+            departTime: '',
+            arriveTime: '',
+            price: '',
+            duration: '',
+            status: '',
+            stops: ''
+        });
+    };
+
+    const handleCarReset = () => {
+        setInputValues({
+            color: '',
+            make: '',
+            model: '',
+            pickupDate: '',
+            pickupLocation: '',
+            price: '',
+            returnDate: '',
+            returnLocation: '',
+            year: ''
+        });
     };
 
 
@@ -138,28 +567,48 @@ export default function DatabaseManagement() {
 
             {showEventForm && (
                 <div className="container-fluid d-flex justify-content-center" style={{paddingLeft: 150, paddingRight: 150}}>
-                    <form className="row g-3" onSubmit={handleSignUp}>
+                    <form className="row g-3" onSubmit={handleEventSubmit}>
                         <div className="col-md-6">
                             <label htmlFor="inputEventName" className="form-label">Event Name</label>
                             <input type="text" className="form-control" id="eventName" value={inputValues.eventName} onChange={handleInputChange} />
                         </div>
                         <div className="col-md-6">
-                            <label htmlFor="category" className="form-label">Event Category</label>
-                            <input type="text" className="form-control" id="eventType" value={inputValues.category} onChange={handleInputChange} />
+                            <label htmlFor="inputEventType" className="form-label">Event Category</label>
+                            <input type="text" className="form-control" id="eventType" value={inputValues.eventType} onChange={handleInputChange} />
                         </div>
                         <div className="col-12">
-                            <label htmlFor="description" className="form-label">Event Description</label>
+                            <label htmlFor="inputEventDescription" className="form-label">Event Description</label>
                             <textarea className="form-control" id="description" rows="3" value={inputValues.description} onChange={handleInputChange}></textarea>
                         </div>
                         <div className="col-md-6">
-                            <label htmlFor="organizer" className="form-label">Event Organizer</label>
-                            <input type="text" className="form-control" id="organizer" value={inputValues.organizer} onChange={handleInputChange}/>
+                            <label htmlFor="inputPrice" className="form-label">Price</label>
+                            <input type="number" className="form-control" id="price" value={inputValues.price} onChange={handleInputChange} />
                         </div>
                         <div className="col-md-6">
+                            <label htmlFor="inputCapacity" className="form-label">Capacity</label>
+                            <input type="number" className="form-control" id="capacity" value={inputValues.capacity} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputEventStart" className="form-label">Event Start</label>
+                            <input type="datetime-local" className="form-control" id="eventStart" value={inputValues.eventStart} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputEventEnd" className="form-label">Event End</label>
+                            <input type="datetime-local" className="form-control" id="eventEnd" value={inputValues.eventEnd} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-4">
+                            <label htmlFor="inputOrganizer" className="form-label">Event Organizer</label>
+                            <input type="text" className="form-control" id="organizer" value={inputValues.organizer} onChange={handleInputChange}/>
+                        </div>
+                        <div className="col-md-4">
+                            <label htmlFor="inputLocation" className="form-label">Event Location</label>
+                            <input type="text" className="form-control" id="location" value={inputValues.location} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-4">
                             <label htmlFor="inputContactInfo" className="form-label">Contact Information</label>
                             <div className="input-group">
-                                <input type="text" className="form-control" placeholder="Phone Number" aria-label="Phone Number" ref={phoneRef} />
-                                <input type="text" className="form-control" placeholder="Email" aria-label="Email" ref={emailRef} />
+                                <input type="text" className= "form-control" placeholder="Phone Number" aria-label="Phone Number" ref={phoneRef} />
+                                <input type="text" className= "form-control" placeholder="Email" aria-label="Email" ref={emailRef} />
                             </div>
                         </div>
                         <div className="col-12">

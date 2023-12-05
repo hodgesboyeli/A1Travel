@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Navbar from '../Navbar';
+import Navbar from "../../Navbars/Navbar";
 import Axios from 'axios';
 
 export default function CustNotifications() {

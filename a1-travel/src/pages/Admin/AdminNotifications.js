@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import Navbar from '../Navbar';
 import Axios from 'axios';
-import AdminNavbar from "../AdminNavbar";
+import AdminNavbar from "../../Navbars/AdminNavbar";
 
 export default function AdminNotifications() {
     const [announcements, setAnnouncements] = useState([]);

@@ -2,7 +2,7 @@ import React, {useRef, useState} from 'react';
 import 'firebase/firestore';
 import {Modal, Toast} from "bootstrap";
 import Axios from "axios";
-import TravelAdminNavbar from "../TravelAdminNavbar";
+import TravelAdminNavbar from "../../Navbars/TravelAdminNavbar";
 
 export default function TAInbox() {
     const modalRef = useRef(null);

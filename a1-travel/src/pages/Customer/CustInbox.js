@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import Navbar from '../Navbar';
+import Navbar from "../../Navbars/Navbar";
 import 'firebase/firestore';
 import {Modal, Toast} from "bootstrap";
 import Axios from "axios";

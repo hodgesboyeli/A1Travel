@@ -2,7 +2,7 @@ import React, {useRef, useState} from 'react';
 import 'firebase/firestore';
 import {Modal, Toast} from "bootstrap";
 import Axios from "axios";
-import AdminNavbar from "../AdminNavbar";
+import AdminNavbar from "../../Navbars/AdminNavbar";
 
 export default function AdminInbox() {
     const modalRef = useRef(null);
