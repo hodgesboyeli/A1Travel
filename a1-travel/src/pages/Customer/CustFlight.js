@@ -1,105 +1,77 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../Navbar';
-import {Link} from "react-router-dom";
+import { Link, useNavigate } from 'react-router-dom';
+import { app } from '../../Firebase';
+import { getFirestore, collection, where, query, getDocs } from 'firebase/firestore';
 
 export default function CustFlight() {
-    const [flightType, setFlightType] = useState('roundTrip');
-    const [departure, setDeparture] = useState('');
-    const [arrival, setArrival] = useState('');
-    const [departureDate, setDepartureDate] = useState('');
-    const [returnDate, setReturnDate] = useState('');
-    const [passengers, setPassengers] = useState(1);
+    const [flights, setFlights] = useState([]);
+    const [selectedDestination, setSelectedDestination] = useState(null);
+    const [selectedFlight, setSelectedFlight] = useState(null); // Track selected flight
+    const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Handle the form submission logic here
+    useEffect(() => {
+        const fetchFlights = async () => {
+            try {
+                const db = getFirestore(app);
+
+                // Query flights where arriveLocation is equal to selectedDestination
+                const q = query(collection(db, 'Flights'), where('arriveLocation', '==', selectedDestination));
+                const querySnapshot = await getDocs(q);
+
+                const flightsData = querySnapshot.docs.map(doc => doc.data());
+                setFlights(flightsData);
+            } catch (error) {
+                console.error('Error fetching flights:', error);
+            }
+        };
+
+        // Retrieve selected destination from session storage
+        const storedDestination = sessionStorage.getItem('selectedDestination');
+        if (storedDestination) {
+            setSelectedDestination(storedDestination);
+            fetchFlights();
+        } else {
+            // Redirect to the destination selection page if no selected destination is found
+            navigate('/destination');
+        }
+    }, [selectedDestination, navigate]);
+
+    const handleFlightSelect = (selectedFlight) => {
+        setSelectedFlight(selectedFlight);
+        console.log('Selected Flight:', selectedFlight);
     };
+
+    const isBookButtonDisabled = !selectedFlight;
 
     return (
         <>
-        <Navbar/>
-            <h1 className="mt-3 text-center">
-                Flight Search
-            </h1>
-            <div className="container-fluid d-flex justify-content-center">
-                <form onSubmit={handleSubmit}>
-                    <div className="row">
-                        <div className="col">
-                            <label htmlFor="departure">Depart</label>
-                            <div className="input-group">
-
-                                <input type="text" className="form-control" id="departure" placeholder="Departure city"
-                                       value={departure} onChange={(e) => setDeparture(e.target.value)}/>
-                            </div>
+            <Navbar />
+            <div className="mt-5" style={{ paddingTop: 50 }}>
+                <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
+                    <h1>Available Flights to {selectedDestination}</h1>
+                </div>
+                <div className="container-fluid mt-3">
+                    {flights.map((flight, index) => (
+                        <div
+                            key={index}
+                            className={`destination-option ${selectedFlight === flight ? 'selected-destination' : ''}`}
+                            onClick={() => handleFlightSelect(flight)}
+                        >
+                            <p>{flight.departLocation} to {flight.arriveLocation}</p>
+                            <p>{flight.airline}</p>
+                            <p>{/* Add more flight details */}</p>
                         </div>
-
-                        <div className="col">
-                            <label htmlFor="arrival">Arrive</label>
-                            <div className="input-group">
-                                <input type="text" className="form-control" id="arrival" placeholder="Arrival city"
-                                       value={arrival} onChange={(e) => setArrival(e.target.value)}/>
-                            </div>
-                        </div>
-
-                        <div className="col">
-                            <div className="mb-3">
-                                <label>Flight Type</label>
-                                <div>
-                                    <div className="form-check">
-                                        <input className="form-check-input" type="radio" name="flightType"
-                                               id="roundTrip" value="roundTrip"
-                                               checked={flightType === 'roundTrip'}
-                                               onChange={() => setFlightType('roundTrip')}/>
-                                        <label className="form-check-label" htmlFor="roundTrip">Round-trip</label>
-                                    </div>
-                                    <div className="form-check">
-                                        <input className="form-check-input" type="radio" name="flightType" id="oneWay"
-                                               value="oneWay"
-                                               checked={flightType === 'oneWay'}
-                                               onChange={() => setFlightType('oneWay')}/>
-                                        <label className="form-check-label" htmlFor="oneWay">One-way</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="row">
-                        <div className="col">
-                            <label htmlFor="departureDate">Depart Date</label>
-                            <input type="date" className="form-control" id="departureDate" value={departureDate}
-                                   onChange={(e) => setDepartureDate(e.target.value)}/>
-                        </div>
-
-                        <div className="col">
-                            <label htmlFor="returnDate">Arrive Date</label>
-                            <input type="date" className="form-control" id="returnDate" value={returnDate}
-                                   onChange={(e) => setReturnDate(e.target.value)} disabled={flightType === 'oneWay'}/>
-                        </div>
-
-                        <div className="col">
-                            <label htmlFor="passengers">Passengers</label>
-                            <div className="input-group">
-                                <input type="number" className="form-control" id="passengers" min="1" value={passengers}
-                                       onChange={(e) => setPassengers(e.target.value)}/>
-                            </div>
-                        </div>
-
-                        <div className="col d-flex align-items-end mb-1">
-                            <button type="submit" className="btn btn-primary btn-sm">
-                                Search
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-                <div className="container-fluid d-flex justify-content-center" style={{marginTop: 40}}>
-                    <Link to="/lodging">
-                        <button type="submit" className="btn btn-md custom-button">
-                            Next
+                    ))}
+                </div>
+                <div className="text-center" style={{ marginTop: 40 }}>
+                    <Link to="/booking">
+                        <button type="submit" className="btn btn-md custom-button" disabled={isBookButtonDisabled}>
+                            Book Flight
                         </button>
                     </Link>
                 </div>
+            </div>
         </>
     );
 }

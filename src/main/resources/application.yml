@@ -45,6 +45,7 @@ security:
     - /js/**
     - /api/event/
     - /api/user/**
+    - /api/destination
     - /api/destination/**
     - /api/account/**
   exposed-headers:

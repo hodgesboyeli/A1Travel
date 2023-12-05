@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Navbar from "../Navbar";
 import { Link, useNavigate } from "react-router-dom";
 import { app } from '../../Firebase';
-import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore';
+import axios from 'axios'; // Import axios for making HTTP requests
 
 export default function CustDestination() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -13,17 +14,21 @@ export default function CustDestination() {
     useEffect(() => {
         const fetchDestinations = async () => {
             try {
-                const db = getFirestore(app);
-                const flightsCollection = await getDocs(collection(db, 'Flights'));
-                const allFlights = flightsCollection.docs.map(doc => doc.data());
+                // Make a request to the backend endpoint to get destinations
+                const response = await axios.get(`http://localhost:8080/api/destination/?limit=0`);
 
-                const uniqueDestinations = [...new Set(allFlights.flatMap(flight => [flight.arriveLocation, flight.departLocation]))];
+                // Check if the response and response.data.destinations exist
+                if (response && response.data && response.data.destinations) {
+                    const destinations = response.data.destinations.map(destination => destination.name);
 
-                const filteredDestinations = uniqueDestinations.filter(destination =>
-                    destination.toLowerCase().includes(searchQuery.toLowerCase())
-                );
+                    const filteredDestinations = destinations.filter(destination =>
+                        destination.toLowerCase().includes(searchQuery.toLowerCase())
+                    );
 
-                setDestinationOptions(filteredDestinations);
+                    setDestinationOptions(filteredDestinations);
+                } else {
+                    console.error('Invalid response or missing destinations:', response);
+                }
             } catch (error) {
                 console.error('Error fetching destinations:', error);
             }
