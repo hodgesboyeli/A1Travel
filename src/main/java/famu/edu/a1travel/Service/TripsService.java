@@ -2,6 +2,7 @@ package famu.edu.a1travel.Service;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
+import com.google.firebase.database.annotations.NotNull;
 import famu.edu.a1travel.Model.*;
 import org.springframework.stereotype.Service;
 
@@ -73,6 +74,7 @@ public class TripsService {
     }
 
     public String createTrip(Trips trip) throws ExecutionException, InterruptedException {
+        //create new thing
         RestTrips restTrip = new RestTrips(
                 trip.getTripId(),trip.getBudget(),trip.getCartTotal(),trip.getDestination(),
                 null,null,null,null,null,null);
@@ -123,31 +125,23 @@ public class TripsService {
         return tripRef.getId();
     }
 
-    public ArrayList<Trips> getTrips() throws ExecutionException, InterruptedException {
+    public ArrayList<Trips> getTrips(String user) throws ExecutionException, InterruptedException {
         Query query = db.collection("Trips");
+        if (!user.isEmpty()){
+            DocumentReference doc = (DocumentReference) usersService.getUserByEmail(user,true);
+            query = query.whereEqualTo("userID",doc);
+        }
+        return getRef(query);
+    }
+
+    @NotNull
+    private ArrayList<Trips> getRef(Query query) throws InterruptedException, ExecutionException {
         ApiFuture<QuerySnapshot> future = query.get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 
         ArrayList<Trips> trips = new ArrayList<>();
         for(QueryDocumentSnapshot doc : documents)
         {
-            trips.add(getTrip(doc));
-        }
-        return trips;
-    }
-
-    public ArrayList<Trips> getTripsByUser(String userId) throws ExecutionException, InterruptedException {
-        Query query = db.collection("Trips");
-
-        // Assuming "userID" is a string field in your Trips documents
-        query = query.whereEqualTo("userID", userId);
-
-        ApiFuture<QuerySnapshot> future = query.get();
-        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
-
-        // Process the documents and convert them to Trips objects
-        ArrayList<Trips> trips = new ArrayList<>();
-        for (QueryDocumentSnapshot doc : documents) {
             trips.add(getTrip(doc));
         }
         return trips;

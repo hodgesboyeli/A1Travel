@@ -30,10 +30,11 @@ public class TripsController {
         payload = null;
     }
     @GetMapping("/")
-    public ResponseEntity<Map<String,Object>> getTrips()
+    public ResponseEntity<Map<String,Object>> getTrips(
+            @RequestParam(name="user", required = false, defaultValue = "") String user)
     {
         try {
-            payload = tripsService.getTrips();
+            payload = tripsService.getTrips(user);
             statusCode = 200;
             name = "trips";
         } catch (ExecutionException | InterruptedException e) {
@@ -44,23 +45,6 @@ public class TripsController {
         response = new ResponseWrapper(statusCode, name, payload);
         return response.getResponse();
     }
-
-    @GetMapping("/{userId}")
-    public ResponseEntity<Map<String,Object>> getTripsByUser(@PathVariable(name = "userId") String id)
-    {
-        try {
-            payload = tripsService.getTripsByUser(id);
-            statusCode = 200;
-            name = "trips";
-        } catch (ExecutionException | InterruptedException e) {
-            payload = new ErrorMessage("Cannot fetch trips from database", CLASS_NAME,
-                    e.getStackTrace().toString());
-        }
-
-        response = new ResponseWrapper(statusCode, name, payload);
-        return response.getResponse();
-    }
-
     @PostMapping("/")
     public ResponseEntity<Map<String,Object>> createTrip(@RequestBody Trips trip){
         try{

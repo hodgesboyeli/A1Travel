@@ -73,7 +73,7 @@ public class UsersController {
     @GetMapping("/email/{email}")
     public ResponseEntity<Object> getUserByEmail(@PathVariable String email) {
         try {
-            Users user = usersService.getUserByEmail(email);
+            Users user = (Users) usersService.getUserByEmail(email);
             if (user != null) {
                 return ResponseEntity.ok(user);
             } else {
