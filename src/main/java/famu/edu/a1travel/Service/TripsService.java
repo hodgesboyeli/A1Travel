@@ -3,6 +3,7 @@ package famu.edu.a1travel.Service;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import famu.edu.a1travel.Model.*;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,7 +20,6 @@ public class TripsService {
         this.db = db;
     }
 
-    //@Cacheable(value = "tripCache", key = "#doc.id")
     private Trips getTrip(DocumentSnapshot doc) throws ExecutionException, InterruptedException {
 
         // Use batch retrieval for subdocuments
@@ -136,14 +136,12 @@ public class TripsService {
         DocumentReference tripRef = future.get();
         return tripRef.getId();
     }
-
-    //@Cacheable(value = "tripsByUserCache", key = "#user")
     public ArrayList<Trips> getTrips(String user) throws ExecutionException, InterruptedException {
         Query query = db.collection("Trips");
-        /*if (!user.isEmpty()){
+        if (!user.isEmpty()){
             DocumentReference doc = usersService.getUserDocByEmail(user);
             query = query.whereEqualTo("userID",doc);
-        }*/
+        }
         ApiFuture<QuerySnapshot> future = query.get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 

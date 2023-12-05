@@ -1,9 +1,16 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Navbar from "../../Navbars/Navbar";
+import Axios from "axios";
 
 export default function CustBookings(){
     const [trips, setTrips] = useState([]);
-
+    useEffect(()=>{
+        const fetchTrip = async()=>{
+            const response = await Axios.get('http://localhost:8080/api/trip/?user=' + sessionStorage.getItem('email'));
+            setTrips(response.data.trips);
+        };
+        fetchTrip().then();
+    },[]);
     return (
         <>
             <Navbar/>

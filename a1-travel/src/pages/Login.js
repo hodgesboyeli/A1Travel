@@ -32,6 +32,7 @@ export default function Login() {
                 if (!fetchedUser.isActive) throw 'User is Deactivated or Paused';
 
                 sessionStorage.clear();
+                sessionStorage.setItem('id',fetchedUser.userId);
                 sessionStorage.setItem('email',fetchedUser.email);
                 sessionStorage.setItem('role', fetchedUser.role);
 
