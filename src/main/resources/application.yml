@@ -45,6 +45,7 @@ security:
     - /css/**
     - /js/**
     - /api/event/
+    - /api/announcement/
     - /api/user/
     - /api/user/{userId}
     - /api/user/**

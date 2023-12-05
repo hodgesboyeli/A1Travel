@@ -12,6 +12,7 @@ import {AuthProvider} from "./pages/AuthContext";
 import CustomerRoutes from "./Routes/CustomerRoutes";
 import TravelAdminRoutes from "./Routes/TravelAdminRoutes";
 import AdminRoutes from "./Routes/AdminRoutes";
+import CreateAnnouncements from "./pages/Admin/Create Announcements";
 
 function App() {
     return (
@@ -38,6 +39,7 @@ function App() {
                     <Route element={<AdminRoutes/>}>
                         <Route element={<AdminHome />} path='/admin-home'/>
                         <Route element={<UserSearch />} path='/admin/user-search'/>
+                        <Route element={<CreateAnnouncements />} path = '/admin/create-announcements'/>
                     </Route>
 
                 </Routes>

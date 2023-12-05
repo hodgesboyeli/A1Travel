@@ -1,6 +1,5 @@
 import React, {useRef, useState} from 'react';
-import AdminNavbar from "../AdminNavbar";
-import TravelAdminNavbar from "../TravelAdminNavbar";
+import TravelAdminNavbar from "../../Navbars/TravelAdminNavbar";
 import Axios from "axios";
 
 export default function DatabaseManagement() {
