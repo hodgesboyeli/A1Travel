@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import Navbar from '../Navbar';
+import {Link} from "react-router-dom";
 
 export default function CustFlight() {
     const [flightType, setFlightType] = useState('roundTrip');
@@ -91,6 +92,11 @@ export default function CustFlight() {
                     </div>
                 </div>
             </form>
+            <Link to="/lodging">
+                <button type="submit" className="btn btn-md custom-button" style={{fontSize: 32}}>
+                    Next
+                </button>
+            </Link>
         </div>
         </>
     );

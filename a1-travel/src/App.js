@@ -15,8 +15,9 @@ import AdminRoutes from "./Routes/AdminRoutes";
 import CustFlight from "./pages/Customer/CustFlight";
 import CustCheckout from "./pages/Customer/CustCheckout";
 import CustLodging from "./pages/Customer/CustLodging";
-import CustBudgetDestination from "./pages/Customer/CustBudgetDestination";
+import CustBudget from "./pages/Customer/CustBudget";
 import CustEvent from "./pages/Customer/CustEvent";
+import CustDestination from "./pages/Customer/CustDestination";
 
 function App() {
     return (
@@ -33,7 +34,8 @@ function App() {
                     <Route element={<CustomerRoutes/>}>
                         <Route element={<CustHome />} path='/home'/>
                         <Route element={<CustFlight />} path='/flight'/>
-                        <Route element={<CustBudgetDestination />} path='/budget-destination'/>
+                        <Route element={<CustBudget />} path='/budget'/>
+                        <Route element={<CustDestination />} path='/destination'/>
                         <Route element={<CustLodging />} path='/lodging'/>
                         <Route element={<CustCheckout />} path='/checkout'/>
                         <Route element={<CustEvent />} path='/event'/>

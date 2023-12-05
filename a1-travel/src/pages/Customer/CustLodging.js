@@ -20,7 +20,12 @@ export default function CustLodging() {
                         <div className="d-grid gap-2 col-6 mx-auto">
                             <button className="btn btn-lg other-button" type="button">HOTEL</button>
                             <button className="btn btn-lg custom-button" type="button">AIRBNB</button>
-                            <button className="btn btn-link" type="button">STAYING ELSEWHERE? CONTINUE HERE</button>
+                            <Link to="/event">
+                                <button className="btn btn-link" type="button">
+                                    STAYING ELSEWHERE? CONTINUE HERE
+                                </button>
+                            </Link>
+
                         </div>
                     </div>
                 </section>

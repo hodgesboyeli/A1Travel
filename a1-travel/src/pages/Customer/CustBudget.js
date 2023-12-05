@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Navbar from "../Navbar";
 import {Link, useNavigate} from "react-router-dom";
 
-export default function CustBudgetDestination() {
+export default function CustBudget() {
     const [budget, setBudget] = useState('');
     const navigate = useNavigate();
 
@@ -40,9 +40,11 @@ export default function CustBudgetDestination() {
                                 placeholder='Enter amount'
                                 onChange={handleBudgetChange}
                             />
-                            <button className="btn btn-success" onClick={handleSubmit}>
-                                Confirm
-                            </button>
+                            <Link to="/destination">
+                                <button className="btn btn-success" onClick={handleSubmit}>
+                                    Confirm
+                                </button>
+                            </Link>
                         </div>
                     </div>
                 </section>
