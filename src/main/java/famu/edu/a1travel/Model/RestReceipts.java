@@ -4,7 +4,11 @@ import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 public class RestReceipts extends BaseReceipts {
     private DocumentReference tripID;
     private DocumentReference userID;

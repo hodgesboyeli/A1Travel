@@ -3,7 +3,6 @@ package famu.edu.a1travel.Service;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.*;
-import com.google.firebase.cloud.FirestoreClient;
 import famu.edu.a1travel.Model.Users;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +11,10 @@ import java.util.concurrent.ExecutionException;
 
 @Service
 public class UsersService {
-    private final Firestore db = FirestoreClient.getFirestore();
+    private final Firestore db;
+    public UsersService(Firestore db){
+        this.db = db;
+    }
 
     public ArrayList<Users> getUsers(String searchField, String value) throws ExecutionException, InterruptedException {
         Query query = db.collection("Users");
@@ -32,14 +34,21 @@ public class UsersService {
     }
 
     public Users getUserById(String id) throws ExecutionException, InterruptedException {
+        if (id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("User id must be a non-empty string");
+        }
+
         DocumentReference doc = db.collection("Users").document(id);
         ApiFuture<DocumentSnapshot> future = doc.get();
+        return future.get().toObject(Users.class);
+    }
+    public Users getUserByRef(DocumentReference ref) throws ExecutionException, InterruptedException {
+        ApiFuture<DocumentSnapshot> future = ref.get();
         return future.get().toObject(Users.class);
     }
 
     public String createUser(Users user) throws ExecutionException, InterruptedException {
         user.setCreatedAt(Timestamp.now());
-        //user.setLastLogin(Timestamp.now());
 
         ApiFuture<DocumentReference> future = db.collection("Users").add(user);
         DocumentReference userRef = future.get();
@@ -74,28 +83,33 @@ public class UsersService {
         return future.get().toObject(Users.class);
     }
 
-    public Users getUserByEmail(String email) throws ExecutionException, InterruptedException {
+    public DocumentReference getUserDocByEmail(String email) throws ExecutionException, InterruptedException {
         CollectionReference usersCollection = db.collection("Users");
-
         Query query = usersCollection.whereEqualTo("email", email);
         ApiFuture<QuerySnapshot> future = query.get();
-
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 
         if (!documents.isEmpty()) {
+            System.out.println("not empty!");
             // Assuming email is unique, there should be at most one user
-            QueryDocumentSnapshot document = documents.get(0);
-            return document.toObject(Users.class);
-        } else {
-            return null; // User not found
+            return documents.get(0).getReference();
         }
+        System.out.println("WTF!");
+        return null; // User not found
     }
 
+    public Users getUserByEmail(String email) throws ExecutionException, InterruptedException {
+        CollectionReference usersCollection = db.collection("Users");
+        Query query = usersCollection.whereEqualTo("email", email);
+        ApiFuture<QuerySnapshot> future = query.get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 
-    /*public void updateLastLogin(String id) {
-        DocumentReference docRef = db.collection("Users").document(id);
-        ApiFuture<WriteResult> writeResult = docRef.update("lastLogin", FieldValue.serverTimestamp());
-
-
-    }*/
+        if (!documents.isEmpty()) {
+            System.out.println("not empty!");
+            // Assuming email is unique, there should be at most one user
+            return documents.get(0).toObject(Users.class);
+        }
+        System.out.println("WTF!");
+        return null; // User not found
+    }
 }

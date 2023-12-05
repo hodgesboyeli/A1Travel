@@ -3,7 +3,11 @@ package famu.edu.a1travel.Model;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
 public class RestEventAttendees {
     private DocumentReference eventID;
     private DocumentReference userID;

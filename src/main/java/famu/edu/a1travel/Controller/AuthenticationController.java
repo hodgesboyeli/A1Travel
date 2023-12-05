@@ -2,20 +2,19 @@ package famu.edu.a1travel.Controller;
 
 import com.google.api.client.util.Value;
 import com.google.cloud.Timestamp;
+import com.google.cloud.firestore.Firestore;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import famu.edu.a1travel.Model.Users;
 import famu.edu.a1travel.Security.FirebaseUserDetails;
 import famu.edu.a1travel.Service.UsersService;
-import famu.edu.a1travel.Util.ErrorMessage;
 import famu.edu.a1travel.Util.JwtUtil;
 import famu.edu.a1travel.Util.LoginRequest;
 import famu.edu.a1travel.Util.ResponseWrapper;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,6 +31,9 @@ import java.util.concurrent.ExecutionException;
 public class AuthenticationController {
 
     private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    private final UsersService usersService;
+
+    private final UsersService usersService;
 
     @Value("${response.status}")
     private int statusCode;
@@ -43,13 +45,12 @@ public class AuthenticationController {
 
     private final Log logger = LogFactory.getLog(this.getClass());
 
-    public AuthenticationController(AuthenticationManager authenticationManager) {
+    public AuthenticationController(AuthenticationManager authenticationManager, Firestore db) {
+        usersService = new UsersService(db);
     }
 
     @PostMapping("/register")
     public String register(@RequestBody Map<String,Object> userValues) throws ExecutionException, InterruptedException, FirebaseAuthException {
-        final UsersService usersService = new UsersService();
-
         Users user = new Users();
         UserRecord.CreateRequest request = new UserRecord.CreateRequest();
         for (Map.Entry<String,Object> entry : userValues.entrySet()){

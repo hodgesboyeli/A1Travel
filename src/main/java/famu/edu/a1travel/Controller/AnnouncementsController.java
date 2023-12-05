@@ -53,7 +53,7 @@ public class AnnouncementsController {
             statusCode = 200;
             name = "announcements";
         } catch (ExecutionException | InterruptedException e) {
-            payload = new ErrorMessage("Cannot fetch users from database", CLASS_NAME,
+            payload = new ErrorMessage("Cannot fetch announcements from database", CLASS_NAME,
                     e.getStackTrace().toString());
         }
 

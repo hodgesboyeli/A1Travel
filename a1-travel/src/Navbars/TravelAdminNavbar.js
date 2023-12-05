@@ -39,6 +39,12 @@ export default function TravelAdminNavbar(){
                     </ul>
                 </div>
             </div>
+            <button type="inbox" className="admin-inbox-button btn-md">
+                <a className="nav-link" href="http://localhost:3000/ta-inbox"><i className="fas fa-envelope" style={{color: "black"}}></i></a>
+            </button>
+            <button type="notifications" className="admin-inbox-button btn-md">
+                <a className="nav-link" href="http://localhost:3000/ta-notifications"><i className="fas fa-bell" style={{color: "black"}}></i></a>
+            </button>
             <button type="log-out" className="sign-out-button btn-md" onClick={handleLogout}>
                 <i className="fas fa-sign-out" style={{backgroundColor: "#FFF", color: "#000"}}></i>
             </button>
