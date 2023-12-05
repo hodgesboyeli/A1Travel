@@ -16,6 +16,7 @@ import CustFlight from "./pages/Customer/CustFlight";
 import CustCheckout from "./pages/Customer/CustCheckout";
 import CustLodging from "./pages/Customer/CustLodging";
 import CustBudgetDestination from "./pages/Customer/CustBudgetDestination";
+import CustEvent from "./pages/Customer/CustEvent";
 
 function App() {
     return (
@@ -35,6 +36,7 @@ function App() {
                         <Route element={<CustBudgetDestination />} path='/budget-destination'/>
                         <Route element={<CustLodging />} path='/lodging'/>
                         <Route element={<CustCheckout />} path='/checkout'/>
+                        <Route element={<CustEvent />} path='/event'/>
                     </Route>
 
                     <Route element={<TravelAdminRoutes/>}>
