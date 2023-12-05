@@ -1,9 +1,7 @@
 package famu.edu.a1travel.Controller;
 
 import com.google.api.client.util.Value;
-import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
 import famu.edu.a1travel.Model.RestAnnouncements;
 import famu.edu.a1travel.Service.AnnouncementsService;
 import famu.edu.a1travel.Util.ErrorMessage;
@@ -11,6 +9,8 @@ import famu.edu.a1travel.Util.ResponseWrapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -32,17 +32,16 @@ public class AnnouncementsController {
 
     @PostMapping("/")
     public ResponseEntity<Map<String,Object>> createAnnouncement(@RequestBody RestAnnouncements announcement){
+        Map<String,Object> returnVal = new HashMap<>();
+        statusCode = 500;
         try{
             payload = announcementsService.createAnnouncement(announcement);
             statusCode = 201;
-            name = "announcementID";
+            returnVal.put("announcementID",payload);
         } catch (ExecutionException | InterruptedException e) {
-            payload = new ErrorMessage("Cannot create new announcement in database.", CLASS_NAME, e.toString());
+            returnVal.put("error","Cannot create new announcement in database: "+ Arrays.toString(e.getStackTrace()));
         }
-
-        response = new ResponseWrapper(statusCode,name, payload);
-
-        return response.getResponse();
+        return ResponseEntity.status(statusCode).body(returnVal);
     }
 
     @GetMapping("/")
@@ -54,7 +53,7 @@ public class AnnouncementsController {
             name = "announcements";
         } catch (ExecutionException | InterruptedException e) {
             payload = new ErrorMessage("Cannot fetch announcements from database", CLASS_NAME,
-                    e.getStackTrace().toString());
+                    Arrays.toString(e.getStackTrace()));
         }
 
         response = new ResponseWrapper(statusCode, name, payload);
