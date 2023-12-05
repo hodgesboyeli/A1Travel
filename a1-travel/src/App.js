@@ -13,6 +13,9 @@ import CustomerRoutes from "./Routes/CustomerRoutes";
 import TravelAdminRoutes from "./Routes/TravelAdminRoutes";
 import AdminRoutes from "./Routes/AdminRoutes";
 import CustFlight from "./pages/Customer/CustFlight";
+import CustCheckout from "./pages/Customer/CustCheckout";
+import CustLodging from "./pages/Customer/CustLodging";
+import CustBudgetDestination from "./pages/Customer/CustBudgetDestination";
 
 function App() {
     return (
@@ -29,6 +32,9 @@ function App() {
                     <Route element={<CustomerRoutes/>}>
                         <Route element={<CustHome />} path='/home'/>
                         <Route element={<CustFlight />} path='/flight'/>
+                        <Route element={<CustBudgetDestination />} path='/budget-destination'/>
+                        <Route element={<CustLodging />} path='/lodging'/>
+                        <Route element={<CustCheckout />} path='/checkout'/>
                     </Route>
 
                     <Route element={<TravelAdminRoutes/>}>

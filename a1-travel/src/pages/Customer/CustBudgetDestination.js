@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from "../Navbar";
-import SearchBar from "../../SearchBar";
 import Axios from "axios";
 import {Link} from "react-router-dom";
 
-export default function CustHome() {
+export default function CustBudgetDestination() {
     const [locations, setLocations] = useState([]);
     const [filteredLocations, setFilteredLocations] = useState([]);
 
@@ -36,16 +35,16 @@ export default function CustHome() {
     return (
         <div>
             <Navbar/>
-            <div className="mt-5" style={{paddingTop:50}}>
+            <div className="mt-5">
                 <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
-                    <h1>May your journey begin</h1>
+                    <h1>Budget</h1>
                 </div>
-                <div className="text-center" style={{marginTop: 40}}>
-                    <Link to="/budget-destination">
-                        <button type="submit" className="btn btn-md custom-button">
-                            Create Trip
-                            <div><i className="fas fa-plane"></i></div>
-                        </button>
+                <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
+                    <h1>Destination</h1>
+                </div>
+                <div className="container-fluid d-flex justify-content-center">
+                    <Link to="/lodging">
+                        <p>Next</p>
                     </Link>
                 </div>
             </div>
