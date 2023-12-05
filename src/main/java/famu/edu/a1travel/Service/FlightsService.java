@@ -24,4 +24,9 @@ public class FlightsService {
         ApiFuture<DocumentSnapshot> future = ref.get();
         return future.get().toObject(Flights.class);
     }
+    public String createFlight(Flights flight) throws ExecutionException, InterruptedException {
+        ApiFuture<DocumentReference> future = db.collection("Flights").add(flight);
+        DocumentReference eventRef = future.get();
+        return eventRef.getId();
+    }
 }

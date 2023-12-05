@@ -39,18 +39,19 @@ security:
     - /favicon.ico
     - /
     - /api/login
-    - /api/user/email/{email}
+    - /api/user/**
     - /api/logout
     - /api/register
     - /css/**
     - /js/**
     - /api/event/
-    - /api/user/
-    - /api/user/{userId}
-    - /api/user/**
-    - /api/destination/
-    - /api/destination/{userId}
     - /api/trip/**
+    - /api/flight/
+    - /api/train/
+    - /api/car/
+    - /api/destination/**
+    - /api/message/**
+    - /api/announcement/
   exposed-headers:
     - X-Xsrf-Token
     - X-Auth-Token

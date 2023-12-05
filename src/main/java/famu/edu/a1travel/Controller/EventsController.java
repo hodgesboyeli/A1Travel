@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-
 @RestController
 @RequestMapping("/api/event")
 public class EventsController {

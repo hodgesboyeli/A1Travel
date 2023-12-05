@@ -1,5 +1,6 @@
 package famu.edu.a1travel.Controller;
 
+
 import famu.edu.a1travel.Model.Cars;
 import famu.edu.a1travel.Service.CarsService;
 import com.google.api.client.util.Value;
@@ -21,9 +22,6 @@ import java.util.concurrent.ExecutionException;
 @RequestMapping("/api/car")
 public class CarsController {
     private final CarsService carsService;
-
-    private static final Logger logger = LoggerFactory.getLogger(CarsController.class);
-
     @Value("${response.status}")
     private int statusCode;
     @Value("${response.name}")
@@ -35,7 +33,7 @@ public class CarsController {
         this.carsService = carsService;
         payload = null;
     }
-
+  
     @GetMapping("/{carId}")
     public ResponseEntity<Map<String,Object>> getCar(@PathVariable(name = "carId") String id) {
         payload = new Cars();
@@ -47,8 +45,21 @@ public class CarsController {
             payload = new ErrorMessage("Cannot fetch car with id" + id + " from database", CLASS_NAME,
                     e.getStackTrace().toString());
         }
-
         response = new ResponseWrapper(statusCode, name, payload);
+      return response.getResponse();
+    }
+  
+    @PostMapping("/")
+    public ResponseEntity<Map<String,Object>> createCar(@RequestBody Cars car){
+        try{
+            payload = carsService.createCar(car);
+            statusCode = 201;
+            name = "carId";
+        } catch (ExecutionException | InterruptedException e) {
+            payload = new ErrorMessage("Cannot create new car in database.", CLASS_NAME, e.toString());
+        }
+
+        response = new ResponseWrapper(statusCode,name, payload);
         return response.getResponse();
     }
 }

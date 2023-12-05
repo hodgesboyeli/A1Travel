@@ -31,7 +31,7 @@ export default function Navbar(){
                 <div className="collapse navbar-collapse " id="navbarNav">
                     <ul className="navbar-nav justify-content-center">
                         <li className="nav-item">
-                            <a className="nav-link" href="#">Home</a>
+                            <a className="nav-link" href="http://localhost:3000/home">Home</a>
                         </li>
                         <li className="nav-item">
                             <a className="nav-link" href="#">Past Bookings</a>
@@ -48,6 +48,12 @@ export default function Navbar(){
                     </ul>
                 </div>
             </div>
+            <button type="inbox" className="inbox-button btn-md">
+                <a className="nav-link" href="http://localhost:3000/inbox"><i className="fas fa-envelope"></i></a>
+            </button>
+            <button type="notifications" className="inbox-button btn-md">
+                <a className="nav-link" href="http://localhost:3000/notifications"><i className="fas fa-bell"></i></a>
+            </button>
             <button type="log-out" className="sign-out-button btn-md" onClick={handleLogout}>
                 <i className="fas fa-sign-out"></i>
             </button>
