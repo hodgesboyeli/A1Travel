@@ -134,6 +134,20 @@ a:hover {
     border-bottom-right-radius: 25px;
 }
 
+.destination-option {
+    cursor: pointer;
+    transition: background-color 0.15s ease; /* Add a smooth transition effect */
+}
+
+.destination-option:hover {
+    background-color: #f0f0f0; /* Light gray background on hover */
+}
+
+.selected-destination {
+    background-color: #1e71ee;
+    opacity: 0.8; /* Adjust the opacity as needed */
+}
+
 .other-button {
     font-size: 40px;
     font-family: 'Bebas Neue', sans-serif;
