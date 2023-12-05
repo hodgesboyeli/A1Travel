@@ -51,6 +51,7 @@ security:
     - /api/destination/
     - /api/destination/{userId}
     - /api/trip/
+    - /api/trip/{userId}
   exposed-headers:
     - X-Xsrf-Token
     - X-Auth-Token
