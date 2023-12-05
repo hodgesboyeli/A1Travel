@@ -19,6 +19,12 @@ import CustNotifications from "./pages/Customer/CustNotifications";
 import AdminNotifications from "./pages/Admin/AdminNotifications";
 import TANotifications from "./pages/Travel_Admin/TANotifications";
 import CreateAnnouncements from "./pages/Admin/Create Announcements";
+import CustEvent from "./pages/Customer/CustEvent";
+import CustCheckout from "./pages/Customer/CustCheckout";
+import CustLodging from "./pages/Customer/CustLodging";
+import CustDestination from "./pages/Customer/CustDestinations";
+import CustBudget from "./pages/Customer/CustBudget";
+import CustFlight from "./pages/Customer/CustFlight";
 
 function App() {
     return (
@@ -36,6 +42,12 @@ function App() {
                         <Route element={<CustHome />} path='/home'/>
                         <Route element={<CustInbox />} path='/inbox'/>
                         <Route element={<CustNotifications />} path='/notifications'/>
+                        <Route element={<CustFlight />} path='/flight'/>
+                        <Route element={<CustBudget />} path='/budget'/>
+                        <Route element={<CustDestination />} path='/destination'/>
+                        <Route element={<CustLodging />} path='/lodging'/>
+                        <Route element={<CustCheckout />} path='/checkout'/>
+                        <Route element={<CustEvent />} path='/event'/>
                     </Route>
 
                     <Route element={<TravelAdminRoutes/>}>
