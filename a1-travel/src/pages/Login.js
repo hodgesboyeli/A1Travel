@@ -15,11 +15,7 @@ export default function Login() {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        sessionStorage.clear();
-        sessionStorage.setItem('email', "john1.doe@famu.edu");
-        sessionStorage.setItem('role', "Customer");
-        navigate('/home');
-        /*
+
         try {
             setError('');
             setLoading(true);
@@ -61,7 +57,7 @@ export default function Login() {
             showModal();
         } finally {
             setLoading(false);
-        }*/
+        }
     }
 
     const showModal = () => {

@@ -42,7 +42,7 @@ export default function CustHome() {
                 </div>
                 <div className="text-center" style={{marginTop: 40}}>
                     <Link to="/budget-destination">
-                        <button type="submit" className="btn btn-md custom-button">
+                        <button type="submit" className="btn btn-md custom-button" style={{fontSize: 32}}>
                             Create Trip
                             <div><i className="fas fa-plane"></i></div>
                         </button>
