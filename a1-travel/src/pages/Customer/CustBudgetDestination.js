@@ -1,53 +1,55 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Navbar from "../Navbar";
-import Axios from "axios";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 export default function CustBudgetDestination() {
-    const [locations, setLocations] = useState([]);
-    const [filteredLocations, setFilteredLocations] = useState([]);
+    const [budget, setBudget] = useState('');
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        async function getDests(){
-            try {
-                const response = await Axios.get('http://localhost:8080/api/destination/');
-                setLocations(response.data.destinations);
-                setFilteredLocations(response.data.destinations);
-                console.log(locations);
-            } catch (error){
-                console.error("Error fetching data:",error);
-            }
-        }
-        getDests().then();
-    }, [locations]);
+    const formatNumber = (value) => {
+        // Remove all non-digit characters
+        const numericValue = value.replace(/[^\d]/g, '');
 
-    const handleSearch = (searchTerm) => {
-        if (searchTerm) {
-            const filtered = locations.filter(location =>
-                location.location.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-            setFilteredLocations(filtered);
-        } else {
-            setFilteredLocations(locations);
-        }
+        // Format the number with commas
+        return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    };
+    const handleBudgetChange = (e) => {
+        const val = e.target.value.replace(/,/g,'');
+        setBudget(formatNumber(val));
+    };
+
+    const handleSubmit = () => {
+        // Handle the submit action here
+        console.log('Budget submitted:', budget);
     };
 
     return (
-        <div>
+        <>
             <Navbar/>
-            <div className="mt-5">
-                <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
-                    <h1>Budget</h1>
-                </div>
-                <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
-                    <h1>Destination</h1>
-                </div>
-                <div className="container-fluid d-flex justify-content-center">
-                    <Link to="/lodging">
-                        <p>Next</p>
-                    </Link>
-                </div>
+            <div className="mt-5 text-center">
+                    <h1 className="text-center">Budget</h1>
+                <section className="my-5">
+                    <div className="d-flex flex-column align-items-center">
+                        <h2 className="mb-3">WHAT IS YOUR BUDGET?</h2>
+                        <div className="input-group input-group-lg mb-3 col-6 w-auto">
+                            <span className="input-group-text">$</span>
+                            <input
+                                type="text"
+                                className="form-control"
+                                value={budget}
+                                placeholder='Enter amount'
+                                onChange={handleBudgetChange}
+                            />
+                            <button className="btn btn-success" onClick={handleSubmit}>
+                                Confirm
+                            </button>
+                        </div>
+                    </div>
+                </section>
+                <button className="btn custom-button ms-5 align-content-center">
+                    Next
+                </button>
             </div>
-        </div>
+        </>
     );
 }
