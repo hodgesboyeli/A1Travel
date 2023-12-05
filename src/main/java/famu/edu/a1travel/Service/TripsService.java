@@ -4,6 +4,7 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.database.annotations.NotNull;
 import famu.edu.a1travel.Model.*;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,70 +17,56 @@ import java.util.concurrent.ExecutionException;
 public class TripsService {
     private final Firestore db;
     private final UsersService usersService;
-    private final ConcurrentHashMap<String, Trips> tripsCache = new ConcurrentHashMap<>();
     public TripsService(Firestore db) {
         usersService = new UsersService(db);
         this.db = db;
     }
 
+    @Cacheable(value = "tripCache", key = "#doc.id")
     public Trips getTrip(DocumentSnapshot doc) throws ExecutionException, InterruptedException {
-        String tripId = doc.getId();
-        if (tripsCache.containsKey(tripId)) {
-            return tripsCache.get(tripId);
-        }
-
-        // Get the User
+        // Use batch retrieval for subdocuments
+        List<ApiFuture<DocumentSnapshot>> futures = new ArrayList<>();
         DocumentReference userRef = (DocumentReference) doc.get("userID");
-        Users user = null;
-        if (userRef != null){
-            user = userRef.get().get().toObject(Users.class);
-        }
-
-        // Get the Car
         DocumentReference carRef = (DocumentReference) doc.get("carID");
-        Cars car = null;
-        if (carRef != null){
-            car = carRef.get().get().toObject(Cars.class);
-        }
-
-        // Get the Events
-        ArrayList<Events> events = new ArrayList<>();
-        List<DocumentReference> eventRefs = (List<DocumentReference>) doc.get("eventID");
-        if (eventRefs != null) {
-            for (DocumentReference ref : eventRefs) {
-                events.add(ref.get().get().toObject(Events.class));
-            }
-        }
-
-        // Get the Flights
-        ArrayList<Flights> flights = new ArrayList<>();
-        List<DocumentReference> flightRefs = (List<DocumentReference>) doc.get("flightID");
-        if (flightRefs != null) {
-            for (DocumentReference ref : flightRefs) {
-                flights.add(ref.get().get().toObject(Flights.class));
-            }
-        }
-
-        // Get the Lodging
         DocumentReference lodgingRef = (DocumentReference) doc.get("lodgingID");
-        Lodgings lodging = null;
-        if (lodgingRef != null){
-            lodging = lodgingRef.get().get().toObject(Lodgings.class);
-        }
-
-        // Get the Trains
-        ArrayList<Trains> trains = new ArrayList<>();
+        List<DocumentReference> eventRefs = (List<DocumentReference>) doc.get("eventID");
+        List<DocumentReference> flightRefs = (List<DocumentReference>) doc.get("flightID");
         List<DocumentReference> trainRefs = (List<DocumentReference>) doc.get("trainID");
-        if (trainRefs != null) {
-            for (DocumentReference ref : trainRefs) {
-                trains.add(ref.get().get().toObject(Trains.class));
+
+        if (userRef != null) futures.add(userRef.get());
+        if (carRef != null) futures.add(carRef.get());
+        if (lodgingRef != null) futures.add(lodgingRef.get());
+        for (DocumentReference ref : eventRefs) futures.add(ref.get());
+        for (DocumentReference ref : flightRefs) futures.add(ref.get());
+        for (DocumentReference ref : trainRefs) futures.add(ref.get());
+
+        // Process the futures
+        Users user = null;
+        Cars car = null;
+        Lodgings lodging = null;
+        ArrayList<Events> events = new ArrayList<>();
+        ArrayList<Flights> flights = new ArrayList<>();
+        ArrayList<Trains> trains = new ArrayList<>();
+
+        for (ApiFuture<DocumentSnapshot> future : futures) {
+            DocumentSnapshot subDoc = future.get();
+            if (subDoc.getReference().equals(userRef)) {
+                user = subDoc.toObject(Users.class);
+            } else if (subDoc.getReference().equals(carRef)) {
+                car = subDoc.toObject(Cars.class);
+            } else if (subDoc.getReference().equals(lodgingRef)) {
+                lodging = subDoc.toObject(Lodgings.class);
+            } else if (eventRefs.contains(subDoc.getReference())) {
+                events.add(subDoc.toObject(Events.class));
+            } else if (flightRefs.contains(subDoc.getReference())) {
+                flights.add(subDoc.toObject(Flights.class));
+            } else if (trainRefs.contains(subDoc.getReference())) {
+                trains.add(subDoc.toObject(Trains.class));
             }
         }
 
         // Create and return the Trips object
-        Trips trip = new Trips(doc.getId(), doc.getDouble("budget"), doc.getDouble("cartTotal"), doc.getString("destination"), user, car, lodging, events, flights, trains);
-        tripsCache.put(tripId, trip);
-        return trip;
+        return new Trips(doc.getId(), doc.getDouble("budget"), doc.getDouble("cartTotal"), doc.getString("destination"), user, car, lodging, events, flights, trains);
     }
 
     public String createTrip(Trips trip) throws ExecutionException, InterruptedException {
@@ -134,17 +121,13 @@ public class TripsService {
         return tripRef.getId();
     }
 
+    @Cacheable(value = "tripsByUserCache", key = "#user")
     public ArrayList<Trips> getTrips(String user) throws ExecutionException, InterruptedException {
         Query query = db.collection("Trips");
         if (!user.isEmpty()){
             DocumentReference doc = usersService.getUserDocByEmail(user);
             query = query.whereEqualTo("userID",doc);
         }
-        return getRef(query);
-    }
-
-    @NotNull
-    private ArrayList<Trips> getRef(Query query) throws InterruptedException, ExecutionException {
         ApiFuture<QuerySnapshot> future = query.get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 
