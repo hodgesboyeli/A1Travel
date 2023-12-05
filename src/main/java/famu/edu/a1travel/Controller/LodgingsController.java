@@ -36,8 +36,9 @@ public class LodgingsController {
         payload = null;
     }
 
-    @GetMapping("/{lodgingId}")
+    @GetMapping("id/{lodgingId}")
     public ResponseEntity<Map<String,Object>> getLodging(@PathVariable(name = "lodgingId") String id) {
+        logger.info("getLodging function is working!");
         payload = new Lodgings();
         try {
             payload = lodgingsService.getLodgingById(id);
@@ -45,6 +46,22 @@ public class LodgingsController {
             name = "lodging";
         } catch (ExecutionException | InterruptedException e) {
             payload = new ErrorMessage("Cannot fetch lodging with id" + id + " from database", CLASS_NAME,
+                    e.getStackTrace().toString());
+        }
+
+        response = new ResponseWrapper(statusCode, name, payload);
+        return response.getResponse();
+    }
+
+    @GetMapping("cityState/{cityState}")
+    public ResponseEntity<Map<String,Object>> getLodgingByCityState(@PathVariable(name = "cityState") String cityState) {
+        payload = new Lodgings();
+        try {
+            payload = lodgingsService.getLodgingByCityState(cityState);
+            statusCode = 200;
+            name = "lodging";
+        } catch (ExecutionException | InterruptedException e) {
+            payload = new ErrorMessage("Cannot fetch lodgings with cityState" + cityState + " from database", CLASS_NAME,
                     e.getStackTrace().toString());
         }
 

@@ -12,6 +12,7 @@ public class Lodgings {
     @DocumentId
     private @Nullable String lodgingId;
     private String address;
+    private String cityState;
     private String details;
     private Double price;
     private String type;

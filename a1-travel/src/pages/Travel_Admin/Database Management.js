@@ -27,7 +27,8 @@ export default function DatabaseManagement() {
         email: '',
         eventStart: null,
         eventEnd: null,
-        location: '',
+        address: '',
+        cityState: '',
         price: null,
         capacity: null,
         airline: '',
@@ -49,7 +50,7 @@ export default function DatabaseManagement() {
     });
 
     const isEventFormValid = () => {
-        const requiredFields = ['eventName', 'eventType', 'description', 'organizer', 'eventStart', 'eventEnd', 'location', 'price', 'capacity'];
+        const requiredFields = ['eventName', 'eventType', 'description', 'organizer', 'eventStart', 'eventEnd', 'address', 'cityState', 'price', 'capacity'];
 
         for (const field of requiredFields) {
             if (!inputValues[field]) {
@@ -142,6 +143,7 @@ export default function DatabaseManagement() {
         } else {
             console.warn('No image file selected');
         }
+        console.log("Yoooo");
 
         // Destructure input values
         const {
@@ -151,12 +153,12 @@ export default function DatabaseManagement() {
             organizer,
             eventStart,
             eventEnd,
-            location,
+            address,
+            cityState,
             price,
             capacity,
             image
         } = inputValues;
-
 
         const phoneNumber = phoneRef.current.value;
         const email = emailRef.current.value;
@@ -169,7 +171,8 @@ export default function DatabaseManagement() {
             organizer,
             phoneNumber,
             email,
-            location,
+            address,
+            cityState,
             eventStart: eventStart + ".000Z",
             eventEnd: eventEnd + ".000Z",
             price,
@@ -464,7 +467,8 @@ export default function DatabaseManagement() {
             organizer: '',
             eventStart: '',
             eventEnd: '',
-            location: '',
+            address: '',
+            cityState: '',
             price: '',
             capacity: ''
         });
@@ -596,15 +600,19 @@ export default function DatabaseManagement() {
                             <label htmlFor="inputEventEnd" className="form-label">Event End</label>
                             <input type="datetime-local" className="form-control" id="eventEnd" value={inputValues.eventEnd} onChange={handleInputChange} />
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-3">
                             <label htmlFor="inputOrganizer" className="form-label">Event Organizer</label>
                             <input type="text" className="form-control" id="organizer" value={inputValues.organizer} onChange={handleInputChange}/>
                         </div>
-                        <div className="col-md-4">
-                            <label htmlFor="inputLocation" className="form-label">Event Location</label>
-                            <input type="text" className="form-control" id="location" value={inputValues.location} onChange={handleInputChange} />
+                        <div className="col-md-2">
+                            <label htmlFor="inputAddress" className="form-label">Event Address</label>
+                            <input type="text" className="form-control" id="address" value={inputValues.address} onChange={handleInputChange} />
                         </div>
-                        <div className="col-md-4">
+                        <div className="col-md-2">
+                            <label htmlFor="inputCityState" className="form-label">Event Ciy/State</label>
+                            <input type="text" className="form-control" id="cityState" value={inputValues.cityState} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-5">
                             <label htmlFor="inputContactInfo" className="form-label">Contact Information</label>
                             <div className="input-group">
                                 <input type="text" className= "form-control" placeholder="Phone Number" aria-label="Phone Number" ref={phoneRef} />

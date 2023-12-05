@@ -2,14 +2,12 @@ package famu.edu.a1travel.Controller;
 
 import com.google.api.client.util.Value;
 import famu.edu.a1travel.Model.Events;
+import famu.edu.a1travel.Model.Lodgings;
 import famu.edu.a1travel.Service.EventsService;
 import famu.edu.a1travel.Util.ErrorMessage;
 import famu.edu.a1travel.Util.ResponseWrapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -41,6 +39,22 @@ public class EventsController {
 
         response = new ResponseWrapper(statusCode,name, payload);
 
+        return response.getResponse();
+    }
+
+    @GetMapping("/{cityState}")
+    public ResponseEntity<Map<String,Object>> getEventsByCityState(@PathVariable String cityState) {
+        payload = new Events();
+        try {
+            payload = eventsService.getEventsByCityState(cityState);
+            statusCode = 200;
+            name = "events";
+        } catch (ExecutionException | InterruptedException e) {
+            payload = new ErrorMessage("Cannot fetch events with cityState" + cityState + " from database", CLASS_NAME,
+                    e.getStackTrace().toString());
+        }
+
+        response = new ResponseWrapper(statusCode, name, payload);
         return response.getResponse();
     }
 }

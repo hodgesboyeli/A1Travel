@@ -1,12 +1,12 @@
 package famu.edu.a1travel.Service;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.*;
 import famu.edu.a1travel.Model.Flights;
+import famu.edu.a1travel.Model.Lodgings;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -20,10 +20,20 @@ public class FlightsService {
         ApiFuture<DocumentSnapshot> future = ref.get();
         return future.get().toObject(Flights.class);
     }
-    public Flights getFlightByRef(DocumentReference ref) throws ExecutionException, InterruptedException {
-        ApiFuture<DocumentSnapshot> future = ref.get();
-        return future.get().toObject(Flights.class);
+    public Flights getFlightsByArriveLocation(String arriveLocation) throws ExecutionException, InterruptedException {
+        CollectionReference flightsCollection = db.collection("Flights");
+        Query query = flightsCollection.whereEqualTo("arriveLocation", arriveLocation);
+        ApiFuture<QuerySnapshot> future = query.get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+        if (!documents.isEmpty()) {
+            System.out.println("All good with get flights by arriveLocation");
+            return documents.get(0).toObject(Flights.class);
+        }
+        System.out.println("Get flights by arriveLocation NOT working!");
+        return null;
     }
+
     public String createFlight(Flights flight) throws ExecutionException, InterruptedException {
         ApiFuture<DocumentReference> future = db.collection("Flights").add(flight);
         DocumentReference eventRef = future.get();
