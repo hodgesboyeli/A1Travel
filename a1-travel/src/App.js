@@ -22,9 +22,9 @@ import CreateAnnouncements from "./pages/Admin/Create Announcements";
 import CustEvent from "./pages/Customer/CustEvent";
 import CustCheckout from "./pages/Customer/CustCheckout";
 import CustLodging from "./pages/Customer/CustLodging";
-import CustDestination from "./pages/Customer/CustDestinations";
-import CustBudget from "./pages/Customer/CustBudget";
-import CustFlight from "./pages/Customer/CustFlight";
+//import CustDestination from "./pages/Customer/CustDestinations";
+//import CustBudget from "./pages/Customer/CustBudget";
+//import CustFlight from "./pages/Customer/CustFlight";
 import TAHistory from "./pages/Travel_Admin/TAHistory";
 import CustBookings from "./pages/Customer/CustBookings";
 
