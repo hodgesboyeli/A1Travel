@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import CustHome from "./pages/Customer/CustHome";
 import Login from "./pages/Login";
@@ -19,8 +19,13 @@ import CustNotifications from "./pages/Customer/CustNotifications";
 import AdminNotifications from "./pages/Admin/AdminNotifications";
 import TANotifications from "./pages/Travel_Admin/TANotifications";
 import CreateAnnouncements from "./pages/Admin/Create Announcements";
+import CustEvent from "./pages/Customer/CustEvent";
+import CustCheckout from "./pages/Customer/CustCheckout";
+import CustLodging from "./pages/Customer/CustLodging";
+import CustDestination from "./pages/Customer/CustDestinations";
+import CustBudget from "./pages/Customer/CustBudget";
+import CustFlight from "./pages/Customer/CustFlight";
 import TAHistory from "./pages/Travel_Admin/TAHistory";
-import Axios from "axios";
 import CustBookings from "./pages/Customer/CustBookings";
 
 function App() {
@@ -40,6 +45,12 @@ function App() {
                         <Route element={<CustInbox />} path='/inbox'/>
                         <Route element={<CustNotifications />} path='/notifications'/>
                         <Route element={<CustBookings />} path='/history'/>
+                        <Route element={<CustFlight />} path='/flight'/>
+                        <Route element={<CustBudget />} path='/budget'/>
+                        <Route element={<CustDestination />} path='/destination'/>
+                        <Route element={<CustLodging />} path='/lodging'/>
+                        <Route element={<CustCheckout />} path='/checkout'/>
+                        <Route element={<CustEvent />} path='/event'/>
                     </Route>
 
                     <Route element={<TravelAdminRoutes/>}>

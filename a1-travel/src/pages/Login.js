@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../Firebase';
 import axios from 'axios';
 import { Modal } from 'bootstrap';
 
@@ -10,7 +11,6 @@ export default function Login() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const auth = getAuth();
     const modalRef = useRef(null);
 
     async function handleSubmit(e) {
@@ -32,7 +32,6 @@ export default function Login() {
                 if (!fetchedUser.isActive) throw 'User is Deactivated or Paused';
 
                 sessionStorage.clear();
-                sessionStorage.setItem('id',fetchedUser.userId);
                 sessionStorage.setItem('email',fetchedUser.email);
                 sessionStorage.setItem('role', fetchedUser.role);
 
