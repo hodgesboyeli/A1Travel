@@ -1,34 +1,49 @@
-import React, { useState } from 'react';
+import React, {useRef, useState} from 'react';
 import AdminNavbar from '../../Navbars/AdminNavbar';
-import {app, db} from "../../Firebase";
-import {getDocs, query, collection, where} from 'firebase/firestore'
+import Axios from "axios";
 
 export default function UserSearch() {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [searchBy, setSearchBy] = useState('global'); // Set the default search criteria
-    const [searchQuery, setSearchQuery] = useState('');
+    const [userIndex, setUserIndex] = useState(0);
+    const [searchBy, setSearchBy] = useState(''); // Set the default search criteria
+    const searchQuery = useRef();
     const [filteredUsers, setFilteredUsers] = useState([]);
+    const [showModal, setShowModal] = useState(false);
 
     const handleSearchByChange = (event) => {
         setSearchBy(event.target.value);
     };
 
-    const handleSearchSubmit = (event) => {
-        event.preventDefault();
-        // Handle the search logic based on the selected searchBy criteria and searchTerm
-        // You can implement this logic as needed
-        console.log(`Search by: ${searchBy}, Term: ${searchTerm}`);
-    };
-
     const handleSearch = async(e) => {
         e.preventDefault();
-        // Perform a Firestore query to find users that match the searchQuery
-        const querySnapshot = await
-        getDocs(query(collection(db,'Users'), where(searchBy, '>=', searchQuery), where(searchBy, '<', searchQuery + '\uf8ff')));
-
-        const matchedUsers = querySnapshot.docs.map((doc) => doc.data());
+        const search = searchQuery.current.value;
+        // Perform a Firestore query from backend matching each user's field with a value
+        const response = await Axios.get('http://localhost:8080/api/user/?field='+searchBy+'&value='+search);
+        //returns an object with object array member "users"
+        const matchedUsers = response.data.users;
         console.log(matchedUsers);
         setFilteredUsers(matchedUsers);
+    };
+    const handleActiveSwitch = (index) => {
+        setUserIndex(index);
+        setShowModal(true);
+    }
+    const handleConfirm = async() =>{
+        let email = '';
+        if (filteredUsers.length > 0){
+            email = filteredUsers[userIndex].email;
+        } else {
+            setShowModal(false);
+            return;
+        }
+        try {
+            const temp = filteredUsers[userIndex].isActive;
+            const response = await Axios.put('http://localhost:8080/api/account/'+email+'?set='+temp);
+            filteredUsers[userIndex].isActive = !response.data;
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setShowModal(false);
+        }
     };
 
     return (
@@ -91,7 +106,6 @@ export default function UserSearch() {
                     ID
                 </label>
             </div>
-
             <div className="search-bar">
                 <form onSubmit={handleSearch}>
                     <input

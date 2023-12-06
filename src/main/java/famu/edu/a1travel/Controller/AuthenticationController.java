@@ -1,6 +1,5 @@
 package famu.edu.a1travel.Controller;
 
-import com.google.api.client.util.Value;
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.auth.FirebaseAuth;
@@ -11,39 +10,25 @@ import famu.edu.a1travel.Security.FirebaseUserDetails;
 import famu.edu.a1travel.Service.UsersService;
 import famu.edu.a1travel.Util.JwtUtil;
 import famu.edu.a1travel.Util.LoginRequest;
-import famu.edu.a1travel.Util.ResponseWrapper;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "localhost:3000")
 public class AuthenticationController {
-
-    private final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    private final FirebaseAuth firebaseAuth;
     private final UsersService usersService;
-
-    @Value("${response.status}")
-    private int statusCode;
-    @Value("${response.name}")
-    private String name;
-    private Object payload;
-    private ResponseWrapper response;
-    private static final String CLASS_NAME = "Authentication";
-
     private final Log logger = LogFactory.getLog(this.getClass());
-
-    public AuthenticationController(AuthenticationManager authenticationManager, Firestore db) {
+    public AuthenticationController(FirebaseAuth firebaseAuth, Firestore db) {
+        this.firebaseAuth = firebaseAuth;
         usersService = new UsersService(db);
     }
 
@@ -87,25 +72,32 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest loginRequest) throws FirebaseAuthException {
-        HttpHeaders headers = new HttpHeaders();
         //verify user exists based on email
         UserRecord userRecord = firebaseAuth.getUserByEmail(loginRequest.getEmail());
 
         logger.info(userRecord.getUid());
         UserDetails userDetails = new FirebaseUserDetails(userRecord);
-        String token = JwtUtil.generateToken(userDetails);
-        //logger.info(token);
-
-        headers.add("X-Auth-Token", token);
-        Instant now = Instant.now();
-        Instant expiryDate = now.plus(1, ChronoUnit.HOURS);
-        headers.add("Expires", String.valueOf(expiryDate.toEpochMilli()));
-        return userRecord.getUid();//temporarily return uid till i figure out how to utilize JWT
+        return JwtUtil.generateToken(userDetails);
     }
 
     @GetMapping("/logout")
     public String logout() {
         SecurityContextHolder.getContext().setAuthentication(null);
         return "Logged out successfully";
+    }
+
+    @PutMapping("/account/{email}")
+    public Boolean accountSwitchActive(@PathVariable String email,
+                                       @RequestParam(name="set", defaultValue = "true") boolean set) throws FirebaseAuthException, ExecutionException, InterruptedException {
+        //toggle disable user in auth
+        UserRecord userRecord = firebaseAuth.getUserByEmail(email);
+        UserRecord.UpdateRequest update = userRecord.updateRequest().setDisabled(set);
+        firebaseAuth.updateUser(update);
+        //update Users document field isActive
+        String uid = usersService.getUserByEmail(email).getUserId();
+        Map<String,Object> updates = new HashMap<>();
+        updates.put("isActive",!set);
+        usersService.updateUser(uid,updates);
+        return set;
     }
 }

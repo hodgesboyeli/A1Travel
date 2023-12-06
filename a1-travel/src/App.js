@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import CustHome from "./pages/Customer/CustHome";
 import Login from "./pages/Login";

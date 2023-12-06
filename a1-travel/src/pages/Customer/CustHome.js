@@ -1,24 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Navbar from "../../Navbars/Navbar";
-import SearchBar from "../../SearchBar";
-import Axios from "axios";
 import {Link} from "react-router-dom";
 
-export default function CustHome() {
-    const [locations, setLocations] = useState([]);
-    const [filteredLocations, setFilteredLocations] = useState([]);
-
-    const handleSearch = (searchTerm) => {
-        if (searchTerm) {
-            const filtered = locations.filter(location =>
-                location.location.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-            setFilteredLocations(filtered);
-        } else {
-            setFilteredLocations(locations);
-        }
-    };
-
+export default function CustHome(){
     return (
         <div>
             <Navbar/>

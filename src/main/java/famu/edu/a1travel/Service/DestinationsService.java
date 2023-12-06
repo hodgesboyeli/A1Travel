@@ -2,7 +2,6 @@ package famu.edu.a1travel.Service;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
-import com.google.firebase.cloud.FirestoreClient;
 import famu.edu.a1travel.Model.Destinations;
 import org.springframework.stereotype.Service;
 
@@ -11,14 +10,19 @@ import java.util.concurrent.ExecutionException;
 
 @Service
 public class DestinationsService {
-    private final Firestore db = FirestoreClient.getFirestore();
+    private final Firestore db;
+    public DestinationsService(Firestore db){
+        this.db = db;
+    }
 
-    public ArrayList<Destinations> getDestinations() throws ExecutionException, InterruptedException {
+    public ArrayList<Destinations> getDestinations(int limit) throws ExecutionException, InterruptedException {
         Query query = db.collection("Destinations");
+        if (limit > 0)
+            query = query.limit(limit);
         ApiFuture<QuerySnapshot> future = query.get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 
-        ArrayList<Destinations> destinations = (documents.size() > 0) ? new ArrayList<>() : null;
+        ArrayList<Destinations> destinations = new ArrayList<>();
 
         for (QueryDocumentSnapshot doc : documents)
             destinations.add(doc.toObject(Destinations.class));
@@ -27,12 +31,8 @@ public class DestinationsService {
     }
 
     public Destinations getDestinationById(String id) throws ExecutionException, InterruptedException {
-        Destinations destinations = null;
-
         DocumentReference doc = db.collection("Destinations").document(id);
         ApiFuture<DocumentSnapshot> future = doc.get();
-        destinations = future.get().toObject(Destinations.class);
-
-        return destinations;
+        return future.get().toObject(Destinations.class);
     }
 }

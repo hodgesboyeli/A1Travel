@@ -3,10 +3,8 @@ package famu.edu.a1travel.Service;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import famu.edu.a1travel.Model.Flights;
-import famu.edu.a1travel.Model.Lodgings;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;

@@ -2,7 +2,6 @@ package famu.edu.a1travel.Controller;
 
 import com.google.api.client.util.Value;
 import famu.edu.a1travel.Model.Flights;
-import famu.edu.a1travel.Model.Lodgings;
 import famu.edu.a1travel.Service.FlightsService;
 import famu.edu.a1travel.Util.ErrorMessage;
 import famu.edu.a1travel.Util.ResponseWrapper;

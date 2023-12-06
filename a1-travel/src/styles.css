@@ -20,7 +20,6 @@
 
 .sign-out-button{
     color : #FFFFFF;
-    /*background-color: #FFFFFF;*/
     background-color: #1E71EE;
     border : none;
     margin-left: auto;
@@ -175,6 +174,17 @@ a:hover {
     background-color: #1e71ee;
     opacity: 0.8; /* Adjust the opacity as needed */
     color: white; /* Text color for selected destination */
+}
+
+.other-button {
+    font-size: 40px;
+    font-family: 'Bebas Neue', sans-serif;
+    color: #FFFF;
+    background-color: #1E71EE;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
 }
 
 .custom-button:hover{

@@ -1,14 +1,12 @@
 package famu.edu.a1travel.Controller;
 
 import com.google.api.client.util.Value;
+import com.google.cloud.firestore.Firestore;
 import famu.edu.a1travel.Service.DestinationsService;
 import famu.edu.a1travel.Util.ErrorMessage;
 import famu.edu.a1travel.Util.ResponseWrapper;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -25,15 +23,16 @@ public class DestinationsController {
     private Object payload;
     private ResponseWrapper response;
     private static final String CLASS_NAME = "DestinationsService";
-    public DestinationsController(DestinationsService destinationsService) {
-        this.destinationsService = destinationsService;
+    public DestinationsController(Firestore db) {
+        this.destinationsService = new DestinationsService(db);
         payload = null;
     }
 
     @GetMapping("/")
-    public ResponseEntity<Map<String,Object>> getDestinations(){
+    public ResponseEntity<Map<String,Object>> getDestinations(
+            @RequestParam(name="limit", required = false, defaultValue = "0") int limit){
         try {
-            payload = destinationsService.getDestinations();
+            payload = destinationsService.getDestinations(limit);
             statusCode = 200;
             name = "destinations";
         } catch (ExecutionException | InterruptedException e) {
