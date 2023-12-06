@@ -44,14 +44,16 @@ security:
     - /api/register
     - /css/**
     - /js/**
-    - /api/event/
+    - /api/event/**
     - /api/trip/**
-    - /api/flight/
+    - /api/flight/**
     - /api/train/
     - /api/car/
     - /api/destination/**
     - /api/message/**
     - /api/announcement/
+    - /api/lodging/**
+    - /api/flight/**
   exposed-headers:
     - X-Xsrf-Token
     - X-Auth-Token

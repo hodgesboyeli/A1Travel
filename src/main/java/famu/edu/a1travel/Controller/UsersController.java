@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutionException;
-
 
 @RestController
 @RequestMapping("/api/user")
@@ -73,7 +71,7 @@ public class UsersController {
     @GetMapping("/email/{email}")
     public ResponseEntity<Object> getUserByEmail(@PathVariable String email) {
         try {
-            Users user = (Users) usersService.getUserByEmail(email);
+            Users user = usersService.getUserByEmail(email);
             if (user != null) {
                 return ResponseEntity.ok(user);
             } else {
@@ -83,6 +81,18 @@ public class UsersController {
             // Log the exception for debugging purposes
             logger.error("Error while fetching user details by email", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error fetching user details by email");
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateUser(@PathVariable(name="id") String id, @RequestBody Map<String,Object> updateValues){
+        try {
+            usersService.updateUser(id, updateValues);
+            statusCode = 201;
+            return ResponseEntity.ok("Updated");
+        } catch (Exception e){
+            logger.error("Error updating user");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user");
         }
     }
 }

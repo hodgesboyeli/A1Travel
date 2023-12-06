@@ -1,10 +1,14 @@
 package famu.edu.a1travel.Model;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.annotation.DocumentId;
 import com.google.firebase.database.annotations.Nullable;
+import com.google.protobuf.util.Timestamps;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.text.ParseException;
 
 @Data
 @NoArgsConstructor
@@ -19,7 +23,8 @@ public class Events {
     private Timestamp eventStart;
     private String eventType;
     private String image;
-    private String location;
+    private String address;
+    private String cityState;
     private String organizer;
     private float price;
     private int registrations;
