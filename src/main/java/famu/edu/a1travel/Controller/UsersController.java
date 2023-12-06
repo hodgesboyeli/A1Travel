@@ -85,7 +85,7 @@ public class UsersController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateUser(@PathVariable(name="id") String id, @RequestBody Map<String,String> updateValues){
+    public ResponseEntity<Object> updateUser(@PathVariable(name="id") String id, @RequestBody Map<String,Object> updateValues){
         try {
             usersService.updateUser(id, updateValues);
             statusCode = 201;

@@ -96,7 +96,7 @@ public class AuthenticationController {
         //update Users document field isActive
         String uid = usersService.getUserByEmail(email).getUserId();
         Map<String,Object> updates = new HashMap<>();
-        updates.put("isActive",!set);
+        updates.put("isActive", !set);
         usersService.updateUser(uid,updates);
         return set;
     }
