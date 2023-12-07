@@ -91,13 +91,6 @@ public class UsersService {
         userDoc.delete();
     }
 
-    public Users getUserByUid(String uid) throws ExecutionException, InterruptedException {
-        DocumentReference doc = db.collection("Users").document(uid);
-        ApiFuture<DocumentSnapshot> future = doc.get();
-
-        return future.get().toObject(Users.class);
-    }
-
     public DocumentReference getUserDocByEmail(String email) throws ExecutionException, InterruptedException {
         CollectionReference usersCollection = db.collection("Users");
         Query query = usersCollection.whereEqualTo("email", email).limit(1);
