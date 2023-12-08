@@ -25,8 +25,8 @@ public class AnnouncementsController {
     private Object payload;
     private ResponseWrapper response;
     private static final String CLASS_NAME = "AnnouncementsService";
-    public AnnouncementsController(Firestore firestore) {
-        announcementsService = new AnnouncementsService(firestore);
+    public AnnouncementsController(AnnouncementsService announcementsService) {
+        this.announcementsService = announcementsService;
         payload = null;
     }
 

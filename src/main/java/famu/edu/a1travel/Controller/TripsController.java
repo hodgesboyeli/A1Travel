@@ -26,8 +26,8 @@ public class TripsController {
     private Object payload;
     private ResponseWrapper response;
     private static final String CLASS_NAME = "TripsService";
-    public TripsController(Firestore firestore) {
-        tripsService = new TripsService(firestore);
+    public TripsController(TripsService tripsService) {
+        this.tripsService = tripsService;
         payload = null;
     }
     @GetMapping("/")

@@ -42,8 +42,8 @@ public class EventsController {
         return response.getResponse();
     }
 
-    @GetMapping("/{cityState}")
-    public ResponseEntity<Map<String,Object>> getEventsByCityState(@PathVariable String cityState) {
+    @GetMapping("/")
+    public ResponseEntity<Map<String,Object>> getEventsByCityState(@RequestParam(name = "cityState", required = false, defaultValue = "") String cityState) {
         payload = new Events();
         try {
             payload = eventsService.getEventsByCityState(cityState);

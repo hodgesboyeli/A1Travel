@@ -23,21 +23,19 @@ public class EventsService {
         return eventRef.getId();
     }
     public ArrayList<Events> getEventsByCityState(String cityState) throws ExecutionException, InterruptedException {
-        CollectionReference eventsCollection = db.collection("Events");
-        Query query = eventsCollection.whereEqualTo("cityState", cityState);
-        ApiFuture<QuerySnapshot> future = query.get();
+        Query eventsCollection = db.collection("Events");
+        if (!cityState.isEmpty()) {
+            eventsCollection = eventsCollection.whereGreaterThanOrEqualTo("cityState", cityState)
+                    .whereLessThan("cityState", cityState + "\uf8ff");
+        }
+        ApiFuture<QuerySnapshot> future = eventsCollection.get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 
-        if (!documents.isEmpty()) {
-            ArrayList<Events> events = new ArrayList<>();
-            for (QueryDocumentSnapshot doc : documents)
-            {
-                events.add(doc.toObject(Events.class));
-            }
-            System.out.println("All good with get events by cityState");
-            return events;
+        //returns empty array if no docs in documents
+        ArrayList<Events> events = new ArrayList<>();
+        for (QueryDocumentSnapshot doc : documents) {
+            events.add(doc.toObject(Events.class));
         }
-        System.out.println("Get events by cityState NOT working!");
-        return null;
+        return events;
     }
 }

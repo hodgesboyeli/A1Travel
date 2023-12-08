@@ -116,7 +116,6 @@ public class UsersService {
         ApiFuture<QuerySnapshot> future = query.get();
         return future.get().getDocuments().get(0).getId();
     }
-
     public Users getUserByEmail(String email) throws ExecutionException, InterruptedException {
         CollectionReference usersCollection = db.collection("Users");
         Query query = usersCollection.whereEqualTo("email", email).limit(1);
