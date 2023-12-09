@@ -54,10 +54,19 @@ export default function CustFlight() {
                     ))}
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/booking">
+                    <Link to="/train">
                         <button type="submit" className="btn btn-md custom-button">
                             Book Flight
                         </button>
+                    </Link>
+                </div>
+                <div className="text-center" style={{ marginTop: 40 }}>
+                    <Link to="/train">
+                        <div className="container-fluid d-flex justify-content-center">
+                            <button className="btn btn-link" type="button">
+                                Don't want to book a flight? CONTINUE HERE
+                            </button>
+                        </div>
                     </Link>
                 </div>
             </div>

@@ -27,6 +27,10 @@ import CustBudget from "./pages/Customer/CustBudget";
 import CustFlight from "./pages/Customer/CustFlight";
 import TAHistory from "./pages/Travel_Admin/TAHistory";
 import CustBookings from "./pages/Customer/CustBookings";
+import CustTrain from "./pages/Customer/CustTrain";
+import CustAirbnb from "./pages/Customer/CustAirbnb";
+import CustCar from "./pages/Customer/CustCar";
+import CustHotel from "./pages/Customer/CustHotel";
 
 function App() {
     return (
@@ -51,6 +55,10 @@ function App() {
                         <Route element={<CustLodging />} path='/lodging'/>
                         <Route element={<CustCheckout />} path='/checkout'/>
                         <Route element={<CustEvent />} path='/event'/>
+                        <Route element={<CustTrain />} path='/train'/>
+                        <Route element={<CustHotel />} path='/hotel'/>
+                        <Route element={<CustCar />} path='/car'/>
+                        <Route element={<CustAirbnb />} path='/airbnb'/>
                     </Route>
 
                     <Route element={<TravelAdminRoutes/>}>
