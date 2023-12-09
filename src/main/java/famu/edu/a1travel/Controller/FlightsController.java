@@ -8,6 +8,7 @@ import famu.edu.a1travel.Util.ResponseWrapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 @RestController
@@ -43,17 +44,16 @@ public class FlightsController {
 
     @GetMapping("/{arriveLocation}")
     public ResponseEntity<Map<String,Object>> getFlightsByArriveLocation(@PathVariable String arriveLocation){
-        payload = new Flights();
+        Map<String, Object> returnVal = new HashMap<>();
+        statusCode = 500;
         try {
             payload = flightsService.getFlightsByArriveLocation(arriveLocation);
             statusCode = 200;
-            name = "flights";
+            returnVal.put("flights",payload);
         } catch (ExecutionException | InterruptedException e) {
             payload = new ErrorMessage("Cannot fetch flights with cityState" + arriveLocation + " from database", CLASS_NAME,
                     e.getStackTrace().toString());
         }
-
-        response = new ResponseWrapper(statusCode, name, payload);
-        return response.getResponse();
+        return ResponseEntity.status(statusCode).body(returnVal);
     }
 }

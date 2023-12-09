@@ -1,12 +1,14 @@
 package famu.edu.a1travel.Service;
 
 import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import famu.edu.a1travel.Model.Flights;
 import famu.edu.a1travel.Model.Trains;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 @Service
 public class TrainsService {
@@ -20,4 +22,5 @@ public class TrainsService {
 
         return trainId;
     }
+
 }

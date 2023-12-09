@@ -3,6 +3,7 @@ import Navbar from "../../Navbars/Navbar";
 import { Link, useNavigate } from 'react-router-dom';
 import { app } from '../../Firebase';
 import { getFirestore, collection, where, query, getDocs } from 'firebase/firestore';
+import Axios from "axios";
 
 export default function CustFlight() {
     const [flights, setFlights] = useState([]);
@@ -14,12 +15,13 @@ export default function CustFlight() {
             try {
                 const db = getFirestore(app);
 
-                // Query flights where arriveLocation is equal to selectedDestination
-                const q = query(collection(db, 'Flights'), where('arriveLocation', '==', selectedDestination));
-                const querySnapshot = await getDocs(q);
-
-                const flightsData = querySnapshot.docs.map(doc => doc.data());
-                setFlights(flightsData);
+                // Query flights where arriveLocation is equal to selectedDestination in the backend
+                const response = await Axios.get(`http://localhost:8080/api/flight/${storedDestination}`);
+                setFlights(response.data.flights);
+                flights.reduce((acc, flight) => {
+                    acc = {flights: []};
+                    return acc;
+                }, {});
             } catch (error) {
                 console.error('Error fetching flights:', error);
             }
@@ -27,6 +29,7 @@ export default function CustFlight() {
 
         // Retrieve selected destination from session storage
         const storedDestination = sessionStorage.getItem('selectedDestination');
+        console.log(storedDestination);
         if (storedDestination) {
             setSelectedDestination(storedDestination);
             fetchFlights();
