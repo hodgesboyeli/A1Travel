@@ -52,11 +52,11 @@ export default function CustBudget() {
     return (
         <>
             <Navbar/>
-            <div className="mt-5 text-center">
-                <h1 className="text-center">Budget</h1>
-                <section className="my-5">
+            <div className="mt-5 text-center" style={{ paddingTop: 50 }}>
+                <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
+                    <h1>Budget</h1>
+                </div>
                     <div className="d-flex flex-column align-items-center">
-                        <h2 className="mb-3">WHAT IS YOUR BUDGET?</h2>
                         <div className="input-group input-group-lg mb-3 col-6 w-auto">
                             <span className="input-group-text">$</span>
                             <input
@@ -71,7 +71,6 @@ export default function CustBudget() {
                             </button>
                         </div>
                     </div>
-                </section>
                 <div className="container-fluid d-flex justify-content-center">
                     <button className="btn btn-link" type="button" onClick={handleNoBudgetContinue}>
                         No budget? CONTINUE HERE
