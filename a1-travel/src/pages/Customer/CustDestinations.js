@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { app } from '../../Firebase';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 
-export default function CustDestination() {
+export default function CustDestinations() {
     const [searchQuery, setSearchQuery] = useState('');
     const [destinationOptions, setDestinationOptions] = useState([]);
     const [selectedDestination, setSelectedDestination] = useState(null);
