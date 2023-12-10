@@ -42,6 +42,36 @@ public class FlightsController {
         return response.getResponse();
     }
 
+    @GetMapping("/")
+    public ResponseEntity<Map<String,Object>> getFlights(){
+        Map<String, Object> returnVal = new HashMap<>();
+        statusCode = 500;
+        try {
+            payload = flightsService.getFlights();
+            statusCode = 200;
+            returnVal.put("flights",payload);
+        } catch (ExecutionException | InterruptedException e) {
+            payload = new ErrorMessage("Cannot fetch flights from database", CLASS_NAME,
+                    e.getStackTrace().toString());
+        }
+        return ResponseEntity.status(statusCode).body(returnVal);
+    }
+
+    @GetMapping("/locations")
+    public ResponseEntity<Map<String, Object>> getFlightLocations() {
+        Map<String, Object> returnVal = new HashMap<>();
+        try {
+            payload = flightsService.getFlightLocations();
+            statusCode = 200;
+            returnVal.put("locations", payload);
+        } catch (ExecutionException | InterruptedException e) {
+            payload = new ErrorMessage("Cannot fetch flight locations from database", CLASS_NAME,
+                    e.getStackTrace().toString());
+        }
+        return ResponseEntity.status(statusCode).body(returnVal);
+    }
+
+
     @GetMapping("/{arriveLocation}")
     public ResponseEntity<Map<String,Object>> getFlightsByArriveLocation(@PathVariable String arriveLocation){
         Map<String, Object> returnVal = new HashMap<>();
@@ -52,6 +82,21 @@ public class FlightsController {
             returnVal.put("flights",payload);
         } catch (ExecutionException | InterruptedException e) {
             payload = new ErrorMessage("Cannot fetch flights with cityState" + arriveLocation + " from database", CLASS_NAME,
+                    e.getStackTrace().toString());
+        }
+        return ResponseEntity.status(statusCode).body(returnVal);
+    }
+
+    @GetMapping("/return/{arriveLocation}")
+    public ResponseEntity<Map<String,Object>> getFlightsFromArriveLocation(@PathVariable String arriveLocation){
+        Map<String, Object> returnVal = new HashMap<>();
+        statusCode = 500;
+        try {
+            payload = flightsService.getFlightsFromArriveLocation(arriveLocation); // Corrected method name
+            statusCode = 200;
+            returnVal.put("flights",payload);
+        } catch (ExecutionException | InterruptedException e) {
+            payload = new ErrorMessage("Cannot fetch flights from database", CLASS_NAME,
                     e.getStackTrace().toString());
         }
         return ResponseEntity.status(statusCode).body(returnVal);

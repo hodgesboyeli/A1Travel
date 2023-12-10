@@ -22,15 +22,16 @@ import CreateAnnouncements from "./pages/Admin/Create Announcements";
 import CustEvent from "./pages/Customer/CustEvent";
 import CustCheckout from "./pages/Customer/CustCheckout";
 import CustLodging from "./pages/Customer/CustLodging";
-import CustDestination from "./pages/Customer/CustDestinations";
+import CustDestination from "./pages/Customer/CustDestination";
 import CustBudget from "./pages/Customer/CustBudget";
-import CustFlight from "./pages/Customer/CustFlight";
+import CustFlightToDestination from "./pages/Customer/CustFlightToDestination";
 import TAHistory from "./pages/Travel_Admin/TAHistory";
 import CustBookings from "./pages/Customer/CustBookings";
 import CustTrain from "./pages/Customer/CustTrain";
 import CustAirbnb from "./pages/Customer/CustAirbnb";
 import CustCar from "./pages/Customer/CustCar";
 import CustHotel from "./pages/Customer/CustHotel";
+import CustFlightFromDestination from "./pages/Customer/CustFlightFromDestination";
 
 function App() {
     return (
@@ -49,7 +50,8 @@ function App() {
                         <Route element={<CustInbox />} path='/inbox'/>
                         <Route element={<CustNotifications />} path='/notifications'/>
                         <Route element={<CustBookings />} path='/history'/>
-                        <Route element={<CustFlight />} path='/flight'/>
+                        <Route element={<CustFlightToDestination />} path='/flight-to-destination'/>
+                        <Route element={<CustFlightFromDestination />} path='/flight-from-destination'/>
                         <Route element={<CustBudget />} path='/budget'/>
                         <Route element={<CustDestination />} path='/destination'/>
                         <Route element={<CustLodging />} path='/lodging'/>
