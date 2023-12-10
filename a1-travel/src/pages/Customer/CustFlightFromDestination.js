@@ -40,17 +40,44 @@ export default function CustFlightFromDestination() {
         }
     }, [selectedDestination, navigate]);
 
-    const handleFlightSelect = (selectedReturnFlight) => {
-        sessionStorage.setItem('selectedReturnFlight', selectedReturnFlight);
-        setSelectedFlight(selectedReturnFlight);  // Corrected line
+    const handleFlightSelectReturn = (selectedReturnFlight) => {
+        // Assuming selectedReturnFlight has a unique identifier like flightId
+        sessionStorage.setItem('selectedReturnFlightId', selectedReturnFlight.flightId);
+        setSelectedFlight(selectedReturnFlight);
         console.log('Selected Return Flight:', selectedReturnFlight);
     };
 
     const handleContinueWithoutBooking = () => {
-        sessionStorage.setItem('selectedDepartureFlight', '');
-        setSelectedFlight('');  // Set selectedFlight to an empty string
-        console.log('Selected Departure Flight:', '');  // Log an empty string or any other message if needed
+        sessionStorage.setItem('selectedReturnFlight', null);
+        setSelectedFlight(null);
+        console.log('Selected Return Flight:', null);
     };
+
+    const handleCombinedFlight = async () => {
+        const selectedDepartureFlightId = sessionStorage.getItem('selectedDepartureFlightId');
+        const selectedReturnFlightId = sessionStorage.getItem('selectedReturnFlightId');
+
+        if (selectedDepartureFlightId && selectedReturnFlightId) {
+            try {
+                const selectedDepartureFlight = await Axios.get(`http://localhost:8080/api/flight/${selectedDepartureFlightId}`);
+                const selectedReturnFlight = await Axios.get(`http://localhost:8080/api/flight/${selectedReturnFlightId}`);
+
+                const selectedFlights = [selectedDepartureFlight.data, selectedReturnFlight.data];
+                sessionStorage.setItem('selectedFlights', JSON.stringify(selectedFlights));
+                console.log('Combined Flight:', selectedFlights);
+
+                navigate('/train');
+            } catch (error) {
+                console.error('Error fetching flight information:', error);
+            }
+        } else {
+            console.log('Please select both departure and return flights.');
+        }
+    };
+
+
+
+
 
     const isNextButtonDisabled = !selectedFlight;
 
@@ -66,11 +93,11 @@ export default function CustFlightFromDestination() {
                         flights.map((flight, index) => (
                             <div key={index}
                                  className={`destination-option ${selectedFlight === flight ? 'selected-destination' : ''}`}
-                                 onClick={() => handleFlightSelect(flight)}>
+                                 onClick={() => handleFlightSelectReturn(flight)}>
                                 {/* Display flight information as needed */}
                                 <p>{flight.airline}</p>
                                 <p>{flight.departLocation} to {flight.arriveLocation}</p>
-                                <p>{/* Add more flight details */}</p>
+                                <p>${flight.price}</p>
                             </div>
                         ))
                     ) : (
@@ -79,7 +106,7 @@ export default function CustFlightFromDestination() {
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
                     <Link to="/train">
-                        <button type="submit" className="btn btn-md custom-button" disabled={isNextButtonDisabled}>
+                        <button type="submit" className="btn btn-md custom-button" disabled={isNextButtonDisabled} onClick={handleCombinedFlight}>
                             Book Return Flight
                         </button>
                     </Link>

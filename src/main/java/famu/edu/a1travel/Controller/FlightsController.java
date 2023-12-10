@@ -2,6 +2,7 @@ package famu.edu.a1travel.Controller;
 
 import com.google.api.client.util.Value;
 import famu.edu.a1travel.Model.Flights;
+import famu.edu.a1travel.Model.Users;
 import famu.edu.a1travel.Service.FlightsService;
 import famu.edu.a1travel.Util.ErrorMessage;
 import famu.edu.a1travel.Util.ResponseWrapper;
@@ -42,6 +43,22 @@ public class FlightsController {
         return response.getResponse();
     }
 
+    @GetMapping("/{flightId}")
+    public ResponseEntity<Map<String,Object>> getFlightById(@PathVariable(name = "flightId") String id){
+        payload = new Flights();
+        try {
+            payload = flightsService.getFlightById(id);
+            statusCode = 200;
+            name = "user";
+        } catch (ExecutionException | InterruptedException e) {
+            payload = new ErrorMessage("Cannot fetch flight with id" + id + " from database", CLASS_NAME,
+                    e.getStackTrace().toString());
+        }
+
+        response = new ResponseWrapper(statusCode, name, payload);
+        return response.getResponse();
+    }
+
     @GetMapping("/")
     public ResponseEntity<Map<String,Object>> getFlights(){
         Map<String, Object> returnVal = new HashMap<>();
@@ -72,7 +89,7 @@ public class FlightsController {
     }
 
 
-    @GetMapping("/{arriveLocation}")
+    @GetMapping("/arrive/{arriveLocation}")
     public ResponseEntity<Map<String,Object>> getFlightsByArriveLocation(@PathVariable String arriveLocation){
         Map<String, Object> returnVal = new HashMap<>();
         statusCode = 500;

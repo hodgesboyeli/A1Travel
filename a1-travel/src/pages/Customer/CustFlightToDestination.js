@@ -17,7 +17,7 @@ export default function CustFlightToDestination() {
                 const db = getFirestore(app);
 
                 // Query flights where arriveLocation is equal to selectedDestination in the backend
-                const response = await Axios.get(`http://localhost:8080/api/flight/${storedDestination}`);
+                const response = await Axios.get(`http://localhost:8080/api/flight/arrive/${storedDestination}`);
                 setFlights(response.data.flights);
                 flights.reduce((acc, flight) => {
                     acc = {flights: []};
@@ -41,15 +41,16 @@ export default function CustFlightToDestination() {
     }, [selectedDestination, navigate]);
 
     const handleFlightSelect = (selectedDepartureFlight) => {
-        sessionStorage.setItem('selectedDepartureFlight', selectedDepartureFlight);
-        setSelectedFlight(selectedDepartureFlight);  // Corrected line
+        // Assuming selectedDepartureFlight has a unique identifier like flightId
+        sessionStorage.setItem('selectedDepartureFlightId', selectedDepartureFlight.flightId);
+        setSelectedFlight(selectedDepartureFlight);
         console.log('Selected Departure Flight:', selectedDepartureFlight);
     };
 
     const handleContinueWithoutBooking = () => {
-        sessionStorage.setItem('selectedDepartureFlight', '');
-        setSelectedFlight('');  // Set selectedFlight to an empty string
-        console.log('Selected Departure Flight:', '');  // Log an empty string or any other message if needed
+        sessionStorage.setItem('selectedDepartureFlight', null);
+        setSelectedFlight(null);
+        console.log('Selected Departure Flight:', null);
     };
 
     const isNextButtonDisabled = !selectedFlight;
@@ -70,7 +71,7 @@ export default function CustFlightToDestination() {
                                 {/* Display flight information as needed */}
                                 <p>{flight.airline}</p>
                                 <p>{flight.departLocation} to {flight.arriveLocation}</p>
-                                <p>{/* Add more flight details */}</p>
+                                <p>${flight.price}</p>
                             </div>
                         ))
                     ) : (
