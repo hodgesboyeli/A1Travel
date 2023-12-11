@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from "../../Navbars/Navbar";
 import { Link, useNavigate } from 'react-router-dom';
-import { app } from '../../Firebase';
-import { getFirestore, collection, where, query, getDocs } from 'firebase/firestore';
 import Axios from "axios";
 
 export default function CustFlightFromDestination() {
     const [flights, setFlights] = useState([]);
+    const [flightIndex, setFlightIndex] = useState(-1);
     const [selectedDestination, setSelectedDestination] = useState(null);
-    const [selectedFlight, setSelectedFlight] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchFlights = async () => {
             try {
-                const db = getFirestore(app);
-
                 // Query flights where arriveLocation is equal to selectedDestination in the backend
                 const response = await Axios.get(`http://localhost:8080/api/flight/return/${storedDestination}`);
                 setFlights(response.data.flights);
@@ -27,59 +23,35 @@ export default function CustFlightFromDestination() {
                 console.error('Error fetching flights:', error);
             }
         };
-
         // Retrieve selected destination from session storage
         const storedDestination = sessionStorage.getItem('selectedDestination');
-        console.log(storedDestination);
         if (storedDestination) {
+            console.log(storedDestination);
             setSelectedDestination(storedDestination);
-            fetchFlights();
+            fetchFlights().then();
         } else {
             // Redirect to the destination selection page if no selected destination is found
+            console.log('Nope');
             navigate('/destination');
         }
-    }, [selectedDestination, navigate]);
+    }, []);
 
-    const handleFlightSelectReturn = (selectedReturnFlight) => {
+    const handleFlightSelect = (i) => {
         // Assuming selectedReturnFlight has a unique identifier like flightId
-        sessionStorage.setItem('selectedReturnFlightId', selectedReturnFlight.flightId);
-        setSelectedFlight(selectedReturnFlight);
-        console.log('Selected Return Flight:', selectedReturnFlight);
+        setFlightIndex(i);
+        console.log('Return Flight:', flights[i]);
     };
 
     const handleContinueWithoutBooking = () => {
-        sessionStorage.setItem('selectedReturnFlight', null);
-        setSelectedFlight(null);
-        console.log('Selected Return Flight:', null);
+        sessionStorage.removeItem('returnFlight');
+        console.log('No Flight Set');
     };
 
-    const handleCombinedFlight = async () => {
-        const selectedDepartureFlightId = sessionStorage.getItem('selectedDepartureFlightId');
-        const selectedReturnFlightId = sessionStorage.getItem('selectedReturnFlightId');
-
-        if (selectedDepartureFlightId && selectedReturnFlightId) {
-            try {
-                const selectedDepartureFlight = await Axios.get(`http://localhost:8080/api/flight/${selectedDepartureFlightId}`);
-                const selectedReturnFlight = await Axios.get(`http://localhost:8080/api/flight/${selectedReturnFlightId}`);
-
-                const selectedFlights = [selectedDepartureFlight.data, selectedReturnFlight.data];
-                sessionStorage.setItem('selectedFlights', JSON.stringify(selectedFlights));
-                console.log('Combined Flight:', selectedFlights);
-
-                navigate('/train');
-            } catch (error) {
-                console.error('Error fetching flight information:', error);
-            }
-        } else {
-            console.log('Please select both departure and return flights.');
-        }
+    const handleCombinedFlight = (f,i) => {
+        if (i >= 0)
+            sessionStorage.setItem('returnFlight',JSON.stringify(f[i]));
+        navigate('/train');
     };
-
-
-
-
-
-    const isNextButtonDisabled = !selectedFlight;
 
     return (
         <>
@@ -92,9 +64,8 @@ export default function CustFlightFromDestination() {
                     {flights !== null && flights.length > 0 ? (
                         flights.map((flight, index) => (
                             <div key={index}
-                                 className={`destination-option ${selectedFlight === flight ? 'selected-destination' : ''}`}
-                                 onClick={() => handleFlightSelectReturn(flight)}>
-                                {/* Display flight information as needed */}
+                                 className={`destination-option ${flightIndex === index && 'selected-destination'}`}
+                                 onClick={() => handleFlightSelect(index)}>
                                 <p>{flight.airline}</p>
                                 <p>{flight.departLocation} to {flight.arriveLocation}</p>
                                 <p>${flight.price}</p>
@@ -105,20 +76,20 @@ export default function CustFlightFromDestination() {
                     )}
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/train">
-                        <button type="submit" className="btn btn-md custom-button" disabled={isNextButtonDisabled} onClick={handleCombinedFlight}>
+                    <button type="submit" className="btn btn-md custom-button" disabled={flightIndex < 0}>
+                        <Link to="/train-to-destination" onClick={()=> handleCombinedFlight(flights,flightIndex)}>
                             Book Return Flight
-                        </button>
-                    </Link>
+                        </Link>
+                    </button>
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/train">
-                        <div className="container-fluid d-flex justify-content-center">
-                            <button className="btn btn-link" type="button" onClick={handleContinueWithoutBooking}>
+                    <div className="container-fluid d-flex justify-content-center">
+                        <Link to="/train-to-destination" onClick={handleContinueWithoutBooking}>
+                            <button className="btn btn-link" type="button">
                                 Don't want to book a return flight? CONTINUE HERE
                             </button>
-                        </div>
-                    </Link>
+                        </Link>
+                    </div>
                 </div>
             </div>
         </>

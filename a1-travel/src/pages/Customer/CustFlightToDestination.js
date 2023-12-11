@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from "../../Navbars/Navbar";
 import { Link, useNavigate } from 'react-router-dom';
-import { app } from '../../Firebase';
-import { getFirestore, collection, where, query, getDocs } from 'firebase/firestore';
 import Axios from "axios";
 
 export default function CustFlightToDestination() {
     const [flights, setFlights] = useState([]);
+    const [flightIndex, setFlightIndex] = useState(-1);
     const [selectedDestination, setSelectedDestination] = useState(null);
-    const [selectedFlight, setSelectedFlight] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchFlights = async () => {
             try {
-                const db = getFirestore(app);
-
                 // Query flights where arriveLocation is equal to selectedDestination in the backend
                 const response = await Axios.get(`http://localhost:8080/api/flight/arrive/${storedDestination}`);
                 setFlights(response.data.flights);
@@ -27,34 +23,31 @@ export default function CustFlightToDestination() {
                 console.error('Error fetching flights:', error);
             }
         };
-
         // Retrieve selected destination from session storage
         const storedDestination = sessionStorage.getItem('selectedDestination');
         console.log(storedDestination);
         if (storedDestination) {
             setSelectedDestination(storedDestination);
-            fetchFlights();
+            fetchFlights().then();
         } else {
             // Redirect to the destination selection page if no selected destination is found
             navigate('/destination');
         }
-    }, [selectedDestination, navigate]);
-
-    const handleFlightSelect = (selectedDepartureFlight) => {
+    }, []);
+    const handleFlightSelect = (i) => {
         // Assuming selectedDepartureFlight has a unique identifier like flightId
-        sessionStorage.setItem('selectedDepartureFlightId', selectedDepartureFlight.flightId);
-        setSelectedFlight(selectedDepartureFlight);
-        console.log('Selected Departure Flight:', selectedDepartureFlight);
+        setFlightIndex(i);
+        console.log('Departure Flight:', flights[i]);
     };
-
-    const handleContinueWithoutBooking = () => {
-        sessionStorage.setItem('selectedDepartureFlight', null);
-        setSelectedFlight(null);
-        console.log('Selected Departure Flight:', null);
-    };
-
-    const isNextButtonDisabled = !selectedFlight;
-
+    const handleFlightSet = (f,i) => {
+        if (i >= 0)
+            sessionStorage.setItem('departureFlight',JSON.stringify(f[i]));
+        console.log('Flight Set');
+    }
+    const handleFlightSkip = () => {
+        sessionStorage.removeItem('departureFlight');
+        console.log("No Flight Set");
+    }
     return (
         <>
             <Navbar />
@@ -66,8 +59,8 @@ export default function CustFlightToDestination() {
                     {flights !== null && flights.length > 0 ? (
                         flights.map((flight, index) => (
                             <div key={index}
-                                 className={`destination-option ${selectedFlight === flight ? 'selected-destination' : ''}`}
-                                 onClick={() => handleFlightSelect(flight)}>
+                                 className={`destination-option ${flightIndex === index && 'selected-destination'}`}
+                                 onClick={()=> handleFlightSelect(index)}>
                                 {/* Display flight information as needed */}
                                 <p>{flight.airline}</p>
                                 <p>{flight.departLocation} to {flight.arriveLocation}</p>
@@ -79,20 +72,20 @@ export default function CustFlightToDestination() {
                     )}
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/flight-from-destination">
-                        <button type="submit" className="btn btn-md custom-button" disabled={isNextButtonDisabled}>
+                    <button type="submit" className="btn btn-md custom-button" disabled={flightIndex < 0}>
+                        <Link to="/flight-from-destination" onClick={()=> handleFlightSet(flights,flightIndex)}>
                             Book Departure Flight
-                        </button>
-                    </Link>
+                        </Link>
+                    </button>
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/flight-from-destination">
-                        <div className="container-fluid d-flex justify-content-center">
-                            <button className="btn btn-link" type="button" onClick={handleContinueWithoutBooking}>
+                    <div className="container-fluid d-flex justify-content-center">
+                        <Link to="/flight-from-destination" onClick={handleFlightSkip}>
+                            <button className="btn btn-link" type="button">
                                 Don't want to book a departure flight? CONTINUE HERE
                             </button>
-                        </div>
-                    </Link>
+                        </Link>
+                    </div>
                 </div>
             </div>
         </>
