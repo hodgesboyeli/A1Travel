@@ -3,6 +3,7 @@ package famu.edu.a1travel.Service;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import famu.edu.a1travel.Model.Lodgings;
+import famu.edu.a1travel.Model.Lodgings;
 import famu.edu.a1travel.Model.Users;
 import org.springframework.stereotype.Service;
 
@@ -20,9 +21,9 @@ public class LodgingsService {
         ApiFuture<DocumentSnapshot> future = doc.get();
         return future.get().toObject(Lodgings.class);
     }
-    public ArrayList<Lodgings> getLodgingByCityState(String cityState) throws ExecutionException, InterruptedException {
+    public ArrayList<Lodgings> getLodgingsByCityState(String cityState, String type) throws ExecutionException, InterruptedException {
         CollectionReference lodgingsCollection = db.collection("Lodgings");
-        Query query = lodgingsCollection.whereEqualTo("cityState", cityState);
+        Query query = lodgingsCollection.whereEqualTo("cityState", cityState).whereEqualTo("type", type);
         ApiFuture<QuerySnapshot> future = query.get();
         List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 

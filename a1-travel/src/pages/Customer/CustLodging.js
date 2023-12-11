@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import Navbar from "../../Navbars/Navbar";
 import {Link} from "react-router-dom";
 
 export default function CustLodging(){
+    const [lodgingType, setLodgingType] = useState("");
+    sessionStorage.setItem('lodgingType', "Hotel");
     return (
         <>
             <Navbar />
@@ -12,14 +14,14 @@ export default function CustLodging(){
                 </div>
                 <div className="mt-5">
                     <div className="text-center">
-                        <Link to="/hotel">
+                        <Link to="/hotel" onClick={() => setLodgingType("Hotel")}>
                             <button type="submit" className="btn btn-md custom-button" style={{ fontSize: 40, paddingLeft: 300, paddingRight: 300, backgroundColor: "#1E71EE" }}>
                                 Hotel
                             </button>
                         </Link>
                     </div>
                     <div className="text-center" style={{ marginTop: 40 }}>
-                        <Link to="/airbnb">
+                        <Link to="/airbnb" onClick={() => setLodgingType("Airbnb")}>
                             <button type="submit" className="btn btn-md custom-button" style={{ fontSize: 40, paddingLeft: 300, paddingRight: 300 }}>
                                 Airbnb
                             </button>
