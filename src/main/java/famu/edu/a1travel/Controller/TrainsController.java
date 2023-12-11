@@ -22,14 +22,15 @@ public class TrainsController {
     private Object payload;
     private ResponseWrapper response;
     private static final String CLASS_NAME = "TrainsService";
+
     public TrainsController(TrainsService trainsService) {
         this.trainsService = trainsService;
         payload = null;
     }
 
     @PostMapping("/")
-    public ResponseEntity<Map<String,Object>> createTrain(@RequestBody Trains train){
-        try{
+    public ResponseEntity<Map<String, Object>> createTrain(@RequestBody Trains train) {
+        try {
             payload = trainsService.createTrain(train);
             statusCode = 201;
             name = "trainId";
@@ -37,22 +38,39 @@ public class TrainsController {
             payload = new ErrorMessage("Cannot create new train in database.", CLASS_NAME, e.toString());
         }
 
-        response = new ResponseWrapper(statusCode,name, payload);
+        response = new ResponseWrapper(statusCode, name, payload);
 
         return response.getResponse();
     }
-    @GetMapping("/{arriveLocation}")
-    public ResponseEntity<Map<String,Object>> getTrainsByArriveLocation(@PathVariable String arriveLocation){
+
+    @GetMapping("/arrive/{arriveLocation}")
+    public ResponseEntity<Map<String, Object>> getTrainsByArriveLocation(@PathVariable String arriveLocation) {
         Map<String, Object> returnVal = new HashMap<>();
         statusCode = 500;
         try {
             payload = trainsService.getTrainsByArriveLocation(arriveLocation);
             statusCode = 200;
-            returnVal.put("trains",payload);
+            returnVal.put("trains", payload);
         } catch (ExecutionException | InterruptedException e) {
             payload = new ErrorMessage("Cannot fetch trains with arriveLocation" + arriveLocation + " from database", CLASS_NAME,
                     e.getStackTrace().toString());
         }
         return ResponseEntity.status(statusCode).body(returnVal);
     }
+
+    @GetMapping("/return/{arriveLocation}")
+    public ResponseEntity<Map<String, Object>> getTrainsFromArriveLocation(@PathVariable String arriveLocation) {
+        Map<String, Object> returnVal = new HashMap<>();
+        statusCode = 500;
+        try {
+            payload = trainsService.getTrainsByArriveLocation(arriveLocation);
+            statusCode = 200;
+            returnVal.put("trains", payload);
+        } catch (ExecutionException | InterruptedException e) {
+            payload = new ErrorMessage("Cannot fetch trains with arriveLocation" + arriveLocation + " from database", CLASS_NAME,
+                    e.getStackTrace().toString());
+        }
+        return ResponseEntity.status(statusCode).body(returnVal);
+    }
+
 }

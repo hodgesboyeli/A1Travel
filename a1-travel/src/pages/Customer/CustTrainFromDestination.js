@@ -5,9 +5,10 @@ import {getFirestore} from "firebase/firestore";
 import {app} from "../../Firebase";
 import Axios from "axios";
 
-export default function CustTrain(){
+export default function CustTrainFromDestination(){
     const [trains, setTrains] = useState([]);
     const [selectedDestination, setSelectedDestination] = useState(null);
+    const [selectedTrain, setSelectedTrain] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -16,7 +17,7 @@ export default function CustTrain(){
                 const db = getFirestore(app);
 
                 // Query trains where arriveLocation is equal to selectedDestination in the backend
-                const response = await Axios.get(`http://localhost:8080/api/train/${storedDestination}`);
+                const response = await Axios.get(`http://localhost:8080/api/train/return/${storedDestination}`);
                 setTrains(response.data.trains);
                 trains.reduce((acc, trains) => {
                     acc = {trains: []};
@@ -38,24 +39,42 @@ export default function CustTrain(){
             navigate('/destination');
         }
     }, [selectedDestination, navigate]);
+
+    const handleTrainSelect = (selectedReturnTrain) => {
+        sessionStorage.setItem('selectedReturnTrainId', selectedReturnTrain.trainId);
+        setSelectedTrain(selectedReturnTrain);
+        console.log('Selected Return Train:', selectedReturnTrain);
+    };
+
+    const handleContinueWithoutBooking = () => {
+        sessionStorage.setItem('selectedReturnTrain', null);
+        setSelectedTrain(null);
+        console.log('Selected Return Train:', null);
+    };
+
+
     return (
         <>
             <Navbar />
             <div className="mt-5" style={{ paddingTop: 50 }}>
                 <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
-                    <h1>Available Trains to {selectedDestination}</h1>
+                    <h1>Available Trains From {selectedDestination}</h1>
                 </div>
                 <div className="container-fluid mt-3">
-                    {trains.map((train, index) => (
-                        <div key={index} className="train-item">
-                             {/*Display train information as needed*/}
-                            {/*<p>{train.departTime.toDate().toLocaleDateString()}</p>*/}
-                            <p>{train.departLocation} to {train.arriveLocation}</p>
-                            <p>{/* Add more train details */}</p>
-                        </div>
-                    ))}
+                    {trains !== null && trains.length > 0 ? (
+                        trains.map((train, index) => (
+                            <div key={index}
+                                 className={`destination-option ${selectedTrain === train ? 'selected-destination' : ''}`}
+                                 onClick={() => handleTrainSelect(train)}>
+                                <p>{train.departLocation} to {train.arriveLocation}</p>
+                                <p>${train.price}</p>
+                            </div>
+                        ))
+                    ) : (
+                        <p>No trains available</p>
+                    )}
                 </div>
-                <div className="mt-5" style={{ paddingTop: 50 }}>
+                <div className="mt-5">
                     <div className="text-center" style={{ marginTop: 40 }}>
                         <Link to="/car">
                             <button type="submit" className="btn btn-md custom-button">
@@ -66,8 +85,8 @@ export default function CustTrain(){
                     <div className="text-center" style={{ marginTop: 40 }}>
                         <Link to="/car">
                             <div className="container-fluid d-flex justify-content-center">
-                                <button className="btn btn-link" type="button">
-                                    Don't want a train? CONTINUE HERE
+                                <button className="btn btn-link" type="button" onClick={handleContinueWithoutBooking}>
+                                    Don't want a return train? CONTINUE HERE
                                 </button>
                             </div>
                         </Link>

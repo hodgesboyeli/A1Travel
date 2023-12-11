@@ -8,6 +8,7 @@ import Axios from "axios";
 export default function CustCar(){
     const [cars, setCars] = useState([]);
     const [selectedDestination, setSelectedDestination] = useState(null);
+    const [selectedCar, setSelectedCar] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -38,6 +39,19 @@ export default function CustCar(){
             navigate('/destination');
         }
     }, [selectedDestination, navigate]);
+
+    const handleCarSelect = (selectedCar) => {
+        sessionStorage.setItem('selectedCar', selectedCar.trainId);
+        setSelectedCar(selectedCar);
+        console.log('Selected Car:', selectedCar);
+    };
+
+    const handleContinueWithoutBooking = () => {
+        sessionStorage.setItem('selectedCar', null);
+        setSelectedCar(null);
+        console.log('Selected Car:', null);
+    };
+
     return (
         <>
             <Navbar />
@@ -46,15 +60,18 @@ export default function CustCar(){
                     <h1>Choose your Car</h1>
                 </div>
                 <div className="container-fluid mt-3">
-                    {cars.map((car, index) => (
-                        <div key={index} className="car-item">
-                            {/*Display car information as needed*/}
-                            {/*<p>{car.departTime.toDate().toLocaleDateString()}</p>*/}
-                            <p>{car.color} {car.make} {car.model}</p>
-                            <p>Price = ${car.price}.00</p>
-                            <p>{/* Add more car details */}</p>
-                        </div>
-                    ))}
+                    {cars !== null && cars.length > 0 ? (
+                        cars.map((car, index) => (
+                            <div key={index}
+                                 className={`destination-option ${selectedCar === car ? 'selected-destination' : ''}`}
+                                 onClick={() => handleCarSelect(car)}>
+                                <p>{car.color} {car.make} {car.model}</p>
+                                <p>Price = ${car.price}.00</p>
+                            </div>
+                        ))
+                    ) : (
+                        <p>No cars available</p>
+                    )}
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
                     <Link to="/lodging">
@@ -66,7 +83,7 @@ export default function CustCar(){
                 <div className="text-center" style={{ marginTop: 40 }}>
                     <Link to="/lodging">
                         <div className="container-fluid d-flex justify-content-center">
-                            <button className="btn btn-link" type="button">
+                            <button className="btn btn-link" type="button" onClick={handleContinueWithoutBooking}>
                                 Don't want to rent a car? CONTINUE HERE
                             </button>
                         </div>
