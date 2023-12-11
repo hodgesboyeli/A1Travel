@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutionException;
@@ -34,7 +35,7 @@ public class CarsController {
         payload = null;
     }
   
-    @GetMapping("/{carId}")
+    @GetMapping("id/{carId}")
     public ResponseEntity<Map<String,Object>> getCar(@PathVariable(name = "carId") String id) {
         payload = new Cars();
         try {
@@ -47,6 +48,20 @@ public class CarsController {
         }
         response = new ResponseWrapper(statusCode, name, payload);
       return response.getResponse();
+    }
+    @GetMapping("/{pickupLocation}")
+    public ResponseEntity<Map<String,Object>> getCarsByPickupLocation(@PathVariable String pickupLocation){
+        Map<String, Object> returnVal = new HashMap<>();
+        statusCode = 500;
+        try {
+            payload = carsService.getCarsByPickupLocation(pickupLocation);
+            statusCode = 200;
+            returnVal.put("cars",payload);
+        } catch (ExecutionException | InterruptedException e) {
+            payload = new ErrorMessage("Cannot fetch cars with pickupLocation" + pickupLocation + " from database", CLASS_NAME,
+                    e.getStackTrace().toString());
+        }
+        return ResponseEntity.status(statusCode).body(returnVal);
     }
   
     @PostMapping("/")

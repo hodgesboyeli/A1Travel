@@ -76,14 +76,14 @@ export default function CustFlightFromDestination() {
                     )}
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/train" onClick={()=> handleCombinedFlight(flights,flightIndex)}>
+                    <Link to="/train-to-destination" onClick={()=> handleCombinedFlight(flights,flightIndex)}>
                         <button type="submit" className="btn btn-md custom-button" disabled={flightIndex < 0}>
                             Book Return Flight
                         </button>
                     </Link>
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/train" onClick={handleContinueWithoutBooking}>
+                    <Link to="/train-to-destination" onClick={handleContinueWithoutBooking}>
                         <div className="container-fluid d-flex justify-content-center">
                             <button className="btn btn-link" type="button">
                                 Don't want to book a return flight? CONTINUE HERE

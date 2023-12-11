@@ -22,5 +22,39 @@ public class TrainsService {
 
         return trainId;
     }
+    public ArrayList<Trains> getTrainsByArriveLocation(String arriveLocation) throws ExecutionException, InterruptedException {
+        CollectionReference trainsCollection = db.collection("Trains");
+        Query query = trainsCollection.whereEqualTo("arriveLocation", arriveLocation);
+        ApiFuture<QuerySnapshot> future = query.get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
 
+        if (!documents.isEmpty()) {
+            ArrayList<Trains> trains = new ArrayList<>();
+            for (QueryDocumentSnapshot doc : documents)
+            {
+                trains.add(doc.toObject(Trains.class));
+            }
+            System.out.println("All good with get trains by arriveLocation");
+            return trains;
+        }
+        System.out.println("Get trains by arriveLocation NOT working!");
+        return null;
+    }
+
+    public ArrayList<Trains> getTrainsFromArriveLocation(String arriveLocation) throws ExecutionException, InterruptedException {
+        CollectionReference trainsCollection = db.collection("Trains");
+        Query query = trainsCollection.whereEqualTo("departLocation", arriveLocation);
+        ApiFuture<QuerySnapshot> future = query.get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+        if (!documents.isEmpty()) {
+            ArrayList<Trains> trains = new ArrayList<>();
+            for (QueryDocumentSnapshot doc : documents)
+            {
+                trains.add(doc.toObject(Trains.class));
+            }
+            return trains;
+        }
+        return null;
+    }
 }

@@ -55,6 +55,8 @@ security:
     - /api/announcement/
     - /api/lodging/**
     - /api/flight/**
+    - /api/train/**
+    - /api/car/**
   exposed-headers:
     - X-Xsrf-Token
     - X-Auth-Token
