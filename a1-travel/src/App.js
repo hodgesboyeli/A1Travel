@@ -32,6 +32,7 @@ import CustAirbnb from "./pages/Customer/CustAirbnb";
 import CustCar from "./pages/Customer/CustCar";
 import CustHotel from "./pages/Customer/CustHotel";
 import CustFlightFromDestination from "./pages/Customer/CustFlightFromDestination";
+import EmailView from "./pages/Customer/EmailView";
 
 function App() {
     return (
@@ -47,7 +48,7 @@ function App() {
 
                     <Route element={<CustomerRoutes/>}>
                         <Route element={<CustHome />} path='/home'/>
-                        <Route element={<CustInbox />} path='/inbox'/>
+                        <Route element={<CustInbox />} exact path='/inbox'/>
                         <Route element={<CustNotifications />} path='/notifications'/>
                         <Route element={<CustBookings />} path='/history'/>
                         <Route element={<CustFlightToDestination />} path='/flight-to-destination'/>

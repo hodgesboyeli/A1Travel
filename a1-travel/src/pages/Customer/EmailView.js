@@ -1,13 +1,34 @@
-import React from 'react';
-import { useHistory } from 'react-router-dom';
+import React, {useEffect} from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
+import Axios from "axios";
 
-const EmailView = ({ message }) => {
-    const history = useHistory();
+//TODO Message is opened and view as url /inbox/:id, back button exists and back history works
+export default function EmailView() {
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const message = {
+        senderName:'',
+        senderEmail:'',
+        receiverName:'',
+        receiverEmail:'',
+        timestamp:'',
+        content:''
+    };
+    //fetch message by id
+    useEffect(()=> {
+        const getMessage = async ()=>{
+            try {
+                const response = await Axios.get('http://localhost:8080/api/message/'+id);
+
+            } catch (e){
+                console.log('error',e);
+            }
+        }
+        getMessage().then();
+    },[]);
 
     // This function will be called when the back button is clicked
-    const goBack = () => {
-        history.goBack();
-    };
+    const goBack = () => {};
 
     return (
         <div className="container my-4">
@@ -40,6 +61,4 @@ const EmailView = ({ message }) => {
             </div>
         </div>
     );
-};
-
-export default EmailView;
+}

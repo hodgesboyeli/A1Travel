@@ -6,7 +6,6 @@ export default function CustNotifications() {
     const [announcements, setAnnouncements] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isLoading, setIsLoading] = useState(true); // Change the initial state to true
-
     const sortAnnouncements = (announcements) => {
         return announcements.sort((a, b) => {
             const diff = b.timestamp.seconds - a.timestamp.seconds;

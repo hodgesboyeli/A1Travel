@@ -48,7 +48,7 @@ export default function EmailRows({emails}){
                 <span className="ps-4 pe-5 fw-bold">
                     {message.senderID}
                 </span>
-                <span className={`${ !toggleViews[index] && 'text-truncate'} flex-fill pe-2`}
+                <span className={`${ toggleViews[index] && 'text-truncate'} flex-fill pe-2`}
                     onClick={()=>toggleViewAtIndex(index)}>
                     {message.messageContent}
                 </span>

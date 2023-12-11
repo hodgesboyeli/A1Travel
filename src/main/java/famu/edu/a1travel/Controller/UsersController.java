@@ -36,8 +36,8 @@ public class UsersController {
 
     @GetMapping("/")
     public ResponseEntity<Map<String,Object>> getUsers(
-            @RequestParam(name="field",required = false,defaultValue = "") String field,
-            @RequestParam(name="value",required = false,defaultValue = "") String value)
+            @RequestParam(name="field",required = false, defaultValue = "") String field,
+            @RequestParam(name="value",required = false, defaultValue = "") String value)
     {
         try {
             payload = usersService.getUsers(field,value);
