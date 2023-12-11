@@ -8,7 +8,7 @@ import Axios from "axios";
 export default function CustTrainToDestination(){
     const [trains, setTrains] = useState([]);
     const [selectedDestination, setSelectedDestination] = useState(null);
-    const [selectedTrain, setSelectedTrain] = useState(null);
+    const [trainIndex, setTrainIndex] = useState(-1);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -40,18 +40,21 @@ export default function CustTrainToDestination(){
         }
     }, [selectedDestination, navigate]);
 
-    const handleTrainSelect = (selectedDepartureTrain) => {
-        sessionStorage.setItem('selectedDepartureTrainId', selectedDepartureTrain.trainId);
-        setSelectedTrain(selectedDepartureTrain);
-        console.log('Selected Departure Train:', selectedDepartureTrain);
+    const handleTrainSelect = (i) => {
+        setTrainIndex(i);
+        console.log('Departure Train:', trains[i]);
     };
 
-    const handleContinueWithoutBooking = () => {
-        sessionStorage.setItem('selectedDepartureTrain', null);
-        setSelectedTrain(null);
-        console.log('Selected Departure Train:', null);
-    };
+    const handleTrainSet = (t,i) => {
+        if (i >= 0)
+            sessionStorage.setItem('departureTrain',JSON.stringify(t[i]));
+        console.log('Train Set');
+    }
 
+    const handleTrainSkip = () => {
+        sessionStorage.removeItem('departureTrain');
+        console.log("No Train Set");
+    }
 
     return (
         <>
@@ -64,8 +67,8 @@ export default function CustTrainToDestination(){
                     {trains !== null && trains.length > 0 ? (
                         trains.map((train, index) => (
                             <div key={index}
-                                 className={`destination-option ${selectedTrain === train ? 'selected-destination' : ''}`}
-                                 onClick={() => handleTrainSelect(train)}>
+                                 className={`destination-option ${trainIndex === index && 'selected-destination'}`}
+                                 onClick={() => handleTrainSelect(index)}>
                                 <p>{train.departLocation} to {train.arriveLocation}</p>
                                 <p>${train.price}</p>
                             </div>
@@ -77,15 +80,15 @@ export default function CustTrainToDestination(){
                 <div className="mt-5">
                     <div className="text-center" style={{ marginTop: 40 }}>
                         <Link to="/train-from-destination">
-                            <button type="submit" className="btn btn-md custom-button">
-                                Next
+                            <button type="submit" className="btn btn-md custom-button" onClick={()=> handleTrainSet(trains,trainIndex)}>
+                                Book Train
                             </button>
                         </Link>
                     </div>
                     <div className="text-center" style={{ marginTop: 40 }}>
                         <Link to="/train-from-destination">
                             <div className="container-fluid d-flex justify-content-center">
-                                <button className="btn btn-link" type="button" onClick={handleContinueWithoutBooking}>
+                                <button className="btn btn-link" type="button" onClick={handleTrainSkip}>
                                     Don't want a departure train? CONTINUE HERE
                                 </button>
                             </div>

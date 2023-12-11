@@ -8,7 +8,7 @@ import Axios from "axios";
 export default function CustCar(){
     const [cars, setCars] = useState([]);
     const [selectedDestination, setSelectedDestination] = useState(null);
-    const [selectedCar, setSelectedCar] = useState(null);
+    const [carIndex, setCarIndex] = useState(-1);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -40,17 +40,21 @@ export default function CustCar(){
         }
     }, [selectedDestination, navigate]);
 
-    const handleCarSelect = (selectedCar) => {
-        sessionStorage.setItem('selectedCar', selectedCar.trainId);
-        setSelectedCar(selectedCar);
-        console.log('Selected Car:', selectedCar);
+    const handleCarSelect = (i) => {
+        setCarIndex(i);
+        console.log('Car:', cars[i]);
     };
 
-    const handleContinueWithoutBooking = () => {
-        sessionStorage.setItem('selectedCar', null);
-        setSelectedCar(null);
-        console.log('Selected Car:', null);
-    };
+    const handleCarSet = (c,i) => {
+        if (i >= 0)
+            sessionStorage.setItem('car',JSON.stringify(c[i]));
+        console.log('Car Set');
+    }
+
+    const handleCarSkip = () => {
+        sessionStorage.removeItem('car');
+        console.log("No Car Set");
+    }
 
     return (
         <>
@@ -63,8 +67,8 @@ export default function CustCar(){
                     {cars !== null && cars.length > 0 ? (
                         cars.map((car, index) => (
                             <div key={index}
-                                 className={`destination-option ${selectedCar === car ? 'selected-destination' : ''}`}
-                                 onClick={() => handleCarSelect(car)}>
+                                 className={`destination-option ${carIndex === index && 'selected-destination'}`}
+                                 onClick={() => handleCarSelect(index)}>
                                 <p>{car.color} {car.make} {car.model}</p>
                                 <p>Price = ${car.price}.00</p>
                             </div>
@@ -75,15 +79,15 @@ export default function CustCar(){
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
                     <Link to="/lodging">
-                        <button type="submit" className="btn btn-md custom-button">
-                            Next
+                        <button type="submit" className="btn btn-md custom-button" onClick={()=> handleCarSet(cars,carIndex)}>
+                            Rent Car
                         </button>
                     </Link>
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
                     <Link to="/lodging">
                         <div className="container-fluid d-flex justify-content-center">
-                            <button className="btn btn-link" type="button" onClick={handleContinueWithoutBooking}>
+                            <button className="btn btn-link" type="button" onClick={handleCarSkip}>
                                 Don't want to rent a car? CONTINUE HERE
                             </button>
                         </div>

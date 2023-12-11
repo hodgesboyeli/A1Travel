@@ -59,7 +59,7 @@ export default function CustFlightToDestination() {
                     {flights !== null && flights.length > 0 ? (
                         flights.map((flight, index) => (
                             <div key={index}
-                                 className='destination-option'
+                                 className={`destination-option ${flightIndex === index && 'selected-destination'}`}
                                  onClick={()=> handleFlightSelect(index)}>
                                 {/* Display flight information as needed */}
                                 <p>{flight.airline}</p>
