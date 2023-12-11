@@ -5,7 +5,7 @@ import Axios from "axios";
 
 export default function CustFlightToDestination() {
     const [flights, setFlights] = useState([]);
-    let flightIndex = -1;
+    const [flightIndex, setFlightIndex] = useState(-1);
     const [selectedDestination, setSelectedDestination] = useState(null);
     const navigate = useNavigate();
 
@@ -36,8 +36,8 @@ export default function CustFlightToDestination() {
     }, []);
     const handleFlightSelect = (i) => {
         // Assuming selectedDepartureFlight has a unique identifier like flightId
-        flightIndex = i;
-        console.log('Departure Flight:', flights[flightIndex]);
+        setFlightIndex(i);
+        console.log('Departure Flight:', flights[i]);
     };
     const handleFlightSet = (f,i) => {
         if (i >= 0)
@@ -72,20 +72,20 @@ export default function CustFlightToDestination() {
                     )}
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/flight-from-destination" onClick={()=> handleFlightSet(flights,flightIndex)}>
-                        <button type="submit" className="btn btn-md custom-button" disabled={flightIndex < 0}>
+                    <button type="submit" className="btn btn-md custom-button" disabled={flightIndex < 0}>
+                        <Link to="/flight-from-destination" onClick={()=> handleFlightSet(flights,flightIndex)}>
                             Book Departure Flight
-                        </button>
-                    </Link>
+                        </Link>
+                    </button>
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/flight-from-destination" onClick={handleFlightSkip}>
-                        <div className="container-fluid d-flex justify-content-center">
+                    <div className="container-fluid d-flex justify-content-center">
+                        <Link to="/flight-from-destination" onClick={handleFlightSkip}>
                             <button className="btn btn-link" type="button">
                                 Don't want to book a departure flight? CONTINUE HERE
                             </button>
-                        </div>
-                    </Link>
+                        </Link>
+                    </div>
                 </div>
             </div>
         </>

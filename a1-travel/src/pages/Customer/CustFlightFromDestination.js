@@ -5,7 +5,7 @@ import Axios from "axios";
 
 export default function CustFlightFromDestination() {
     const [flights, setFlights] = useState([]);
-    let flightIndex = -1;
+    const [flightIndex, setFlightIndex] = useState(-1);
     const [selectedDestination, setSelectedDestination] = useState(null);
     const navigate = useNavigate();
 
@@ -38,7 +38,7 @@ export default function CustFlightFromDestination() {
 
     const handleFlightSelect = (i) => {
         // Assuming selectedReturnFlight has a unique identifier like flightId
-        flightIndex = i;
+        setFlightIndex(i);
         console.log('Return Flight:', flights[i]);
     };
 
@@ -76,20 +76,20 @@ export default function CustFlightFromDestination() {
                     )}
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/train-to-destination" onClick={()=> handleCombinedFlight(flights,flightIndex)}>
-                        <button type="submit" className="btn btn-md custom-button" disabled={flightIndex < 0}>
+                    <button type="submit" className="btn btn-md custom-button" disabled={flightIndex < 0}>
+                        <Link to="/train-to-destination" onClick={()=> handleCombinedFlight(flights,flightIndex)}>
                             Book Return Flight
-                        </button>
-                    </Link>
+                        </Link>
+                    </button>
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/train-to-destination" onClick={handleContinueWithoutBooking}>
-                        <div className="container-fluid d-flex justify-content-center">
+                    <div className="container-fluid d-flex justify-content-center">
+                        <Link to="/train-to-destination" onClick={handleContinueWithoutBooking}>
                             <button className="btn btn-link" type="button">
                                 Don't want to book a return flight? CONTINUE HERE
                             </button>
-                        </div>
-                    </Link>
+                        </Link>
+                    </div>
                 </div>
             </div>
         </>
