@@ -139,6 +139,23 @@ a:hover {
     text-decoration: underline;
 }
 
+a.dropdown-arrow {
+    color: gray;
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+a.dropdown-arrow:hover {
+    color: black;
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+span.total {
+    font-size: 48px;
+    color: #000;
+    margin-bottom: 15px;
+    font-family: 'Bebas Neue', sans-serif;
+}
+
 .brand-name{
     color : #FF6C37;
     font-family: 'Bebas Neue', sans-serif;
