@@ -19,9 +19,9 @@ export default function CustHotel(){
 
                 // Query hotels where cityState is equal to storedDestination and the type is equal to storedType in the backend
                 const response = await Axios.get(`http://localhost:8080/api/lodging/cityState/?cityState=${storedDestination}&type=${storedType}`);
-                setHotels(response.data.hotels);
+                setHotels(response.data.lodgings);
                 hotels.reduce((acc, hotels) => {
-                    acc = {hotels: []};
+                    acc = {lodgings: []};
                     return acc;
                 }, {});
             } catch (error) {
@@ -83,19 +83,10 @@ export default function CustHotel(){
                     )}
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/lodging">
+                    <Link to="/event">
                         <button type="submit" className="btn btn-md custom-button" onClick={()=> handleHotelSet(hotels,hotelIndex)}>
                             Next
                         </button>
-                    </Link>
-                </div>
-                <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/lodging">
-                        <div className="container-fluid d-flex justify-content-center">
-                            <button className="btn btn-link" type="button" onClick={handleHotelSkip}>
-                                Don't want to book a hotel? CONTINUE HERE
-                            </button>
-                        </div>
                     </Link>
                 </div>
             </div>
