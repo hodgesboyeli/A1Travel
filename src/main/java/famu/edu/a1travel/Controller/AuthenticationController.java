@@ -55,6 +55,8 @@ public class AuthenticationController {
                     user.setUsername((String) entry.getValue());
                     request.setDisplayName((String) entry.getValue());
                     break;
+                case "":
+                    break;
             }
         }
         user.setRole("Customer");
@@ -65,8 +67,6 @@ public class AuthenticationController {
         request.setUid(usersService.createUser(user));
         //create new user
         UserRecord userRecord = firebaseAuth.createUser(request);
-
-            //TODO Return a JWT so after registration you log in
         return userRecord.getUid();
     }
 

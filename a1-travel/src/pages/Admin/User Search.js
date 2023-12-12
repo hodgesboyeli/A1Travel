@@ -1,12 +1,15 @@
 import React, {useRef, useState} from 'react';
 import AdminNavbar from '../../Navbars/AdminNavbar';
 import Axios from "axios";
+import {getAuth} from "firebase/auth";
+import {auth} from "../../Firebase";
 
 export default function UserSearch() {
     const [userIndex, setUserIndex] = useState(0);
     const [searchBy, setSearchBy] = useState(''); // Set the default search criteria
     const searchQuery = useRef();
     const [filteredUsers, setFilteredUsers] = useState([]);
+    const [userPfp, setUserPfp] = useState([]);
     const [showModal, setShowModal] = useState(false);
 
     const handleSearchByChange = (event) => {
@@ -15,13 +18,30 @@ export default function UserSearch() {
 
     const handleSearch = async(e) => {
         e.preventDefault();
-        const search = searchQuery.current.value;
         // Perform a Firestore query from backend matching each user's field with a value
+        const search = searchQuery.current.value;
         const response = await Axios.get('http://localhost:8080/api/user/?field='+searchBy+'&value='+search);
-        //returns an object with object array member "users"
         const matchedUsers = response.data.users;
-        console.log(matchedUsers);
+
+        // Array to store user profile pictures
+        let profilePictures = [];
+        // For each user, get user details from auth and extract profile picture
+
+        for (const user of matchedUsers) {
+            const userEmail = user.email; // Assuming each user object has an email field
+            // Get user details from auth (modify this part based on how your auth system works)
+            const userDetails = await auth.getUserByEmail(userEmail); // This is just a placeholder, replace with actual auth call
+            const userProfilePicture = userDetails.photoURL;
+            // Assuming UserInfo is a method or an object where you can get user info
+            // Add profile picture to the array
+            if (userProfilePicture) {
+                profilePictures.push(userProfilePicture);
+            }
+        }
+        // Update the state with the new profile pictures
+        setUserPfp(profilePictures);
         setFilteredUsers(matchedUsers);
+        console.log(filteredUsers);
     };
     const handleActiveSwitch = (index) => {
         setUserIndex(index);
