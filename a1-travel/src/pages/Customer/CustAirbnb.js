@@ -75,6 +75,7 @@ export default function CustAirbnb(){
                                  className={`destination-option ${airbnbIndex === index && 'selected-destination'}`}
                                  onClick={() => handleAirbnbSelect(index)}>
                                 <p>{airbnb.address} {airbnb.cityState}</p>
+                                <p>{airbnb.details}</p>
                                 <p>Price = ${airbnb.price}.00</p>
                             </div>
                         ))
