@@ -42,7 +42,9 @@ export default function CustDestination() {
             <Navbar />
             <div className="mt-5" style={{ paddingTop: 50 }}>
                 <div className="text-end mr-3" style={{ paddingRight: 50 }}>
-                    <p style={{ fontSize: 25 }}>${cartTotal}/{budget}</p>
+                    <p style={{ fontSize: 25, color: cartTotal <= budget ? 'green' : 'red' }}>
+                        ${cartTotal}/{budget}
+                    </p>
                 </div>
                 <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
                     <h1>Where do you want to go?</h1>

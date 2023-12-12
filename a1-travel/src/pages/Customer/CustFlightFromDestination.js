@@ -37,16 +37,8 @@ export default function CustFlightFromDestination() {
 
     }, []);
 
-    useEffect(() => {
-        // Update sessionStorage whenever cartTotal changes
-        sessionStorage.setItem('cartTotal', cartTotal);
-    }, [cartTotal]);
-
     const handleFlightSelect = (i) => {
-        // Assuming selectedReturnFlight has a unique identifier like flightId
         setFlightIndex(i);
-        setCartTotal((prev)=>prev + flights[i].price);
-        sessionStorage.setItem('cartTotal', cartTotal);
         console.log('Return Flight:', flights[i]);
     };
 
@@ -55,9 +47,15 @@ export default function CustFlightFromDestination() {
         console.log('No Flight Set');
     };
 
-    const handleCombinedFlight = (f,i) => {
-        if (i >= 0)
-            sessionStorage.setItem('returnFlight',JSON.stringify(f[i]));
+    const handleCombinedFlight = (f, i) => {
+        if (i >= 0) {
+            const flightPrice = parseFloat(f[i].price);
+            const updatedCartTotal = parseFloat(cartTotal) + flightPrice;
+            setCartTotal(updatedCartTotal);
+            sessionStorage.setItem('cartTotal', updatedCartTotal);
+            sessionStorage.setItem('returnFlight', JSON.stringify(f[i]));
+        }
+
         navigate('/train');
     };
 
@@ -66,7 +64,9 @@ export default function CustFlightFromDestination() {
             <Navbar />
             <div className="mt-5" style={{ paddingTop: 50 }}>
                 <div className="text-end mr-3" style={{ paddingRight: 50 }}>
-                    <p style={{ fontSize: 25 }}>${cartTotal}/{budget}</p>
+                    <p style={{ fontSize: 25, color: cartTotal <= budget ? 'green' : 'red' }}>
+                        ${cartTotal}/{budget}
+                    </p>
                 </div>
                 <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
                     <h1>Available Flights From {selectedDestination}</h1>

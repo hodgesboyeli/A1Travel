@@ -31,34 +31,42 @@ export default function CustFlightToDestination() {
         const storedCartTotal = parseFloat(sessionStorage.getItem('cartTotal')); // Retrieve cartTotal
         console.log(storedDestination);
 
-            setSelectedDestination(storedDestination);
-            setBudget(storedBudget);
-            setCartTotal(storedCartTotal);
-            fetchFlights().then();
+        setSelectedDestination(storedDestination);
+        setBudget(storedBudget);
+        setCartTotal(storedCartTotal);
+        fetchFlights().then();
 
     }, []);
+
     const handleFlightSelect = (i) => {
-        // Assuming selectedDepartureFlight has a unique identifier like flightId
         setFlightIndex(i);
-        setCartTotal((prev)=>prev + flights[i].price);
-        sessionStorage.setItem('cartTotal', cartTotal);
         console.log('Departure Flight:', flights[i]);
     };
-    const handleFlightSet = (f,i) => {
-        if (i >= 0)
-            sessionStorage.setItem('departureFlight',JSON.stringify(f[i]));
+
+    const handleFlightSet = (f, i) => {
+        if (i >= 0) {
+            const flightPrice = parseFloat(f[i].price);
+            const updatedCartTotal = parseFloat(cartTotal) + flightPrice;
+            setCartTotal(updatedCartTotal);
+            sessionStorage.setItem('cartTotal', updatedCartTotal);
+            sessionStorage.setItem('departureFlight', JSON.stringify(f[i]));
+        }
         console.log('Flight Set');
-    }
+    };
+
     const handleFlightSkip = () => {
         sessionStorage.removeItem('departureFlight');
         console.log("No Flight Set");
-    }
+    };
+
     return (
         <>
             <Navbar />
             <div className="mt-5" style={{ paddingTop: 50 }}>
                 <div className="text-end mr-3" style={{ paddingRight: 50 }}>
-                    <p style={{ fontSize: 25 }}>${cartTotal}/{budget}</p>
+                    <p style={{ fontSize: 25, color: cartTotal <= budget ? 'green' : 'red' }}>
+                        ${cartTotal}/{budget}
+                    </p>
                 </div>
                 <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
                     <h1>Available Flights to {selectedDestination}</h1>

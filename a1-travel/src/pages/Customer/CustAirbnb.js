@@ -11,6 +11,8 @@ export default function CustAirbnb(){
     const [airbnbIndex, setAirbnbIndex] = useState(-1);
     const [lodgingType, setLodgingType] = useState("");
     const navigate = useNavigate();
+    const [budget, setBudget] = useState(null);
+    const [cartTotal, setCartTotal] = useState(sessionStorage.getItem('cartTotal'));
 
     useEffect(() => {
         const fetchAirbnbs = async () => {
@@ -35,24 +37,33 @@ export default function CustAirbnb(){
         console.log('Selected destination type:', storedDestination);
         console.log('Selected lodging type:', storedType);
 
-        if (storedDestination && storedType) {
-            setSelectedDestination(storedDestination);
-            setLodgingType(storedType);
-            fetchAirbnbs();
-        } else {
-            // Redirect to the destination selection page if no selected destination is found
-            navigate('/lodging');
-        }
-    }, [lodgingType, selectedDestination, navigate]);
+        const storedBudget = parseFloat(sessionStorage.getItem('budget'));
+        const storedCartTotal = parseFloat(sessionStorage.getItem('cartTotal')); // Retrieve cartTotal
+        console.log(storedDestination);
+
+        setSelectedDestination(storedDestination);
+        setBudget(storedBudget);
+        setCartTotal(storedCartTotal);
+        setSelectedDestination(storedDestination);
+        setSelectedDestination(storedDestination);
+        setLodgingType(storedType);
+        fetchAirbnbs();
+
+    }, []);
 
     const handleAirbnbSelect = (i) => {
         setAirbnbIndex(i);
         console.log('Airbnb:', airbnbs[i]);
     };
 
-    const handleAirbnbSet = (c,i) => {
-        if (i >= 0)
-            sessionStorage.setItem('airbnb',JSON.stringify(c[i]));
+    const handleAirbnbSet = (a,i) => {
+        if (i >= 0) {
+            const airbnbPrice = parseFloat(a[i].price);
+            const updatedCartTotal = parseFloat(cartTotal) + airbnbPrice;
+            setCartTotal(updatedCartTotal);
+            sessionStorage.setItem('cartTotal', updatedCartTotal);
+            sessionStorage.setItem('airbnb', JSON.stringify(a[i]));
+        }
         console.log('Airbnb Set');
     }
 
@@ -65,6 +76,11 @@ export default function CustAirbnb(){
         <>
             <Navbar />
             <div className="mt-5" style={{ paddingTop: 50 }}>
+                <div className="text-end mr-3" style={{ paddingRight: 50 }}>
+                    <p style={{ fontSize: 25, color: cartTotal <= budget ? 'green' : 'red' }}>
+                        ${cartTotal}/{budget}
+                    </p>
+                </div>
                 <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
                     <h1>Choose your Airbnb</h1>
                 </div>

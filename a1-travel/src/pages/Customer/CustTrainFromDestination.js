@@ -10,6 +10,8 @@ export default function CustTrainFromDestination(){
     const [selectedDestination, setSelectedDestination] = useState(null);
     const [trainIndex, setTrainIndex] = useState(-1);
     const navigate = useNavigate();
+    const [budget, setBudget] = useState(null);
+    const [cartTotal, setCartTotal] = useState(sessionStorage.getItem('cartTotal'));
 
     useEffect(() => {
         const fetchTrains = async () => {
@@ -28,17 +30,18 @@ export default function CustTrainFromDestination(){
             }
         };
 
-        // Retrieve selected destination from session storage
         const storedDestination = sessionStorage.getItem('selectedDestination');
+        const storedBudget = parseFloat(sessionStorage.getItem('budget'));
+        const storedCartTotal = parseFloat(sessionStorage.getItem('cartTotal')); // Retrieve cartTotal
         console.log(storedDestination);
-        if (storedDestination) {
-            setSelectedDestination(storedDestination);
-            fetchTrains();
-        } else {
-            // Redirect to the destination selection page if no selected destination is found
-            navigate('/destination');
-        }
-    }, [selectedDestination, navigate]);
+
+        setSelectedDestination(storedDestination);
+        setBudget(storedBudget);
+        setCartTotal(storedCartTotal);
+        setSelectedDestination(storedDestination);
+        fetchTrains();
+
+    }, []);
 
     const handleTrainSelect = (i) => {
         setTrainIndex(i);
@@ -51,6 +54,18 @@ export default function CustTrainFromDestination(){
         console.log('Train Set');
     }
 
+    const handleCombinedTrain = (t, i) => {
+        if (i >= 0) {
+            const trainPrice = parseFloat(t[i].price);
+            const updatedCartTotal = parseFloat(cartTotal) + trainPrice;
+            setCartTotal(updatedCartTotal);
+            sessionStorage.setItem('cartTotal', updatedCartTotal);
+            sessionStorage.setItem('returnTrain',JSON.stringify(t[i]));
+        }
+
+        navigate('/car');
+    };
+
     const handleTrainSkip = () => {
         sessionStorage.removeItem('returnTrain');
         console.log("No Train Set");
@@ -61,6 +76,11 @@ export default function CustTrainFromDestination(){
         <>
             <Navbar />
             <div className="mt-5" style={{ paddingTop: 50 }}>
+                <div className="text-end mr-3" style={{ paddingRight: 50 }}>
+                    <p style={{ fontSize: 25, color: cartTotal <= budget ? 'green' : 'red' }}>
+                        ${cartTotal}/{budget}
+                    </p>
+                </div>
                 <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
                     <h1>Available Trains From {selectedDestination}</h1>
                 </div>
@@ -80,7 +100,7 @@ export default function CustTrainFromDestination(){
                 </div>
                 <div className="mt-5">
                     <div className="text-center" style={{ marginTop: 40 }}>
-                        <button type="submit" className="btn btn-md custom-button" onClick={()=> handleTrainSet(trains,trainIndex)} disabled={trainIndex < 0}>
+                        <button type="submit" className="btn btn-md custom-button" onClick={()=> handleCombinedTrain(trains,trainIndex)} disabled={trainIndex < 0}>
                             <Link to="/car">
                                     Book Return Train
                             </Link>

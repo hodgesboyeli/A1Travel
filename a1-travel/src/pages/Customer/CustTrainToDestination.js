@@ -10,6 +10,8 @@ export default function CustTrainToDestination(){
     const [selectedDestination, setSelectedDestination] = useState(null);
     const [trainIndex, setTrainIndex] = useState(-1);
     const navigate = useNavigate();
+    const [budget, setBudget] = useState(null);
+    const [cartTotal, setCartTotal] = useState(sessionStorage.getItem('cartTotal'));
 
     useEffect(() => {
         const fetchTrains = async () => {
@@ -28,17 +30,18 @@ export default function CustTrainToDestination(){
             }
         };
 
-        // Retrieve selected destination from session storage
         const storedDestination = sessionStorage.getItem('selectedDestination');
+        const storedBudget = parseFloat(sessionStorage.getItem('budget'));
+        const storedCartTotal = parseFloat(sessionStorage.getItem('cartTotal')); // Retrieve cartTotal
         console.log(storedDestination);
-        if (storedDestination) {
-            setSelectedDestination(storedDestination);
-            fetchTrains();
-        } else {
-            // Redirect to the destination selection page if no selected destination is found
-            navigate('/destination');
-        }
-    }, [selectedDestination, navigate]);
+
+        setSelectedDestination(storedDestination);
+        setBudget(storedBudget);
+        setCartTotal(storedCartTotal);
+        setSelectedDestination(storedDestination);
+        fetchTrains();
+
+    }, []);
 
     const handleTrainSelect = (i) => {
         setTrainIndex(i);
@@ -46,8 +49,13 @@ export default function CustTrainToDestination(){
     };
 
     const handleTrainSet = (t,i) => {
-        if (i >= 0)
+        if (i >= 0){
+            const trainPrice = parseFloat(t[i].price);
+            const updatedCartTotal = parseFloat(cartTotal) + trainPrice;
+            setCartTotal(updatedCartTotal);
+            sessionStorage.setItem('cartTotal', updatedCartTotal);
             sessionStorage.setItem('departureTrain',JSON.stringify(t[i]));
+        }
         console.log('Train Set');
     }
 
@@ -60,6 +68,11 @@ export default function CustTrainToDestination(){
         <>
             <Navbar />
             <div className="mt-5" style={{ paddingTop: 50 }}>
+                <div className="text-end mr-3" style={{ paddingRight: 50 }}>
+                    <p style={{ fontSize: 25, color: cartTotal <= budget ? 'green' : 'red' }}>
+                        ${cartTotal}/{budget}
+                    </p>
+                </div>
                 <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
                     <h1>Available Trains to {selectedDestination}</h1>
                 </div>

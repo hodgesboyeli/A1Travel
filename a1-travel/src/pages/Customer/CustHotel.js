@@ -11,6 +11,8 @@ export default function CustHotel(){
     const [hotelIndex, setHotelIndex] = useState(-1);
     const [lodgingType, setLodgingType] = useState("");
     const navigate = useNavigate();
+    const [budget, setBudget] = useState(null);
+    const [cartTotal, setCartTotal] = useState(sessionStorage.getItem('cartTotal'));
 
     useEffect(() => {
         const fetchHotels = async () => {
@@ -35,24 +37,33 @@ export default function CustHotel(){
         console.log('Selected destination type:', storedDestination);
         console.log('Selected lodging type:', storedType);
 
-        if (storedDestination && storedType) {
-            setSelectedDestination(storedDestination);
-            setLodgingType(storedType);
-            fetchHotels();
-        } else {
-            // Redirect to the destination selection page if no selected destination is found
-            navigate('/lodging');
-        }
-    }, [lodgingType, selectedDestination, navigate]);
+        const storedBudget = parseFloat(sessionStorage.getItem('budget'));
+        const storedCartTotal = parseFloat(sessionStorage.getItem('cartTotal')); // Retrieve cartTotal
+        console.log(storedDestination);
+
+        setSelectedDestination(storedDestination);
+        setBudget(storedBudget);
+        setCartTotal(storedCartTotal);
+        setSelectedDestination(storedDestination);
+        setSelectedDestination(storedDestination);
+        setLodgingType(storedType);
+        fetchHotels();
+
+    }, []);
 
     const handleHotelSelect = (i) => {
         setHotelIndex(i);
         console.log('Hotel:', hotels[i]);
     };
 
-    const handleHotelSet = (c,i) => {
-        if (i >= 0)
-            sessionStorage.setItem('hotel',JSON.stringify(c[i]));
+    const handleHotelSet = (h,i) => {
+        if (i >= 0){
+            const hotelPrice = parseFloat(h[i].price);
+            const updatedCartTotal = parseFloat(cartTotal) + hotelPrice;
+            setCartTotal(updatedCartTotal);
+            sessionStorage.setItem('cartTotal', updatedCartTotal);
+            sessionStorage.setItem('hotel',JSON.stringify(h[i]));
+        }
         console.log('Hotel Set');
     }
 
@@ -65,6 +76,11 @@ export default function CustHotel(){
         <>
             <Navbar />
             <div className="mt-5" style={{ paddingTop: 50 }}>
+                <div className="text-end mr-3" style={{ paddingRight: 50 }}>
+                    <p style={{ fontSize: 25, color: cartTotal <= budget ? 'green' : 'red' }}>
+                        ${cartTotal}/{budget}
+                    </p>
+                </div>
                 <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
                     <h1>Choose your Hotel</h1>
                 </div>

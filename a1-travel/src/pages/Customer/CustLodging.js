@@ -1,12 +1,34 @@
 import React, {useEffect, useState} from 'react';
 import Navbar from "../../Navbars/Navbar";
 import {Link} from "react-router-dom";
+import {getFirestore} from "firebase/firestore";
+import {app} from "../../Firebase";
+import Axios from "axios";
 
 export default function CustLodging(){
+
+    const [budget, setBudget] = useState(null);
+    const [cartTotal, setCartTotal] = useState(sessionStorage.getItem('cartTotal'));
+
+    useEffect(() => {
+
+        const storedBudget = parseFloat(sessionStorage.getItem('budget'));
+        const storedCartTotal = parseFloat(sessionStorage.getItem('cartTotal')); // Retrieve cartTotal
+
+        setBudget(storedBudget);
+        setCartTotal(storedCartTotal);
+
+    }, []);
+
     return (
         <>
             <Navbar />
             <div className="mt-5" style={{ paddingTop: 50 }}>
+                <div className="text-end mr-3" style={{ paddingRight: 50 }}>
+                    <p style={{ fontSize: 25, color: cartTotal <= budget ? 'green' : 'red' }}>
+                        ${cartTotal}/{budget}
+                    </p>
+                </div>
                 <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
                     <h1>Where would you like to stay</h1>
                 </div>
