@@ -88,11 +88,11 @@ export default function CustTrainFromDestination(){
                     </div>
                     <div className="text-center" style={{ marginTop: 40 }}>
                         <div className="container-fluid d-flex justify-content-center">
-                            <button className="btn btn-link" type="button" onClick={handleTrainSkip}>
-                                <Link to="/car">
-                                            Don't want a return train? CONTINUE HERE
-                                </Link>
-                            </button>
+                            <Link to="/car">
+                                <button className="btn btn-link" type="button" onClick={handleTrainSkip}>
+                                    Don't want a return train? CONTINUE HERE
+                                </button>
+                            </Link>
                         </div>
                     </div>
                 </div>

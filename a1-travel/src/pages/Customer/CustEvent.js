@@ -85,20 +85,20 @@ export default function CustEvent(){
                     )}
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/checkout">
-                        <button type="submit" className="btn btn-md custom-button" onClick={()=> handleEventSet(events,eventIndex)}>
+                    <button type="submit" className="btn btn-md custom-button" onClick={()=> handleEventSet(events,eventIndex)} disabled={eventIndex < 0}>
+                        <Link to="/checkout">
                             Next
-                        </button>
-                    </Link>
+                        </Link>
+                    </button>
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/checkout">
-                        <div className="container-fluid d-flex justify-content-center">
+                    <div className="container-fluid d-flex justify-content-center">
+                        <Link to="/checkout">
                             <button className="btn btn-link" type="button">
                                 Don't want any events? CONTINUE HERE
                             </button>
-                        </div>
-                    </Link>
+                        </Link>
+                    </div>
                 </div>
             </div>
         </>

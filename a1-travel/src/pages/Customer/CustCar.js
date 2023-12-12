@@ -86,11 +86,11 @@ export default function CustCar(){
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
                     <div className="container-fluid d-flex justify-content-center">
-                        <button className="btn btn-link" type="button" onClick={handleCarSkip}>
-                            <Link to="/lodging">
+                        <Link to="/lodging">
+                            <button className="btn btn-link" type="button" onClick={handleCarSkip}>
                                 Don't want to rent a car? CONTINUE HERE
-                            </Link>
-                        </button>
+                            </button>
+                        </Link>
                     </div>
                 </div>
             </div>

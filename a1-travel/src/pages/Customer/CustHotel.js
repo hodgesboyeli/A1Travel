@@ -84,11 +84,11 @@ export default function CustHotel(){
                     )}
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <button type="submit" className="btn btn-md custom-button" onClick={()=> handleHotelSet(hotels,hotelIndex)} disabled={hotelIndex < 0}>
-                        <Link to="/event">
+                    <Link to="/event">
+                        <button type="submit" className="btn btn-md custom-button" onClick={()=> handleHotelSet(hotels,hotelIndex)} disabled={hotelIndex < 0}>
                             Next
-                        </Link>
-                    </button>
+                        </button>
+                    </Link>
                 </div>
             </div>
         </>

@@ -84,11 +84,11 @@ export default function CustAirbnb(){
                     )}
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <button type="submit" className="btn btn-md custom-button" onClick={()=> handleAirbnbSet(airbnbs,airbnbIndex)} disabled={airbnbIndex < 0}>
-                        <Link to="/event">
+                    <Link to="/event">
+                        <button type="submit" className="btn btn-md custom-button" onClick={()=> handleAirbnbSet(airbnbs,airbnbIndex)} disabled={airbnbIndex < 0}>
                             Next
-                        </Link>
-                    </button>
+                        </button>
+                    </Link>
                 </div>
             </div>
         </>
