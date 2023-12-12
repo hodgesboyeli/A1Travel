@@ -91,6 +91,15 @@ export default function CustEvent(){
                         </button>
                     </Link>
                 </div>
+                <div className="text-center" style={{ marginTop: 40 }}>
+                    <Link to="/checkout">
+                        <div className="container-fluid d-flex justify-content-center">
+                            <button className="btn btn-link" type="button">
+                                Don't want any events? CONTINUE HERE
+                            </button>
+                        </div>
+                    </Link>
+                </div>
             </div>
         </>
     );
