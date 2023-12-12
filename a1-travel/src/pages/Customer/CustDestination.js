@@ -10,6 +10,8 @@ export default function CustDestination() {
     const [locationOptions, setLocationOptions] = useState([]);
     const [selectedDestination, setSelectedDestination] = useState(null);
     const navigate = useNavigate();
+    const [budget, setBudget] = useState(null);
+    const [cartTotal, setCartTotal] = useState(sessionStorage.getItem('cartTotal'));
 
     useEffect(() => {
         const fetchFlightsLocations = async () => {
@@ -21,6 +23,9 @@ export default function CustDestination() {
                 console.error('Error fetching flight locations:', error);
             }
         };
+        const storedBudget = sessionStorage.getItem('budget');
+        setBudget(storedBudget);
+
         fetchFlightsLocations();
     }, []);
 
@@ -36,6 +41,9 @@ export default function CustDestination() {
         <>
             <Navbar />
             <div className="mt-5" style={{ paddingTop: 50 }}>
+                <div className="text-end mr-3" style={{ paddingRight: 50 }}>
+                    <p style={{ fontSize: 25 }}>${cartTotal}/{budget}</p>
+                </div>
                 <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
                     <h1>Where do you want to go?</h1>
                 </div>

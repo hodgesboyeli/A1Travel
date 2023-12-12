@@ -8,6 +8,8 @@ export default function CustFlightToDestination() {
     const [flightIndex, setFlightIndex] = useState(-1);
     const [selectedDestination, setSelectedDestination] = useState(null);
     const navigate = useNavigate();
+    const [budget, setBudget] = useState(null);
+    const [cartTotal, setCartTotal] = useState(sessionStorage.getItem('cartTotal'));
 
     useEffect(() => {
         const fetchFlights = async () => {
@@ -25,18 +27,21 @@ export default function CustFlightToDestination() {
         };
         // Retrieve selected destination from session storage
         const storedDestination = sessionStorage.getItem('selectedDestination');
+        const storedBudget = parseFloat(sessionStorage.getItem('budget'));
+        const storedCartTotal = parseFloat(sessionStorage.getItem('cartTotal')); // Retrieve cartTotal
         console.log(storedDestination);
-        if (storedDestination) {
+
             setSelectedDestination(storedDestination);
+            setBudget(storedBudget);
+            setCartTotal(storedCartTotal);
             fetchFlights().then();
-        } else {
-            // Redirect to the destination selection page if no selected destination is found
-            navigate('/destination');
-        }
+
     }, []);
     const handleFlightSelect = (i) => {
         // Assuming selectedDepartureFlight has a unique identifier like flightId
         setFlightIndex(i);
+        setCartTotal((prev)=>prev + flights[i].price);
+        sessionStorage.setItem('cartTotal', cartTotal);
         console.log('Departure Flight:', flights[i]);
     };
     const handleFlightSet = (f,i) => {
@@ -52,6 +57,9 @@ export default function CustFlightToDestination() {
         <>
             <Navbar />
             <div className="mt-5" style={{ paddingTop: 50 }}>
+                <div className="text-end mr-3" style={{ paddingRight: 50 }}>
+                    <p style={{ fontSize: 25 }}>${cartTotal}/{budget}</p>
+                </div>
                 <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
                     <h1>Available Flights to {selectedDestination}</h1>
                 </div>

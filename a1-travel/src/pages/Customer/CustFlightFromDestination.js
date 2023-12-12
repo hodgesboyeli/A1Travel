@@ -8,6 +8,8 @@ export default function CustFlightFromDestination() {
     const [flightIndex, setFlightIndex] = useState(-1);
     const [selectedDestination, setSelectedDestination] = useState(null);
     const navigate = useNavigate();
+    const [budget, setBudget] = useState(null);
+    const [cartTotal, setCartTotal] = useState(sessionStorage.getItem('cartTotal'));
 
     useEffect(() => {
         const fetchFlights = async () => {
@@ -23,22 +25,28 @@ export default function CustFlightFromDestination() {
                 console.error('Error fetching flights:', error);
             }
         };
-        // Retrieve selected destination from session storage
         const storedDestination = sessionStorage.getItem('selectedDestination');
-        if (storedDestination) {
-            console.log(storedDestination);
-            setSelectedDestination(storedDestination);
-            fetchFlights().then();
-        } else {
-            // Redirect to the destination selection page if no selected destination is found
-            console.log('Nope');
-            navigate('/destination');
-        }
+        const storedBudget = parseFloat(sessionStorage.getItem('budget'));
+        const storedCartTotal = parseFloat(sessionStorage.getItem('cartTotal'));
+
+
+        setSelectedDestination(storedDestination);
+        setBudget(storedBudget);
+        setCartTotal(storedCartTotal);
+        fetchFlights().then();
+
     }, []);
+
+    useEffect(() => {
+        // Update sessionStorage whenever cartTotal changes
+        sessionStorage.setItem('cartTotal', cartTotal);
+    }, [cartTotal]);
 
     const handleFlightSelect = (i) => {
         // Assuming selectedReturnFlight has a unique identifier like flightId
         setFlightIndex(i);
+        setCartTotal((prev)=>prev + flights[i].price);
+        sessionStorage.setItem('cartTotal', cartTotal);
         console.log('Return Flight:', flights[i]);
     };
 
@@ -57,6 +65,9 @@ export default function CustFlightFromDestination() {
         <>
             <Navbar />
             <div className="mt-5" style={{ paddingTop: 50 }}>
+                <div className="text-end mr-3" style={{ paddingRight: 50 }}>
+                    <p style={{ fontSize: 25 }}>${cartTotal}/{budget}</p>
+                </div>
                 <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
                     <h1>Available Flights From {selectedDestination}</h1>
                 </div>

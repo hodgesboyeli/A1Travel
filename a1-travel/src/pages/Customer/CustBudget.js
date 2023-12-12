@@ -30,7 +30,7 @@ export default function CustBudget() {
             // Store the budget number in session storage using the field name from the database
             sessionStorage.setItem('budget', budgetNumber);
             console.log('Budget stored in session storage:', budgetNumber);
-
+            sessionStorage.setItem('cartTotal', 0);
             // Navigate to the destination page
             navigate('/destination');
         } else {
