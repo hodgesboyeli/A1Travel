@@ -44,6 +44,7 @@ export default function CustBudget() {
         // Set the budget in session storage to -1
         sessionStorage.setItem('budget', -1);
         console.log('Budget stored in session storage:', -1);
+        sessionStorage.setItem('cartTotal', 0);
 
         // Navigate to the destination page
         navigate('/destination');
