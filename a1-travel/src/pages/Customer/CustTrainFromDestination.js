@@ -80,20 +80,20 @@ export default function CustTrainFromDestination(){
                 </div>
                 <div className="mt-5">
                     <div className="text-center" style={{ marginTop: 40 }}>
-                        <Link to="/car">
-                            <button type="submit" className="btn btn-md custom-button" onClick={()=> handleTrainSet(trains,trainIndex)}>
-                                Book Return Train
-                            </button>
-                        </Link>
+                        <button type="submit" className="btn btn-md custom-button" onClick={()=> handleTrainSet(trains,trainIndex)} disabled={trainIndex < 0}>
+                            <Link to="/car">
+                                    Book Return Train
+                            </Link>
+                        </button>
                     </div>
                     <div className="text-center" style={{ marginTop: 40 }}>
-                        <Link to="/car">
-                            <div className="container-fluid d-flex justify-content-center">
-                                <button className="btn btn-link" type="button" onClick={handleTrainSkip}>
-                                    Don't want a return train? CONTINUE HERE
-                                </button>
-                            </div>
-                        </Link>
+                        <div className="container-fluid d-flex justify-content-center">
+                            <button className="btn btn-link" type="button" onClick={handleTrainSkip}>
+                                <Link to="/car">
+                                            Don't want a return train? CONTINUE HERE
+                                </Link>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

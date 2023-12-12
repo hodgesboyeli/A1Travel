@@ -78,20 +78,20 @@ export default function CustCar(){
                     )}
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/lodging">
-                        <button type="submit" className="btn btn-md custom-button" onClick={()=> handleCarSet(cars,carIndex)}>
-                            Rent Car
+                        <button type="submit" className="btn btn-md custom-button" onClick={()=> handleCarSet(cars,carIndex)} disabled={carIndex < 0}>
+                            <Link to="/lodging">
+                                Rent Car
+                            </Link>
                         </button>
-                    </Link>
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/lodging">
-                        <div className="container-fluid d-flex justify-content-center">
-                            <button className="btn btn-link" type="button" onClick={handleCarSkip}>
+                    <div className="container-fluid d-flex justify-content-center">
+                        <button className="btn btn-link" type="button" onClick={handleCarSkip}>
+                            <Link to="/lodging">
                                 Don't want to rent a car? CONTINUE HERE
-                            </button>
-                        </div>
-                    </Link>
+                            </Link>
+                        </button>
+                    </div>
                 </div>
             </div>
         </>
