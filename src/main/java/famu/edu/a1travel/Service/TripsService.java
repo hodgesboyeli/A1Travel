@@ -152,4 +152,16 @@ public class TripsService {
         }
         return trips;
     }
+
+    public ArrayList<Trips> getTripsByDestination(String destination) throws ExecutionException, InterruptedException {
+        Query query = db.collection("Trips").whereEqualTo("destination", destination);
+        ApiFuture<QuerySnapshot> future = query.get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+        ArrayList<Trips> trips = new ArrayList<>();
+        for (QueryDocumentSnapshot doc : documents) {
+            trips.add(getTrip(doc));
+        }
+        return trips;
+    }
 }

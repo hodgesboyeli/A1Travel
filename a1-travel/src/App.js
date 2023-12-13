@@ -33,6 +33,7 @@ import CustCar from "./pages/Customer/CustCar";
 import CustHotel from "./pages/Customer/CustHotel";
 import CustFlightFromDestination from "./pages/Customer/CustFlightFromDestination";
 import CustTrainFromDestination from "./pages/Customer/CustTrainFromDestination";
+import AdminReports from "./pages/Admin/AdminReports";
 
 function App() {
     return (
@@ -80,6 +81,7 @@ function App() {
                         <Route element={<CreateAnnouncements />} path = '/admin/create-announcements'/>
                         <Route element={<AdminInbox />} path='/admin-inbox'/>
                         <Route element={<AdminNotifications />} path='/admin-notifications'/>
+                        <Route element={<AdminReports />} path='/admin-reports'/>
                     </Route>
 
                 </Routes>
