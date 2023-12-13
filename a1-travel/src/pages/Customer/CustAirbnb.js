@@ -165,19 +165,10 @@ export default function CustAirbnb(){
                     </button>
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/event">
+                    <Link to="/lodging">
                         <div className="container-fluid d-flex justify-content-center">
                             <button className="btn btn-link" type="button">
-                                No Airbnbs available? CONTINUE HERE
-                            </button>
-                        </div>
-                    </Link>
-                </div>
-                <div className="text-center" style={{ marginTop: 10 }}>
-                    <Link to="/hotel">
-                        <div className="container-fluid d-flex justify-content-center">
-                            <button className="btn btn-link" type="button">
-                                Want to check for hotels? CLICK HERE
+                                Go back
                             </button>
                         </div>
                     </Link>
