@@ -40,6 +40,15 @@
     padding-right: 20px;
 }
 
+.edit-button{
+    color: black;
+    background-color: #FFFFFF;
+    border : none;
+    font-size: 15px;
+    padding-right: 12px;
+    text-align: center;
+}
+
 .admin-inbox-button{
     color : black;
    background-color: #FFFFFF;

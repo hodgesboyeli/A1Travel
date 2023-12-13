@@ -9,6 +9,8 @@ export default function CustFlightFromDestination() {
     const [selectedDestination, setSelectedDestination] = useState(null);
     const [budget, setBudget] = useState(null);
     const [cartTotal, setCartTotal] = useState(sessionStorage.getItem('cartTotal'));
+    const [editMode, setEditMode] = useState(false);
+    const [newBudget, setNewBudget] = useState('');
 
     useEffect(() => {
         const fetchFlights = async () => {
@@ -36,16 +38,8 @@ export default function CustFlightFromDestination() {
 
     }, []);
 
-    useEffect(() => {
-        // Update sessionStorage whenever cartTotal changes
-        sessionStorage.setItem('cartTotal', cartTotal);
-    }, [cartTotal]);
-
     const handleFlightSelect = (i) => {
-        // Assuming selectedReturnFlight has a unique identifier like flightId
         setFlightIndex(i);
-        setCartTotal((prev)=>prev + flights[i].price);
-        sessionStorage.setItem('cartTotal', cartTotal);
         console.log('Return Flight:', flights[i]);
     };
 
@@ -54,9 +48,15 @@ export default function CustFlightFromDestination() {
         console.log('No Flight Set');
     };
 
-    const handleCombinedFlight = (f,i) => {
-        if (i >= 0)
-            sessionStorage.setItem('returnFlight',JSON.stringify(f[i]));
+    const handleCombinedFlight = (f, i) => {
+        if (i >= 0) {
+            const flightPrice = parseFloat(f[i].price);
+            const updatedCartTotal = parseFloat(cartTotal) + flightPrice;
+            setCartTotal(updatedCartTotal);
+            sessionStorage.setItem('cartTotal', updatedCartTotal);
+            sessionStorage.setItem('returnFlight', JSON.stringify(f[i]));
+        }
+
         console.log('Flight Set');
     };
 
