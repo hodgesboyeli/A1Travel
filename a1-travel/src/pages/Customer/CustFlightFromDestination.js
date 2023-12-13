@@ -7,7 +7,6 @@ export default function CustFlightFromDestination() {
     const [flights, setFlights] = useState([]);
     const [flightIndex, setFlightIndex] = useState(-1);
     const [selectedDestination, setSelectedDestination] = useState(null);
-    const navigate = useNavigate();
     const [budget, setBudget] = useState(null);
     const [cartTotal, setCartTotal] = useState(sessionStorage.getItem('cartTotal'));
 
@@ -58,7 +57,7 @@ export default function CustFlightFromDestination() {
     const handleCombinedFlight = (f,i) => {
         if (i >= 0)
             sessionStorage.setItem('returnFlight',JSON.stringify(f[i]));
-        navigate('/train');
+        console.log('Flight Set');
     };
 
     return (

@@ -248,3 +248,11 @@ span.total {
     background-color: #1E71EE;
     color: white; /* Bootstrap light grey for hover */
 }
+
+.checkout-title {
+    padding-left: 36px;
+}
+
+.checkout-content-indent {
+    padding-left: 40px;
+}

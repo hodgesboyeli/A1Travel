@@ -7,7 +7,6 @@ export default function CustFlightToDestination() {
     const [flights, setFlights] = useState([]);
     const [flightIndex, setFlightIndex] = useState(-1);
     const [selectedDestination, setSelectedDestination] = useState(null);
-    const navigate = useNavigate();
     const [budget, setBudget] = useState(null);
     const [cartTotal, setCartTotal] = useState(sessionStorage.getItem('cartTotal'));
 

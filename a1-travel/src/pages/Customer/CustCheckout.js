@@ -10,8 +10,11 @@ export default function CustCheckout(){
     const [flights, setFlights] = useState([]);
     const [events,setEvents] = useState([]);
     const [trains, setTrains] = useState([]);
-    const [view,setView] = useState({
-        flight:false
+    const [view,setView] = useState(
+        {
+            flight:false,
+            event:false,
+            train:false
     });
     const [budget,setBudget] = useState(0);
     const [total, setTotal] = useState(0);
@@ -34,10 +37,6 @@ export default function CustCheckout(){
         // Add other calculations if needed
         setTotal(totalFlightsCost + totalEventsCost);
     }, [flights, events]);
-
-    /*const toggleFlight = ()=>{
-        setView();
-    };*/
 
     const formatNumber = (value) => {
         // Remove all non-digit characters
@@ -71,6 +70,17 @@ export default function CustCheckout(){
         }
     };
 
+    //change view
+    const toggleView = (section)=>{
+        if (view.hasOwnProperty(section)){
+            const temp = {...view};
+            //flip the view value
+            temp[section] = !temp[section];
+            setView(temp);
+            console.log(temp);
+        }
+    };
+
     const right = "bi bi-caret-right-fill";
     //const down = "bi bi-caret-down-fill";
     return (
@@ -80,11 +90,31 @@ export default function CustCheckout(){
                 <h1 className="d-flex mt-5 mb-5 justify-content-center">
                     Checkout
                 </h1>
+                {/*LODGING*/}
+                <h3 id="lodging" className="row align-items-end">
+                    <div className="row">
+                        <span className="col">
+                            <i className='checkout-title'/>
+                            Lodging
+                        </span>
+                        <span className="col text-end">
+
+                        </span>
+                    </div>
+                    <div className="d-flex row">
+                        <div className="col">
+                            Something
+                        </div>
+                        <div className="col flex-shrink-1 text-end">
+                            Total
+                        </div>
+                    </div>
+                </h3>
                 {/*FLIGHTS */}
                 <h3 id="flights" className="row align-items-end">
                     <div className="row">
                         <span className="col">
-                            <a href='#flights' className='dropdown-arrow p-2'>
+                            <a href='#flights' className='dropdown-arrow pe-2' onClick={()=>{toggleView('flight')}}>
                                 <i className={`${right}`}/>
                             </a>
                             Flights
@@ -93,9 +123,9 @@ export default function CustCheckout(){
                             {/*total for all collapsed items*/}
                         </span>
                     </div>
-                    <div className="collapsed row" id="flightCollapse">
+                    <div className={`collapse${' d'[+view.flight]} row`} id="flightCollapse">
                         {flights.length > 0 && flights.map((flight, index)=>(
-                            <div>
+                            <div key={index}>
                                 <span>{flight.airline}</span>
                                 <span>{flight.departLocation} to {flight.arriveLocation}</span>
                                 <span>${flight.price}</span>
@@ -125,24 +155,7 @@ export default function CustCheckout(){
                         ))}
                     </div>
                 </h3>
-                {/*LODGING*/}
-                <h3 id="lodging" className="row align-items-end">
-                    <div className="row">
-                        <span className="col">
-                            <a href='#' className='dropdown-arrow p-2'>
-                                <i className={`${right}`}/>
-                            </a>
-                            Lodging
-                        </span>
-                        <span className="col text-end">
-
-                        </span>
-                    </div>
-                    <div className="row">
-                        Something
-                    </div>
-                </h3>
-                {/*Trains */}
+                {/*TRAINS */}
                 <h3 id="trains" className="row align-items-end">
                     <div className="row">
                         <span className="col">
