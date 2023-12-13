@@ -10,7 +10,7 @@ export default function TAHome(){
                 <h1 style={{color : "#FFF"}}>Travel Administrator Dashboard</h1>
             </div>
             <div className="container-fluid d-flex justify-content-center mt-5">
-                <Link to={"/ta/database-management"}>
+                <Link to={"/ta/select"}>
                     <button type="button" className="admin-button" style={{marginRight: 20}}>
                         <i className="fas fa-database d-flex justify-content-center" style={{fontSize: 80}}></i>
                         Database Management
