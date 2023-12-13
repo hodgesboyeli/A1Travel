@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from "../../Navbars/Navbar";
-import { Link, useNavigate } from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import Axios from "axios";
 
 export default function CustFlightFromDestination() {
+    const {state} = useLocation();
     const [flights, setFlights] = useState([]);
     const [flightIndex, setFlightIndex] = useState(-1);
     const [selectedDestination, setSelectedDestination] = useState(null);
@@ -87,14 +88,14 @@ export default function CustFlightFromDestination() {
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
                     <button type="submit" className="btn btn-md custom-button" disabled={flightIndex < 0}>
-                        <Link to="/train-to-destination" onClick={()=> handleCombinedFlight(flights,flightIndex)}>
+                        <Link to={(state!=null && state.from==='fly') ? '/checkout' : '/train-to-destination'} onClick={()=> handleCombinedFlight(flights,flightIndex)}>
                             Book Return Flight
                         </Link>
                     </button>
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
                     <div className="container-fluid d-flex justify-content-center">
-                        <Link to="/train-to-destination" onClick={handleContinueWithoutBooking}>
+                        <Link to={(state!=null && state.from==='fly') ? '/checkout' : '/train-to-destination'} onClick={handleContinueWithoutBooking}>
                             <button className="btn btn-link" type="button">
                                 Don't want to book a return flight? CONTINUE HERE
                             </button>

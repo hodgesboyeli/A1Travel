@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from "../../Navbars/Navbar";
-import { Link, useNavigate } from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import { app } from '../../Firebase';
 import { getFirestore } from 'firebase/firestore';
 import axios from 'axios';
 
 export default function CustDestination() {
+    const {state} = useLocation();
     const [searchQuery, setSearchQuery] = useState('');
     const [locationOptions, setLocationOptions] = useState([]);
     const [selectedDestination, setSelectedDestination] = useState(null);
@@ -128,7 +129,7 @@ export default function CustDestination() {
                     ))}
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/flight-to-destination">
+                    <Link to="/flight-to-destination" state={ state }>
                         <button type="submit" className="btn btn-md custom-button" disabled={isNextButtonDisabled}>
                             Next
                         </button>

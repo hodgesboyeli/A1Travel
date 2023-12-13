@@ -22,13 +22,22 @@ export default function CustCheckout(){
     useEffect(()=>{
         setBudget(parseFloat(sessionStorage.getItem('budget')));
         setDestination(sessionStorage.getItem('selectedDestination'));
-        const f1 = JSON.parse(sessionStorage.getItem('departureFlight'));
-        const f2 = JSON.parse(sessionStorage.getItem('returnFlight'));
-        setFlights([f1,f2]);
+        //set flights
+        let f = [];
+        const f1 = sessionStorage.getItem('departureFlight');
+        if (f1)
+            f.push(JSON.parse(f1));
+        const f2 = sessionStorage.getItem('returnFlight');
+        if (f2)
+            f.push(JSON.parse(f2));
+        setFlights(f);
         //TODO needs to be an array of events
-        setEvents([JSON.parse(sessionStorage.getItem('event'))]);
+        //set events if filled
+        const e = sessionStorage.getItem('event');
+        if (e)
+            setEvents([JSON.parse(e)]);
         //setLodging(JSON.parse);
-    },[]);
+    },[])
 
     useEffect(() => {
         const totalFlightsCost = flights.reduce((acc, flight) => acc + (flight?.price || 0), 0);
@@ -199,6 +208,8 @@ export default function CustCheckout(){
                         ${total}
                     </span>
                 </div>
+                {
+                    budget >= 0 && (
                 <div className="row align-items-end">
                     <span className="total col ps-5">
                         Budget
@@ -207,6 +218,8 @@ export default function CustCheckout(){
                         ${budget}.00
                     </span>
                 </div>
+                    )
+                }
                 {/*Confirm Button*/}
                 <div className="text-center">
                     <Link to="/home">

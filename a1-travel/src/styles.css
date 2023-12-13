@@ -187,6 +187,17 @@ span.total {
     border-bottom-right-radius: 25px;
 }
 
+.custom2-button {
+    font-size: 20px;
+    font-family: 'Bebas Neue', sans-serif;
+    color: #FFFF;
+    background-color: #1e71ee;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+}
+
 .destination-option {
     cursor: pointer;
     transition: background-color 0.15s ease, color 0.15s ease; /* Add transitions for background color and text color */
@@ -211,10 +222,6 @@ span.total {
     border-top-right-radius: 25px;
     border-bottom-left-radius: 25px;
     border-bottom-right-radius: 25px;
-}
-
-.custom-button:hover{
-    background-color: #FA4705;
 }
 
 .admin-button{

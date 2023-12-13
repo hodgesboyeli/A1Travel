@@ -11,9 +11,15 @@ export default function CustHome(){
                     <h1>May your journey begin</h1>
                 </div>
                 <div className="text-center" style={{marginTop: 40}}>
-                    <Link to="/budget">
+                    <Link to="/budget" className='m-4' state={{from: 'trip'}}>
                         <button type="submit" className="btn btn-md custom-button" style={{fontSize: 32}}>
-                            Create Trip
+                            Book a Trip
+                            <div><i className="fas fa-earth-africa"></i></div>
+                        </button>
+                    </Link>
+                    <Link to="/budget" className='m-4' state={{from: 'fly'}}>
+                        <button type="submit" className="btn btn-md custom2-button" style={{fontSize: 32}}>
+                            Book Flight
                             <div><i className="fas fa-plane"></i></div>
                         </button>
                     </Link>

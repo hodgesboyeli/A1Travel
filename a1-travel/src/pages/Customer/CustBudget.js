@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import Navbar from "../../Navbars/Navbar";
-import { Link, useNavigate } from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 
 export default function CustBudget() {
+    const { state } = useLocation();
     const [budget, setBudget] = useState('');
     const navigate = useNavigate();
 
@@ -18,7 +19,6 @@ export default function CustBudget() {
         const val = e.target.value.replace(/,/g, '');
         setBudget(formatNumber(val));
     };
-
     const handleSubmit = () => {
         // Parse the budget string to a number
         const budgetNumber = parseInt(budget.replace(/,/g, ''), 10);
@@ -32,7 +32,7 @@ export default function CustBudget() {
             console.log('Budget stored in session storage:', budgetNumber);
             sessionStorage.setItem('cartTotal', 0);
             // Navigate to the destination page
-            navigate('/destination');
+            navigate('/destination',{state:state});
         } else {
             // Handle invalid budget input (optional)
             console.log('Invalid budget input');
@@ -47,7 +47,7 @@ export default function CustBudget() {
         sessionStorage.setItem('cartTotal', 0);
 
         // Navigate to the destination page
-        navigate('/destination');
+        navigate('/destination',{state:state});
     };
 
     return (

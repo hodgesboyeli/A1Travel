@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from "../../Navbars/Navbar";
-import { Link, useNavigate } from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import Axios from "axios";
 
 export default function CustFlightToDestination() {
+    const { state } = useLocation();
     const [flights, setFlights] = useState([]);
     const [flightIndex, setFlightIndex] = useState(-1);
     const [selectedDestination, setSelectedDestination] = useState(null);
@@ -36,7 +37,6 @@ export default function CustFlightToDestination() {
         setBudget(storedBudget);
         setCartTotal(storedCartTotal);
         fetchFlights().then();
-
     }, []);
 
     const handleFlightSelect = (i) => {
@@ -147,14 +147,14 @@ export default function CustFlightToDestination() {
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
                     <button type="submit" className="btn btn-md custom-button" disabled={flightIndex < 0}>
-                        <Link to="/flight-from-destination" onClick={()=> handleFlightSet(flights,flightIndex)}>
+                        <Link to="/flight-from-destination" state={state} onClick={()=> handleFlightSet(flights,flightIndex)}>
                             Book Departure Flight
                         </Link>
                     </button>
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
                     <div className="container-fluid d-flex justify-content-center">
-                        <Link to="/flight-from-destination" onClick={handleFlightSkip}>
+                        <Link to="/flight-from-destination" state={state} onClick={handleFlightSkip}>
                             <button className="btn btn-link" type="button">
                                 Don't want to book a departure flight? CONTINUE HERE
                             </button>
