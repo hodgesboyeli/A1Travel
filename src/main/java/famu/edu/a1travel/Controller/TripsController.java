@@ -45,6 +45,21 @@ public class TripsController {
         }
         return ResponseEntity.status(statusCode).body(returnVal);
     }
+    @GetMapping("/destination/")
+    public ResponseEntity<Map<String, Object>> getTripsByDestination(
+            @RequestParam(name = "destination", required = true, defaultValue = "") String destination)
+    {
+        Map<String, Object> returnVal = new HashMap<>();
+        statusCode = 500;
+        try {
+            payload = tripsService.getTripsByDestination(destination);
+            statusCode = 200;
+            returnVal.put("trips", payload);
+        } catch (Exception e) {
+            returnVal.put("error", "Cannot get trips by destination: " + Arrays.toString(e.getStackTrace()));
+        }
+        return ResponseEntity.status(statusCode).body(returnVal);
+    }
     @PostMapping("/")
     public ResponseEntity<Map<String,Object>> createTrip(@RequestBody Trips trip){
         try{

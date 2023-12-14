@@ -23,10 +23,12 @@ export default function AdminHome(){
                 </Link>
             </div>
             <div className="container-fluid d-flex justify-content-center mt-3">
-                <button type="button" className="admin-button" style={{marginRight: 20}}>
-                    <i className="fas fa-folder-closed d-flex justify-content-center" style={{fontSize: 80}}></i>
-                    Reports
-                </button>
+                <Link to={"/admin-reports"}>
+                    <button type="button" className="admin-button" style={{marginRight: 20}}>
+                        <i className="fas fa-folder-closed d-flex justify-content-center" style={{fontSize: 80}}></i>
+                        Reports
+                    </button>
+                </Link>
                 <button type="button" className="admin-button">
                     <i className="fas fa-gear d-flex justify-content-center" style={{fontSize: 80}}></i>
                     Settings
