@@ -31,11 +31,10 @@ export default function CustCheckout(){
         if (f2)
             f.push(JSON.parse(f2));
         setFlights(f);
-        //TODO needs to be an array of events
         //set events if filled
         const e = sessionStorage.getItem('event');
         if (e)
-            setEvents([JSON.parse(e)]);
+            setEvents(JSON.parse(e));
         //setLodging(JSON.parse);
     },[])
 

@@ -1,30 +1,40 @@
 import React, {useEffect, useState} from 'react';
 import Navbar from "../../Navbars/Navbar";
-import {Link, useNavigate} from "react-router-dom";
-import {getFirestore} from "firebase/firestore";
-import {app} from "../../Firebase";
 import Axios from "axios";
+import {useNavigate} from "react-router-dom";
+import Modal from "../../components/Modal";
+import DateFormat from "../../components/DateFormat";
 
 export default function CustEvent(){
-    const [events, setEvents] = useState([]);
-    const [selectedDestination, setSelectedDestination] = useState(null);
-    const [eventIndex, setEventIndex] = useState(-1);
-    const [lodgingType, setLodgingType] = useState("");
     const navigate = useNavigate();
+    const [events, setEvents] = useState({
+        data:[],
+        select:[],
+    });
+    const [selectedDestination, setSelectedDestination] = useState(null);
+    const [lodgingType, setLodgingType] = useState("");
     const [budget, setBudget] = useState(null);
     const [cartTotal, setCartTotal] = useState(sessionStorage.getItem('cartTotal'));
     const [editMode, setEditMode] = useState(false);
     const [newBudget, setNewBudget] = useState('');
 
+    // New state variables for modal
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedImage, setSelectedImage] = useState('');
+
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const db = getFirestore(app);
-
                 // Query events where cityState is equal to storedDestination and the type is equal to storedType in the backend
                 const response = await Axios.get(`http://localhost:8080/api/event/?cityState=${storedDestination}`);
-                setEvents(response.data.events);
-                events.reduce((acc, events) => {
+                const data = response.data.events;
+                const select = new Array(data.length).fill(false);
+                const newEvents = {
+                    data:data,
+                    select:select
+                };
+                setEvents(prevState => newEvents);
+                events.data.reduce((acc, events) => {
                     acc = {lodgings: []};
                     return acc;
                 }, {});
@@ -49,29 +59,50 @@ export default function CustEvent(){
         setSelectedDestination(storedDestination);
         setSelectedDestination(storedDestination);
         setLodgingType(storedType);
-        fetchEvents();
-
+        fetchEvents().then();
+        console.log(events.select);
     }, []);
 
-    const handleEventSelect = (i) => {
-        setEventIndex(i);
-        console.log('Event:', events[i]);
+    //close modal
+    const closeModal = () => setModalVisible(false);
+    //toggle select events
+    const toggleSelect = (index) => {
+        const updatedSelectedEvents = events.select.map((item, idx) =>
+            idx === index ? !item : item
+        );
+        setEvents({
+            ...events,
+            select:updatedSelectedEvents
+        });
+        console.log(updatedSelectedEvents);
+    };
+    // New function to handle image click
+    const handleImageClick = (image) => {
+        setSelectedImage(image);
+        setModalVisible(true);
     };
 
-    const handleEventSet = (e,i) => {
-        if (i >= 0) {
-            const eventPrice = parseFloat(e[i].price);
-            const updatedCartTotal = parseFloat(cartTotal) + eventPrice;
+    //add up prices before navigating to checkout
+    const handleEventSet = () => {
+        const e = events.data.filter((event, index) => events.select[index]);
+        //not empty, add to session storage
+        if (e.length >= 0) {
+            //sum up event prices, starting at the cart total to produce that
+            const updatedCartTotal = e.reduce((acc,cur)=>acc+parseFloat(cur.price),parseFloat(cartTotal));
+            //const updatedCartTotal = parseFloat(cartTotal) + eventPrice;
             setCartTotal(updatedCartTotal);
             sessionStorage.setItem('cartTotal', updatedCartTotal);
-            sessionStorage.setItem('event',JSON.stringify(e[i]));
+            sessionStorage.setItem('event',JSON.stringify(e));
+            console.log('Event Set');
+            navigate('/checkout');
         }
-        console.log('Event Set');
+        console.log('No Events to set')
     }
-
+    //remove event if existing
     const handleEventSkip = () => {
         sessionStorage.removeItem('event');
         console.log("No Event Set");
+        navigate('/checkout');
     }
 
     const handleEditClick = () => {
@@ -79,13 +110,9 @@ export default function CustEvent(){
         setEditMode((prevEditMode) => !prevEditMode);
     };
 
-    const formatNumber = (value) => {
-        // Remove all non-digit characters
-        const numericValue = value.replace(/[^\d]/g, '');
-
-        // Format the number with commas
-        return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    };
+    const formatNumber = (num)=>{
+        return num.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
 
     const handleBudgetChange = (e) => {
         setNewBudget(formatNumber(e.target.value));
@@ -113,68 +140,103 @@ export default function CustEvent(){
 
     return (
         <>
-            <Navbar />
-            <div className="mt-5" style={{ paddingTop: 50 }}>
-                <div className="text-end mr-3" style={{ paddingRight: 50 }}>
-                    <p style={{ fontSize: 25, color: budget < 0 ? 'green' : cartTotal <= budget ? 'green' : 'red' }}>
-                        <button type="button" className="edit-button btn-md" onClick={handleEditClick}>
-                            <i className="fas fa-edit"></i>
-                        </button>
-                        ${cartTotal}/{budget < 0 ? '∞' : budget}
-                    </p>
-                    {editMode && (
-                        <div className="d-flex flex-column align-items-end mb-3">
-                            <div className="d-flex mb-2">
-                                <input
-                                    type="text"
-                                    value={newBudget}
-                                    onChange={handleBudgetChange}
-                                    className="form-control me-2"
-                                    style={{ maxWidth: '145px' }}
-                                    placeholder="Enter new budget"
-                                />
-                                <button onClick={handleSaveClick} className="btn btn-success">Save</button>
-                            </div>
-                            <button onClick={handleRemoveBudget} className="btn btn-secondary" style={{ width: '232px' }}>Remove Budget</button>
+        <Navbar />
+        <div className="mt-5" style={{ paddingTop: 50 }}>
+            <div className="text-end mr-3" style={{ paddingRight: 50 }}>
+                <p style={{ fontSize: 25, color: budget < 0 ? 'green' : cartTotal <= budget ? 'green' : 'red' }}>
+                    <button type="button" className="edit-button btn-md" onClick={handleEditClick}>
+                        <i className="fas fa-edit"></i>
+                    </button>
+                    ${cartTotal}/{budget < 0 ? '∞' : budget}
+                </p>
+                {editMode && (
+                    <div className="d-flex flex-column align-items-end mb-3">
+                        <div className="d-flex mb-2">
+                            <input
+                                type="text"
+                                value={newBudget}
+                                onChange={handleBudgetChange}
+                                className="form-control me-2"
+                                style={{ maxWidth: '145px' }}
+                                placeholder="Enter new budget"
+                            />
+                            <button onClick={handleSaveClick} className="btn btn-success">Save</button>
                         </div>
-                    )}
-                </div>
-                <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
-                    <h1>Choose your Event</h1>
-                </div>
-                <div className="container-fluid mt-3">
-                    {events !== null && events.length > 0 ? (
-                        events.map((event, index) => (
-                            <div key={index}
-                                 className={`destination-option ${eventIndex === index && 'selected-destination'}`}
-                                 onClick={() => handleEventSelect(index)}>
-                                <p>{event.name}</p>
-                                <p>{event.description}</p>
-                                <p>{event.address} {event.cityState}</p>
-                                <p>Price = ${event.price}.00</p>
+                        <button onClick={handleRemoveBudget} className="btn btn-secondary" style={{ width: '232px' }}>Remove Budget</button>
+                    </div>
+                )}
+            </div>
+            <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
+                <h1>Choose your Event</h1>
+            </div>
+            <div className="container-fluid mt-3">
+                {events.data.length > 0 ? (
+                    events.data.map((event, index) => (
+                        <div key={index}
+                             className='card mb-4'
+                             style={{ display: 'flex', flexDirection: 'row' }}>
+                            <div className='col-md-3'
+                                 style={{
+                                     display: 'flex',
+                                     background: `url(${event.image}) no-repeat center center`,
+                                     backgroundSize: 'cover',
+                                     alignItems: 'stretch'
+                                 }}
+                                 onClick={()=>handleImageClick(event.image)}>
+                                {/* Background image container, now empty since the image is set as a background */}
                             </div>
-                        ))
-                    ) : (
-                        <p>No events available</p>
-                    )}
-                </div>
-                <div className="text-center" style={{ marginTop: 40 }}>
-                    <button type="submit" className="btn btn-md custom-button" onClick={()=> handleEventSet(events,eventIndex)} disabled={eventIndex < 0}>
-                        <Link to="/checkout">
-                            Next
-                        </Link>
+                            <div className="col-md-9 d-flex flex-column justify-content-between">
+                                <div className="card-body">
+                                    <h5 className="card-title fw-bold">{event.eventName}</h5>
+                                    <p className="card-text">{event.description}</p>
+                                    <p className="fa-calendar-alt card-text">
+                                        <i className='fa-calendar-alt'/> {DateFormat(event.eventStart)} - {DateFormat(event.eventEnd)}
+                                    </p>
+                                    <p className="card-text">
+                                        <i className='fa-map-marker-alt'/> {event.address} {event.cityState}
+                                    </p>
+                                    <p className="card-text">
+                                        <i className='fa-user'/> Organized by: {event.organizer}
+                                    </p>
+                                    <p className="card-text">
+                                        <i className='fa-dollar-sign'/> Price: ${event.price.toFixed(2)}
+                                    </p>
+                                    <button className={`btn btn-${!events.select[index] ? 'outline-success' : 'outline-danger'}`}
+                                            onClick={()=>toggleSelect(index)}>
+                                        {!events.select[index] ? 'Select' : 'Deselect'}
+                                    </button>
+                                </div>
+                                <div className="card-footer">
+                                    <small className="text-muted">Capacity: {event.capacity} |
+                                        Registered: {event.registrations}</small>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <p>No events available</p>
+                )}
+            </div>
+            <div className="text-center" style={{marginTop: 40}}>
+                <button type="submit" className="btn btn-md custom-button"
+                        onClick={handleEventSet} disabled={!events.select.some(isSelected => isSelected)}>
+                    Next
+                </button>
+            </div>
+            <div className="text-center" style={{ marginTop: 40 }}>
+                <div className="container-fluid d-flex justify-content-center">
+                    <button className="btn btn-link" type="button" onClick={handleEventSkip}>
+                        Don't want any events? CONTINUE HERE
                     </button>
                 </div>
-                <div className="text-center" style={{ marginTop: 40 }}>
-                    <div className="container-fluid d-flex justify-content-center">
-                        <Link to="/checkout">
-                            <button className="btn btn-link" type="button">
-                                Don't want any events? CONTINUE HERE
-                            </button>
-                        </Link>
-                    </div>
-                </div>
             </div>
-        </>
-    );
+        </div>
+        {/* Modal for displaying full image */}
+        {modalVisible && (
+            <Modal onClose={closeModal}>
+                <img src={selectedImage} alt="Event" style={{ maxWidth: '100%', height: 'auto' }}/>
+            </Modal>
+        )}
+</>
+);
 }
