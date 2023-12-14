@@ -4,6 +4,7 @@ import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import famu.edu.a1travel.Model.Lodgings;
 import famu.edu.a1travel.Model.Lodgings;
+import famu.edu.a1travel.Model.Lodgings;
 import famu.edu.a1travel.Model.Users;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,22 @@ public class LodgingsService {
     private final Firestore db;
     public LodgingsService(Firestore db){
         this.db = db;
+    }
+
+    public ArrayList<Lodgings> getLodgings() throws ExecutionException, InterruptedException {
+        CollectionReference lodgingsCollection = db.collection("Lodgings");
+        ApiFuture<QuerySnapshot> future = lodgingsCollection.get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+        if (!documents.isEmpty()) {
+            ArrayList<Lodgings> lodgings = new ArrayList<>();
+            for (QueryDocumentSnapshot doc : documents)
+            {
+                lodgings.add(doc.toObject(Lodgings.class));
+            }
+            return lodgings;
+        }
+        return null;
     }
     public Lodgings getLodgingById(String id) throws ExecutionException, InterruptedException {
         DocumentReference doc = db.collection("Lodgings").document(id);

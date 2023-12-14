@@ -3,6 +3,7 @@ package famu.edu.a1travel.Service;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import famu.edu.a1travel.Model.Cars;
+import famu.edu.a1travel.Model.Cars;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,6 +15,23 @@ public class CarsService {
     private final Firestore db;
     public CarsService(Firestore db){
         this.db = db;
+    }
+
+    public ArrayList<Cars> getCars() throws ExecutionException, InterruptedException {
+        CollectionReference carsCollection = db.collection("Cars");
+        Query query = carsCollection;
+        ApiFuture<QuerySnapshot> future = query.get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+        if (!documents.isEmpty()) {
+            ArrayList<Cars> cars = new ArrayList<>();
+            for (QueryDocumentSnapshot doc : documents)
+            {
+                cars.add(doc.toObject(Cars.class));
+            }
+            return cars;
+        }
+        return null;
     }
     public Cars getCarByRef(DocumentReference ref) throws ExecutionException, InterruptedException {
         ApiFuture<DocumentSnapshot> future = ref.get();
