@@ -75,6 +75,9 @@ export default function AdminReports() {
 
     const handleGetTripsClick = () => {
         setShowBudgetAvg(false);
+        setShowTotalRev(false);
+        setShowTotalWithinBudget(false);
+        setShowTotalOverBudget(false);
         // Reset state when toggling input
         if (showInput) {
             setDestination('');
@@ -85,6 +88,9 @@ export default function AdminReports() {
 
     const handleGetBudgetAvgClick = () => {
         setShowInput(false);
+        setShowTotalRev(false);
+        setShowTotalWithinBudget(false);
+        setShowTotalOverBudget(false);
         // Reset state when toggling input
         if (showBudgetAvg) {
             setBudgetAvg(null);
@@ -98,19 +104,66 @@ export default function AdminReports() {
             handleGetBudgetAvg();
         }
     }, [showBudgetAvg]);
+    
+    const handleGetTotalRevClick = () => {
+        setShowInput(false);
+        setShowBudgetAvg(false);
+        setShowTotalWithinBudget(false);
+        setShowTotalOverBudget(false);
 
-
-    /*const handleGetTotalRevClick = () => {
-        setTotalRev(null);
+        // Reset state when toggling input
+        if (showTotalRev) {
+            setTotalRev(null);
+        }
+        setShowTotalRev(!showTotalRev);
     };
+
+    useEffect(() => {
+        // Check if showBudgetAvg is true before fetching data
+        if (showTotalRev) {
+            handleGetTotalRev();
+        }
+    }, [showTotalRev]);
 
     const handleGetWithinBudgetClick = () => {
-        setTotalWithinBudget(null);
+        setShowInput(false);
+        setShowBudgetAvg(false);
+        setShowTotalRev(false);
+        setShowTotalOverBudget(false);
+
+        // Reset state when toggling input
+        if (showTotalWithinBudget) {
+            setTotalWithinBudget(null);
+        }
+        setShowTotalWithinBudget(!showTotalWithinBudget);
     };
 
+    useEffect(() => {
+        // Check if showBudgetAvg is true before fetching data
+        if (showTotalWithinBudget) {
+            handleGetWithinBudget();
+        }
+    }, [showTotalWithinBudget]);
+
     const handleGetOverBudgetClick = () => {
-        setTotalOverBudget(null);
-    };*/
+        setShowInput(false);
+        setShowBudgetAvg(false);
+        setShowTotalRev(false);
+        setShowTotalWithinBudget(false);
+
+        // Reset state when toggling input
+        if (showTotalOverBudget) {
+            setTotalOverBudget(null);
+        }
+        setShowTotalOverBudget(!showTotalOverBudget);
+    };
+
+    useEffect(() => {
+        // Check if showBudgetAvg is true before fetching data
+        if (showTotalOverBudget) {
+            handleGetOverBudget();
+        }
+    }, [showTotalOverBudget]);
 
     const handleKeyPress = (event) => {
         if (event.key === 'Enter') {
