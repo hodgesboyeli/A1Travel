@@ -90,4 +90,52 @@ public class TripsController {
 
         return ResponseEntity.status(statusCode).body(returnVal);
     }
+
+    @GetMapping("/revenue")
+    public ResponseEntity<Map<String, Object>> getTripRevenue() {
+        Map<String, Object> returnVal = new HashMap<>();
+        statusCode = 500;
+
+        try {
+            payload = tripsService.getTripRevenue();
+            statusCode = 200;
+            returnVal.put("totalRevenue", payload);
+        } catch (Exception e) {
+            returnVal.put("error", "Cannot get total revenue: " + Arrays.toString(e.getStackTrace()));
+        }
+
+        return ResponseEntity.status(statusCode).body(returnVal);
+    }
+
+    @GetMapping("/within-budget")
+    public ResponseEntity<Map<String, Object>> getTripsWithinBudget() {
+        Map<String, Object> returnVal = new HashMap<>();
+        statusCode = 500;
+
+        try {
+            payload = tripsService.getTripsWithinBudget();
+            statusCode = 200;
+            returnVal.put("totalWithinBudget", payload);
+        } catch (Exception e) {
+            returnVal.put("error", "Cannot get total trips within budget: " + Arrays.toString(e.getStackTrace()));
+        }
+
+        return ResponseEntity.status(statusCode).body(returnVal);
+    }
+
+    @GetMapping("/over-budget")
+    public ResponseEntity<Map<String, Object>> getTripsOverBudget() {
+        Map<String, Object> returnVal = new HashMap<>();
+        statusCode = 500;
+
+        try {
+            payload = tripsService.getTripsOverBudget();
+            statusCode = 200;
+            returnVal.put("totalOverBudget", payload);
+        } catch (Exception e) {
+            returnVal.put("error", "Cannot get total trips over budget: " + Arrays.toString(e.getStackTrace()));
+        }
+
+        return ResponseEntity.status(statusCode).body(returnVal);
+    }
 }

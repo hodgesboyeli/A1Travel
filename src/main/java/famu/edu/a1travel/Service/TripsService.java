@@ -184,4 +184,52 @@ public class TripsService {
             return 0.0; // Handle the case where there are no trips to avoid division by zero
         }
     }
+
+    public Double getTripRevenue() throws ExecutionException, InterruptedException {
+        Query query = db.collection("Trips");
+        ApiFuture<QuerySnapshot> future = query.get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+        double totalRevenue = 0.0;
+
+        for (QueryDocumentSnapshot doc : documents) {
+            totalRevenue += doc.getDouble("cartTotal");
+        }
+
+        return totalRevenue;
+    }
+
+    public int getTripsWithinBudget() throws ExecutionException, InterruptedException {
+        Query query = db.collection("Trips");
+        ApiFuture<QuerySnapshot> future = query.get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+        int count = 0;
+
+        for (QueryDocumentSnapshot doc : documents) {
+
+            if (doc.getDouble("cartTotal") != null && doc.getDouble("budget") != null && doc.getDouble("cartTotal") <= doc.getDouble("budget")) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    public int getTripsOverBudget() throws ExecutionException, InterruptedException {
+        Query query = db.collection("Trips");
+        ApiFuture<QuerySnapshot> future = query.get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+        int count = 0;
+
+        for (QueryDocumentSnapshot doc : documents) {
+
+            if (doc.getDouble("cartTotal") != null && doc.getDouble("budget") != null && doc.getDouble("cartTotal") > doc.getDouble("budget")) {
+                count++;
+            }
+        }
+
+        return count;
+    }
 }

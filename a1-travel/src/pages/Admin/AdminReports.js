@@ -38,38 +38,38 @@ export default function AdminReports() {
             const response = await Axios.get(`http://localhost:8080/api/trip/avg-budget`);
             setBudgetAvg(response.data.averageBudget);
         } catch (error) {
-            console.error("Error fetching trips:", error);
+            console.error("Error fetching trip average budget:", error);
         }
         setShowBudgetAvg(true);
     };
 
     const handleGetTotalRev = async () => {
-        /*try {
-            const response = await Axios.get(`http://localhost:8080/api/trip/destination/?destination=${destination}`);
-            setTotalTrips(response.data.trips.length);
+        try {
+            const response = await Axios.get(`http://localhost:8080/api/trip/revenue`);
+            setTotalRev(response.data.totalRevenue);  // Corrected from setBudgetAvg to setTotalRev
         } catch (error) {
-            console.error("Error fetching trips:", error);
-        }*/
+            console.error("Error fetching trip total revenue:", error);
+        }
         setShowTotalRev(true);
     };
 
     const handleGetWithinBudget = async () => {
-        /*try {
-            const response = await Axios.get(`http://localhost:8080/api/trip/destination/?destination=${destination}`);
-            setTotalTrips(response.data.trips.length);
+        try {
+            const response = await Axios.get(`http://localhost:8080/api/trip/within-budget`);
+            setTotalWithinBudget(response.data.totalWithinBudget);
         } catch (error) {
-            console.error("Error fetching trips:", error);
-        }*/
+            console.error("Error fetching trips within budget:", error);
+        }
         setShowTotalWithinBudget(true);
     };
 
     const handleGetOverBudget = async () => {
-        /*try {
-            const response = await Axios.get(`http://localhost:8080/api/trip/destination/?destination=${destination}`);
-            setTotalTrips(response.data.trips.length);
+        try {
+            const response = await Axios.get(`http://localhost:8080/api/trip/over-budget`);
+            setTotalOverBudget(response.data.totalOverBudget);
         } catch (error) {
-            console.error("Error fetching trips:", error);
-        }*/
+            console.error("Error fetching trips over budget:", error);
+        }
         setShowTotalOverBudget(true);
     };
 
@@ -104,7 +104,7 @@ export default function AdminReports() {
             handleGetBudgetAvg();
         }
     }, [showBudgetAvg]);
-    
+
     const handleGetTotalRevClick = () => {
         setShowInput(false);
         setShowBudgetAvg(false);
@@ -204,13 +204,13 @@ export default function AdminReports() {
                 <button type="button" className="btn btn-primary" style={{ marginLeft: 15, marginRight: 15 }} onClick={handleGetBudgetAvgClick}>
                     Average Budget of Trips
                 </button>
-                <button type="button" className="btn btn-primary" style={{ marginLeft: 15, marginRight: 15 }} onClick={handleGetTotalRev}>
+                <button type="button" className="btn btn-primary" style={{ marginLeft: 15, marginRight: 15 }} onClick={handleGetTotalRevClick}>
                     Total Revenue from Trips
                 </button>
-                <button type="button" className="btn btn-primary" style={{ marginLeft: 15, marginRight: 15 }} onClick={handleGetWithinBudget}>
+                <button type="button" className="btn btn-primary" style={{ marginLeft: 15, marginRight: 15 }} onClick={handleGetWithinBudgetClick}>
                     Trips Within Budget
                 </button>
-                <button type="button" className="btn btn-primary" style={{ marginLeft: 15, marginRight: 15 }} onClick={handleGetOverBudget}>
+                <button type="button" className="btn btn-primary" style={{ marginLeft: 15, marginRight: 15 }} onClick={handleGetOverBudgetClick}>
                     Trips Over Budget
                 </button>
             </div>
@@ -247,21 +247,21 @@ export default function AdminReports() {
             <div className="container-fluid d-flex justify-content-center">
                 {totalRev !== null && showTotalRev && (
                     <div className="container-fluid d-flex justify-content-center mt-3">
-                        <p>Total revenue from all trips: ${totalRev}</p>
+                        <p style={{fontSize: 30}}>Total revenue from all trips: ${totalRev}</p>
                     </div>
                 )}
             </div>
             <div className="container-fluid d-flex justify-content-center">
                 {totalWithinBudget !== null && showTotalWithinBudget && (
                     <div className="container-fluid d-flex justify-content-center mt-3">
-                        <p>Total trips within budget:{totalWithinBudget}</p>
+                        <p style={{fontSize: 30}}>Total trips within budget: {totalWithinBudget}</p>
                     </div>
                 )}
             </div>
             <div className="container-fluid d-flex justify-content-center">
                 {totalOverBudget !== null && showTotalOverBudget && (
                     <div className="container-fluid d-flex justify-content-center mt-3">
-                        <p>Total trips over budget: {totalOverBudget}</p>
+                        <p style={{fontSize: 30}}>Total trips over budget: {totalOverBudget}</p>
                     </div>
                 )}
             </div>
