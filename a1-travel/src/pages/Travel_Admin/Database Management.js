@@ -11,7 +11,7 @@ export default function DatabaseManagement() {
     const [showFlightForm, setShowFlightForm] = useState(false);
     const [showTrainForm, setShowTrainForm] = useState(false);
     const [showCarForm, setShowCarForm] = useState(false);
-    const [showDestinationForm, setShowDestinationForm] = useState(false);
+    const [showLodgingForm, setShowLodgingForm] = useState(false);
     const phoneRef = useRef(null);
     const emailRef = useRef(null);
     const imageRef = useRef(null);
@@ -46,6 +46,8 @@ export default function DatabaseManagement() {
         pickupLocation: '',
         returnDate: null,
         returnLocation: '',
+        details: '',
+        type: '',
         year: null,
     });
 
@@ -96,6 +98,21 @@ export default function DatabaseManagement() {
 
     const isCarFormValid = () => {
         const requiredFields = ['color', 'make', 'model', 'pickupDate', 'pickupLocation', 'price', 'returnDate', 'returnLocation', 'year'];
+
+        for (const field of requiredFields) {
+            if (!inputValues[field]) {
+                // Field is empty, show error and return false
+                showErrorModal();
+                return false;
+            }
+        }
+
+        // All required fields are filled, return true
+        return true;
+    };
+
+    const isLodgingFormValid = () => {
+        const requiredFields = ['address', 'cityState', 'details', 'name', 'price', 'type'];
 
         for (const field of requiredFields) {
             if (!inputValues[field]) {
@@ -348,6 +365,50 @@ export default function DatabaseManagement() {
         }
     };
 
+    const handleLodgingSubmit = async (e) => {
+        e.preventDefault();
+        console.log('handleLodgingSubmit function is working!');
+
+        if (!isLodgingFormValid()) {
+            return;
+        }
+
+        const {
+            address,
+            cityState,
+            details,
+            name,
+            price,
+            type
+        } = inputValues;
+
+        const lodging = {
+            address,
+            cityState,
+            details,
+            name,
+            price,
+            type
+        };
+
+        console.log(lodging);
+
+        try {
+            const response = await Axios.post('http://localhost:8080/api/lodging/', lodging);
+            console.log(lodging);
+            if (response.status === 201) {
+                console.log('Lodging created successfully');
+                showModal();
+            } else {
+                console.error('Lodging create failed');
+                showErrorModal();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showErrorModal();
+        }
+    };
+
     const showModal = () => {
         if (modalRef.current) {
             const modal = new Modal(modalRef.current);
@@ -426,10 +487,10 @@ export default function DatabaseManagement() {
             setShowCarForm(false);
         }
 
-        if (event.target.id === "radioDestination") {
-            setShowDestinationForm(true);
+        if (event.target.id === "radioLodging") {
+            setShowLodgingForm(true);
         } else {
-            setShowDestinationForm(false);
+            setShowLodgingForm(false);
         }
     };
 
@@ -562,11 +623,11 @@ export default function DatabaseManagement() {
                     className="form-check-input form-check-inline"
                     type="radio"
                     name="AddNew"
-                    id="radioDestination"
+                    id="radioLodging"
                     onChange={handleRadioChange}
                 />
-                <label style={{ marginRight: 10 }} htmlFor="radioDestination">
-                    Destination
+                <label style={{ marginRight: 10 }} htmlFor="radioLodging">
+                    Lodging
                 </label>
             </div>
 
@@ -686,7 +747,7 @@ export default function DatabaseManagement() {
                         id="radioFlight"
                         onChange={handleRadioChange}
                     />
-                    <label style={{ marginRight: 10 }} htmlFor="radioEvent">
+                    <label style={{ marginRight: 10 }} htmlFor="radioTransportation">
                         Flight
                     </label>
                     <input
@@ -706,7 +767,7 @@ export default function DatabaseManagement() {
                         id="radioCar"
                         onChange={handleRadioChange}
                     />
-                    <label style={{ marginRight: 10 }} htmlFor="radioDestination">
+                    <label style={{ marginRight: 10 }} htmlFor="radioTransportation">
                         Car
                     </label>
                 </div>
@@ -969,6 +1030,112 @@ export default function DatabaseManagement() {
                                 </div>
                                 <div className="modal-body">
                                     <p>Error creating the car. Please try again.</p>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseErrorModal}>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showLodgingForm && (
+                <div className="container-fluid d-flex justify-content-center" style={{paddingLeft: 150, paddingRight: 150}}>
+                    <form className="row g-3" onSubmit={handleEventSubmit}>
+                        <div className="col-md-6">
+                            <label htmlFor="inputEventName" className="form-label">Event Name</label>
+                            <input type="text" className="form-control" id="eventName" value={inputValues.eventName} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputEventType" className="form-label">Event Category</label>
+                            <input type="text" className="form-control" id="eventType" value={inputValues.eventType} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-12">
+                            <label htmlFor="inputEventDescription" className="form-label">Event Description</label>
+                            <textarea className="form-control" id="description" rows="3" value={inputValues.description} onChange={handleInputChange}></textarea>
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputPrice" className="form-label">Price</label>
+                            <input type="number" className="form-control" id="price" value={inputValues.price} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputCapacity" className="form-label">Capacity</label>
+                            <input type="number" className="form-control" id="capacity" value={inputValues.capacity} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputEventStart" className="form-label">Event Start</label>
+                            <input type="datetime-local" className="form-control" id="eventStart" value={inputValues.eventStart} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputEventEnd" className="form-label">Event End</label>
+                            <input type="datetime-local" className="form-control" id="eventEnd" value={inputValues.eventEnd} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-3">
+                            <label htmlFor="inputOrganizer" className="form-label">Event Organizer</label>
+                            <input type="text" className="form-control" id="organizer" value={inputValues.organizer} onChange={handleInputChange}/>
+                        </div>
+                        <div className="col-md-2">
+                            <label htmlFor="inputAddress" className="form-label">Event Address</label>
+                            <input type="text" className="form-control" id="address" value={inputValues.address} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-2">
+                            <label htmlFor="inputCityState" className="form-label">Event Ciy/State</label>
+                            <input type="text" className="form-control" id="cityState" value={inputValues.cityState} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-5">
+                            <label htmlFor="inputContactInfo" className="form-label">Contact Information</label>
+                            <div className="input-group">
+                                <input type="text" className= "form-control" placeholder="Phone Number" aria-label="Phone Number" ref={phoneRef} />
+                                <input type="text" className= "form-control" placeholder="Email" aria-label="Email" ref={emailRef} />
+                            </div>
+                        </div>
+                        <div className="col-12">
+                            <label htmlFor="inputEventImage" className="form-label">Event Image Upload</label>
+                            <input type="file" className="form-control" id="image" ref={imageRef} />
+                        </div>
+                        <div className="col-12 d-flex justify-content-center">
+                            <button type="submit" className="btn btn-success">Submit</button>
+                        </div>
+                        <div className="col-12 d-flex justify-content-center">
+                            <button type="button" className="btn btn-secondary" onClick={handleEventReset}>
+                                Reset
+                            </button>
+                        </div>
+                    </form>
+                    <div className="modal fade" ref={modalRef} tabIndex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="successModalLabel">
+                                        Success!
+                                    </h5>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleEventReset}></button>
+                                </div>
+                                <div className="modal-body">
+                                    <p>Event has been successfully created.</p>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleEventReset}>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="modal fade" ref={errorModalRef} tabIndex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="errorModalLabel">
+                                        Error!
+                                    </h5>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseErrorModal}></button>
+                                </div>
+                                <div className="modal-body">
+                                    <p>Error creating the event. Please try again.</p>
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseErrorModal}>

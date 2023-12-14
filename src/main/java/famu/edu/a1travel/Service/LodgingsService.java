@@ -2,6 +2,7 @@ package famu.edu.a1travel.Service;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
+import famu.edu.a1travel.Model.Events;
 import famu.edu.a1travel.Model.Lodgings;
 import famu.edu.a1travel.Model.Lodgings;
 import famu.edu.a1travel.Model.Users;
@@ -15,6 +16,12 @@ public class LodgingsService {
     private final Firestore db;
     public LodgingsService(Firestore db){
         this.db = db;
+    }
+
+    public String createLodging(Lodgings lodging) throws ExecutionException, InterruptedException {
+        ApiFuture<DocumentReference> future = db.collection("Lodgings").add(lodging);
+        DocumentReference lodgingRef = future.get();
+        return lodgingRef.getId();
     }
     public Lodgings getLodgingById(String id) throws ExecutionException, InterruptedException {
         DocumentReference doc = db.collection("Lodgings").document(id);

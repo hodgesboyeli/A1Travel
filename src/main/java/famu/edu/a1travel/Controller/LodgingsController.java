@@ -1,5 +1,6 @@
 package famu.edu.a1travel.Controller;
 
+import famu.edu.a1travel.Model.Events;
 import famu.edu.a1travel.Model.Lodgings;
 import famu.edu.a1travel.Service.LodgingsService;
 import com.google.api.client.util.Value;
@@ -35,6 +36,21 @@ public class LodgingsController {
     public LodgingsController(LodgingsService lodgingsService) {
         this.lodgingsService = lodgingsService;
         payload = null;
+    }
+
+    @PostMapping("/")
+    public ResponseEntity<Map<String,Object>> createLodging(@RequestBody Lodgings lodging){
+        try{
+            payload = lodgingsService.createLodging(lodging);
+            statusCode = 201;
+            name = "lodgingId";
+        } catch (ExecutionException | InterruptedException e) {
+            payload = new ErrorMessage("Cannot create new lodging in database.", CLASS_NAME, e.toString());
+        }
+
+        response = new ResponseWrapper(statusCode,name, payload);
+
+        return response.getResponse();
     }
 
     @GetMapping("id/{lodgingId}")
