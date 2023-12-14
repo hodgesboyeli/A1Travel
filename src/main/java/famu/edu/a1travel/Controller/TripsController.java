@@ -45,8 +45,10 @@ public class TripsController {
         }
         return ResponseEntity.status(statusCode).body(returnVal);
     }
-    @GetMapping("/{destination}")
-    public ResponseEntity<Map<String, Object>> getTripsByDestination(@PathVariable String destination) {
+    @GetMapping("/destination/")
+    public ResponseEntity<Map<String, Object>> getTripsByDestination(
+            @RequestParam(name = "destination", required = true, defaultValue = "") String destination)
+    {
         Map<String, Object> returnVal = new HashMap<>();
         statusCode = 500;
         try {
