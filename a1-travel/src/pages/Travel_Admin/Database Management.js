@@ -47,6 +47,7 @@ export default function DatabaseManagement() {
         returnDate: null,
         returnLocation: '',
         details: '',
+        name: '',
         type: '',
         year: null,
     });
@@ -590,6 +591,17 @@ export default function DatabaseManagement() {
         });
     };
 
+    const handleLodgingReset = () => {
+        setInputValues({
+            address: '',
+            cityState: '',
+            details: '',
+            name: '',
+            price: '',
+            type: ''
+        });
+    };
+
 
     return (
         <div>
@@ -671,7 +683,7 @@ export default function DatabaseManagement() {
                             <input type="text" className="form-control" id="address" value={inputValues.address} onChange={handleInputChange} />
                         </div>
                         <div className="col-md-2">
-                            <label htmlFor="inputCityState" className="form-label">Event Ciy/State</label>
+                            <label htmlFor="inputCityState" className="form-label">Event City/State</label>
                             <input type="text" className="form-control" id="cityState" value={inputValues.cityState} onChange={handleInputChange} />
                         </div>
                         <div className="col-md-5">
@@ -1044,63 +1056,40 @@ export default function DatabaseManagement() {
 
             {showLodgingForm && (
                 <div className="container-fluid d-flex justify-content-center" style={{paddingLeft: 150, paddingRight: 150}}>
-                    <form className="row g-3" onSubmit={handleEventSubmit}>
+                    <form className="row g-3" onSubmit={handleLodgingSubmit}>
                         <div className="col-md-6">
-                            <label htmlFor="inputEventName" className="form-label">Event Name</label>
-                            <input type="text" className="form-control" id="eventName" value={inputValues.eventName} onChange={handleInputChange} />
+                            <label htmlFor="inputLodgingName" className="form-label">Lodging Name</label>
+                            <input type="text" className="form-control" id="name" value={inputValues.name} onChange={handleInputChange} />
                         </div>
                         <div className="col-md-6">
-                            <label htmlFor="inputEventType" className="form-label">Event Category</label>
-                            <input type="text" className="form-control" id="eventType" value={inputValues.eventType} onChange={handleInputChange} />
+                            <label htmlFor="inputLodgingType" className="form-label">Lodging Type</label>
+                            <select className="form-select" id="type" value={inputValues.type} onChange={handleInputChange}>
+                                <option>Choose...</option>
+                                <option value="Hotel">Hotel</option>
+                                <option value="Airbnb">Airbnb</option>
+                            </select>
                         </div>
-                        <div className="col-12">
-                            <label htmlFor="inputEventDescription" className="form-label">Event Description</label>
-                            <textarea className="form-control" id="description" rows="3" value={inputValues.description} onChange={handleInputChange}></textarea>
+                        <div className="col-md-6">
+                            <label htmlFor="inputAddress" className="form-label">Lodging Address</label>
+                            <input type="text" className="form-control" id="address" value={inputValues.address} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputCityState" className="form-label">Lodging City/State</label>
+                            <input type="text" className="form-control" id="cityState" value={inputValues.cityState} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputDetails" className="form-label">Lodging Details</label>
+                            <input type="text" className="form-control" id="details" value={inputValues.details} onChange={handleInputChange}/>
                         </div>
                         <div className="col-md-6">
                             <label htmlFor="inputPrice" className="form-label">Price</label>
                             <input type="number" className="form-control" id="price" value={inputValues.price} onChange={handleInputChange} />
                         </div>
-                        <div className="col-md-6">
-                            <label htmlFor="inputCapacity" className="form-label">Capacity</label>
-                            <input type="number" className="form-control" id="capacity" value={inputValues.capacity} onChange={handleInputChange} />
-                        </div>
-                        <div className="col-md-6">
-                            <label htmlFor="inputEventStart" className="form-label">Event Start</label>
-                            <input type="datetime-local" className="form-control" id="eventStart" value={inputValues.eventStart} onChange={handleInputChange} />
-                        </div>
-                        <div className="col-md-6">
-                            <label htmlFor="inputEventEnd" className="form-label">Event End</label>
-                            <input type="datetime-local" className="form-control" id="eventEnd" value={inputValues.eventEnd} onChange={handleInputChange} />
-                        </div>
-                        <div className="col-md-3">
-                            <label htmlFor="inputOrganizer" className="form-label">Event Organizer</label>
-                            <input type="text" className="form-control" id="organizer" value={inputValues.organizer} onChange={handleInputChange}/>
-                        </div>
-                        <div className="col-md-2">
-                            <label htmlFor="inputAddress" className="form-label">Event Address</label>
-                            <input type="text" className="form-control" id="address" value={inputValues.address} onChange={handleInputChange} />
-                        </div>
-                        <div className="col-md-2">
-                            <label htmlFor="inputCityState" className="form-label">Event Ciy/State</label>
-                            <input type="text" className="form-control" id="cityState" value={inputValues.cityState} onChange={handleInputChange} />
-                        </div>
-                        <div className="col-md-5">
-                            <label htmlFor="inputContactInfo" className="form-label">Contact Information</label>
-                            <div className="input-group">
-                                <input type="text" className= "form-control" placeholder="Phone Number" aria-label="Phone Number" ref={phoneRef} />
-                                <input type="text" className= "form-control" placeholder="Email" aria-label="Email" ref={emailRef} />
-                            </div>
-                        </div>
-                        <div className="col-12">
-                            <label htmlFor="inputEventImage" className="form-label">Event Image Upload</label>
-                            <input type="file" className="form-control" id="image" ref={imageRef} />
-                        </div>
                         <div className="col-12 d-flex justify-content-center">
                             <button type="submit" className="btn btn-success">Submit</button>
                         </div>
                         <div className="col-12 d-flex justify-content-center">
-                            <button type="button" className="btn btn-secondary" onClick={handleEventReset}>
+                            <button type="button" className="btn btn-secondary" onClick={handleLodgingReset}>
                                 Reset
                             </button>
                         </div>
@@ -1115,10 +1104,10 @@ export default function DatabaseManagement() {
                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleEventReset}></button>
                                 </div>
                                 <div className="modal-body">
-                                    <p>Event has been successfully created.</p>
+                                    <p>Lodging has been successfully created.</p>
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleEventReset}>
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleLodgingReset}>
                                         Close
                                     </button>
                                 </div>
@@ -1135,7 +1124,7 @@ export default function DatabaseManagement() {
                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseErrorModal}></button>
                                 </div>
                                 <div className="modal-body">
-                                    <p>Error creating the event. Please try again.</p>
+                                    <p>Error creating the lodging. Please try again.</p>
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseErrorModal}>
