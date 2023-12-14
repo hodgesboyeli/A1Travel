@@ -148,9 +148,10 @@ export default function CustHotel(){
                             <div key={index}
                                  className={`destination-option ${hotelIndex === index && 'selected-destination'}`}
                                  onClick={() => handleHotelSelect(index)}>
-                                <p>{hotel.address} {hotel.cityState}</p>
-                                <p>{hotel.details}</p>
-                                <p>Price = ${hotel.price}.00</p>
+                                <p>Hotel Name: {hotel.name}</p>
+                                <p>Address: {hotel.address} {hotel.cityState}</p>
+                                <p>Details: {hotel.details}</p>
+                                <p>Price Per Night: ${hotel.price}.00</p>
                             </div>
                         ))
                     ) : (

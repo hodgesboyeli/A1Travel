@@ -155,8 +155,9 @@ export default function TASearchData() {
                             <div key={index}
                                  className={`destination-option ${lodgingIndex === index && 'selected-destination'}`}>
                                 <p>Name: {lodging.name}</p>
-                                <p>Description: {lodging.description}</p>
-                                <p>Price: ${lodging.price}.00</p>
+                                <p>Details: {lodging.details}</p>
+                                <p>Lodging Type: {lodging.type}</p>
+                                <p>Price Per Night: ${lodging.price}.00</p>
                             </div>
                         ))
                     ) : (
