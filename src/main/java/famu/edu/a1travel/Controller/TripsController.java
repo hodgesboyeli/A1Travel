@@ -74,4 +74,20 @@ public class TripsController {
 
         return response.getResponse();
     }
+
+    @GetMapping("/avg-budget")
+    public ResponseEntity<Map<String, Object>> getTripAvgBudget() {
+        Map<String, Object> returnVal = new HashMap<>();
+        statusCode = 500;
+
+        try {
+            payload = tripsService.getTripAvgBudget();
+            statusCode = 200;
+            returnVal.put("averageBudget", payload);
+        } catch (Exception e) {
+            returnVal.put("error", "Cannot get average budget: " + Arrays.toString(e.getStackTrace()));
+        }
+
+        return ResponseEntity.status(statusCode).body(returnVal);
+    }
 }

@@ -164,4 +164,24 @@ public class TripsService {
         }
         return trips;
     }
+
+    public Double getTripAvgBudget() throws ExecutionException, InterruptedException {
+        Query query = db.collection("Trips");
+        ApiFuture<QuerySnapshot> future = query.get();
+        List<QueryDocumentSnapshot> documents = future.get().getDocuments();
+
+        double totalBudget = 0.0;
+        int numTrips = 0;
+
+        for (QueryDocumentSnapshot doc : documents) {
+            totalBudget += doc.getDouble("budget");
+            numTrips++;
+        }
+
+        if (numTrips > 0) {
+            return totalBudget / numTrips;
+        } else {
+            return 0.0; // Handle the case where there are no trips to avoid division by zero
+        }
+    }
 }

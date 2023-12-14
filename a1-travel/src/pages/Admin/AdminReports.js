@@ -34,12 +34,12 @@ export default function AdminReports() {
     };
 
     const handleGetBudgetAvg = async () => {
-        /*try {
-            const response = await Axios.get(`http://localhost:8080/api/trip/destination/?destination=${destination}`);
-            setTotalTrips(response.data.trips.length);
+        try {
+            const response = await Axios.get(`http://localhost:8080/api/trip/avg-budget`);
+            setBudgetAvg(response.data.averageBudget);
         } catch (error) {
             console.error("Error fetching trips:", error);
-        }*/
+        }
         setShowBudgetAvg(true);
     };
 
@@ -74,6 +74,7 @@ export default function AdminReports() {
     };
 
     const handleGetTripsClick = () => {
+        setShowBudgetAvg(false);
         // Reset state when toggling input
         if (showInput) {
             setDestination('');
@@ -82,12 +83,24 @@ export default function AdminReports() {
         setShowInput(!showInput);
     };
 
-    /*const handleGetBudgetAvgClick = () => {
+    const handleGetBudgetAvgClick = () => {
+        setShowInput(false);
         // Reset state when toggling input
-        setBudgetAvg(null);
+        if (showBudgetAvg) {
+            setBudgetAvg(null);
+        }
+        setShowBudgetAvg(!showBudgetAvg);
     };
 
-    const handleGetTotalRevClick = () => {
+    useEffect(() => {
+        // Check if showBudgetAvg is true before fetching data
+        if (showBudgetAvg) {
+            handleGetBudgetAvg();
+        }
+    }, [showBudgetAvg]);
+
+
+    /*const handleGetTotalRevClick = () => {
         setTotalRev(null);
     };
 
@@ -135,7 +148,7 @@ export default function AdminReports() {
                 <button type="button" className="btn btn-primary" style={{ marginLeft: 15, marginRight: 15 }} onClick={handleGetTripsClick}>
                     Number of Trips to a destination
                 </button>
-                <button type="button" className="btn btn-primary" style={{ marginLeft: 15, marginRight: 15 }} onClick={handleGetBudgetAvg}>
+                <button type="button" className="btn btn-primary" style={{ marginLeft: 15, marginRight: 15 }} onClick={handleGetBudgetAvgClick}>
                     Average Budget of Trips
                 </button>
                 <button type="button" className="btn btn-primary" style={{ marginLeft: 15, marginRight: 15 }} onClick={handleGetTotalRev}>
@@ -174,7 +187,7 @@ export default function AdminReports() {
             <div className="container-fluid d-flex justify-content-center">
                 {budgetAvg !== null && showBudgetAvg && (
                     <div className="container-fluid d-flex justify-content-center mt-3">
-                        <p>Budget Average of all trips: ${budgetAvg}</p>
+                        <p style={{fontSize: 30}}>Budget Average of all trips: ${budgetAvg}</p>
                     </div>
                 )}
             </div>
