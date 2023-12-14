@@ -37,6 +37,21 @@ public class LodgingsController {
         payload = null;
     }
 
+    @GetMapping("/")
+    public ResponseEntity<Map<String,Object>> getLodgings(){
+        Map<String, Object> returnVal = new HashMap<>();
+        statusCode = 500;
+        try {
+            payload = lodgingsService.getLodgings();
+            statusCode = 200;
+            returnVal.put("lodgings",payload);
+        } catch (ExecutionException | InterruptedException e) {
+            payload = new ErrorMessage("Cannot fetch lodgings from database", CLASS_NAME,
+                    e.getStackTrace().toString());
+        }
+        return ResponseEntity.status(statusCode).body(returnVal);
+    }
+    
     @GetMapping("id/{lodgingId}")
     public ResponseEntity<Map<String,Object>> getLodging(@PathVariable(name = "lodgingId") String id) {
         logger.info("getLodging function is working!");

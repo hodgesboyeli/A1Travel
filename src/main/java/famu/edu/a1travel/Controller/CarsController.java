@@ -34,6 +34,21 @@ public class CarsController {
         this.carsService = carsService;
         payload = null;
     }
+
+    @GetMapping("/")
+    public ResponseEntity<Map<String,Object>> getCars(){
+        Map<String, Object> returnVal = new HashMap<>();
+        statusCode = 500;
+        try {
+            payload = carsService.getCars();
+            statusCode = 200;
+            returnVal.put("cars",payload);
+        } catch (ExecutionException | InterruptedException e) {
+            payload = new ErrorMessage("Cannot fetch cars from database", CLASS_NAME,
+                    e.getStackTrace().toString());
+        }
+        return ResponseEntity.status(statusCode).body(returnVal);
+    }
   
     @GetMapping("id/{carId}")
     public ResponseEntity<Map<String,Object>> getCar(@PathVariable(name = "carId") String id) {
