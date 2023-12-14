@@ -12,7 +12,6 @@ export default function CustDestination() {
     const [selectedDestination, setSelectedDestination] = useState(null);
     const [editMode, setEditMode] = useState(false);
     const [newBudget, setNewBudget] = useState('');
-    const navigate = useNavigate();
     const [budget, setBudget] = useState(null);
     const [cartTotal, setCartTotal] = useState(sessionStorage.getItem('cartTotal'));
 
@@ -76,6 +75,18 @@ export default function CustDestination() {
     };
 
     const isNextButtonDisabled = !selectedDestination;
+    const linkChange = (from)=>{
+        const obj = {
+            trip: 'flight-to-destination',
+            fly: 'flight-to-destination',
+            car: 'car',
+            train: 'train-to-destination',
+            lodging: 'lodging'
+        };
+        if (obj.hasOwnProperty(from))
+            return obj[from];
+        return 'flight-to-destination';
+    };
 
     return (
         <>
@@ -129,7 +140,7 @@ export default function CustDestination() {
                     ))}
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/flight-to-destination" state={ state }>
+                    <Link to={`/${linkChange(state.from)}`} state={ state }>
                         <button type="submit" className="btn btn-md custom-button" disabled={isNextButtonDisabled}>
                             Next
                         </button>
