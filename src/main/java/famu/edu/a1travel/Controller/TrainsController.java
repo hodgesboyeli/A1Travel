@@ -28,6 +28,21 @@ public class TrainsController {
         payload = null;
     }
 
+    @GetMapping("/")
+    public ResponseEntity<Map<String,Object>> getTrains(){
+        Map<String, Object> returnVal = new HashMap<>();
+        statusCode = 500;
+        try {
+            payload = trainsService.getTrains();
+            statusCode = 200;
+            returnVal.put("trains",payload);
+        } catch (ExecutionException | InterruptedException e) {
+            payload = new ErrorMessage("Cannot fetch trains from database", CLASS_NAME,
+                    e.getStackTrace().toString());
+        }
+        return ResponseEntity.status(statusCode).body(returnVal);
+    }
+
     @PostMapping("/")
     public ResponseEntity<Map<String, Object>> createTrain(@RequestBody Trains train) {
         try {
