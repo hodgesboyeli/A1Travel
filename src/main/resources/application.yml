@@ -38,6 +38,7 @@ security:
   allowed-public-apis:
     - /favicon.ico
     - /
+    - /api/special/**
     - /api/login
     - /api/account/**
     - /api/user/**
