@@ -1,5 +1,6 @@
 package famu.edu.a1travel.Controller;
 
+import com.google.api.services.storage.Storage;
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.auth.FirebaseAuth;
@@ -12,10 +13,12 @@ import famu.edu.a1travel.Util.JwtUtil;
 import famu.edu.a1travel.Util.LoginRequest;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
@@ -27,9 +30,9 @@ public class AuthenticationController {
     private final FirebaseAuth firebaseAuth;
     private final UsersService usersService;
     private final Log logger = LogFactory.getLog(this.getClass());
-    public AuthenticationController(FirebaseAuth firebaseAuth, Firestore db) {
+    public AuthenticationController(FirebaseAuth firebaseAuth, UsersService usersService) {
         this.firebaseAuth = firebaseAuth;
-        usersService = new UsersService(db);
+        this.usersService = usersService;
     }
 
     @PostMapping("/register")
@@ -99,5 +102,33 @@ public class AuthenticationController {
         updates.put("isActive", !set);
         usersService.updateUser(uid,updates);
         return set;
+    }
+
+    @GetMapping("/account/users/")
+    public ResponseEntity<Map<String,Object>> getAuthUsers(){
+        Map<String,Object> returnVal = new HashMap<>();
+        int statusCode = 500;
+        try {
+            returnVal.put("users", firebaseAuth.listUsers("0"));
+            statusCode = 200;
+        } catch (FirebaseAuthException e) {
+            returnVal.put("error", e.getStackTrace());
+        }
+        return ResponseEntity.status(statusCode).body(returnVal);
+    }
+
+    @PutMapping("/account/update/{uid}")
+    public ResponseEntity<Map<String,Object>> updateUser(@PathVariable String uid,@RequestBody Map<String,Object> obj){
+        Map<String,Object> returnVal = new HashMap<>();
+        int statusCode = 500;
+        try {
+            UserRecord.UpdateRequest updateRequest = new UserRecord.UpdateRequest(uid);
+            updateRequest.setPhotoUrl((String) obj.get("photoUrl"));
+            returnVal.put("user", firebaseAuth.updateUser(updateRequest));
+            statusCode = 200;
+        } catch (FirebaseAuthException e) {
+            returnVal.put("error", e.getStackTrace());
+        }
+        return ResponseEntity.status(statusCode).body(returnVal);
     }
 }

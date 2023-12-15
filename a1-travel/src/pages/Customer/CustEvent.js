@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import Navbar from "../../Navbars/Navbar";
 import Axios from "axios";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import Modal from "../../components/Modal";
 import DateFormat from "../../components/DateFormat";
 
 export default function CustEvent(){
     const navigate = useNavigate();
+    const {state} = useLocation();
     const [events, setEvents] = useState({
         data:[],
         select:[],
@@ -94,7 +95,7 @@ export default function CustEvent(){
             sessionStorage.setItem('cartTotal', updatedCartTotal);
             sessionStorage.setItem('event',JSON.stringify(e));
             console.log('Event Set');
-            navigate('/checkout');
+            navigate('/checkout',state);
         }
         console.log('No Events to set')
     }
@@ -102,7 +103,7 @@ export default function CustEvent(){
     const handleEventSkip = () => {
         sessionStorage.removeItem('event');
         console.log("No Event Set");
-        navigate('/checkout');
+        navigate('/checkout',state);
     }
 
     const handleEditClick = () => {
