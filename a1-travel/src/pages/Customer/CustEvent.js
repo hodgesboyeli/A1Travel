@@ -95,7 +95,7 @@ export default function CustEvent(){
             sessionStorage.setItem('cartTotal', updatedCartTotal);
             sessionStorage.setItem('event',JSON.stringify(e));
             console.log('Event Set');
-            navigate('/checkout',state);
+            navigate('/checkout',{state:state});
         }
         console.log('No Events to set')
     }
@@ -103,7 +103,7 @@ export default function CustEvent(){
     const handleEventSkip = () => {
         sessionStorage.removeItem('event');
         console.log("No Event Set");
-        navigate('/checkout',state);
+        navigate('/checkout',{state:state});
     }
 
     const handleEditClick = () => {

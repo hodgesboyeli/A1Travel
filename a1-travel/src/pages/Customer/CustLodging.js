@@ -104,13 +104,13 @@ export default function CustLodging(){
                         </Link>
                     </div>
                     <div className="text-center" style={{ marginTop: 40 }}>
-                        <Link to={state.from === 'lodging' ? '/checkout' : "/event"} state={state}>
-                            <div className="container-fluid d-flex justify-content-center">
-                                <button className="btn btn-link" type="button">
+                        <div className="container-fluid d-flex justify-content-center">
+                            <button className="btn btn-link" type="button">
+                                <Link to={state.from === 'lodging' ? '/checkout' : "/event"} state={state}>
                                     Have a place to stay? CONTINUE HERE
-                                </button>
-                            </div>
-                        </Link>
+                                </Link>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

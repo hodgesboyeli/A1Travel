@@ -6,10 +6,10 @@ export default function TAHome(){
     return (
         <div className="page-style">
             <TravelAdminNavbar/>
-            <div className="container-fluid d-flex justify-content-center mt-5" style={{paddingTop: 30}}>
+            <div className="container-fluid d-flex justify-content-center mt-5" style={{paddingTop: 40}}>
                 <h1 style={{color : "#FFF"}}>Travel Administrator Dashboard</h1>
             </div>
-            <div className="container-fluid d-flex justify-content-center mt-5">
+            <div className="container-fluid d-flex justify-content-center" style={{marginTop: 60}}>
                 <Link to={"/ta/select"}>
                     <button type="button" className="admin-button" style={{marginRight: 20}}>
                         <i className="fas fa-database d-flex justify-content-center" style={{fontSize: 80}}></i>
@@ -23,13 +23,13 @@ export default function TAHome(){
                     </button>
                 </Link>
             </div>
-            <div className="container-fluid d-flex justify-content-center mt-3">
+            <div className="container-fluid d-flex justify-content-center" style={{marginTop: 60}}>
                 <button type="button" className="admin-button">
                     <i className="fas fa-gear d-flex justify-content-center" style={{fontSize: 80}}></i>
                     Settings
                 </button>
             </div>
-            <div className="page-style container-fluid d-flex justify-content-center mt-3" style={{paddingTop:77}}>
+            <div className="page-style container-fluid d-flex justify-content-center" style={{marginTop: 72, padding: 30}}>
             </div>
         </div>
     )

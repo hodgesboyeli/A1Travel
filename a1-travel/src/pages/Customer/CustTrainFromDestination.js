@@ -39,6 +39,7 @@ export default function CustTrainFromDestination(){
         setCartTotal(storedCartTotal);
         setSelectedDestination(storedDestination);
         fetchTrains();
+        console.log(state);
 
     }, []);
 
@@ -61,13 +62,15 @@ export default function CustTrainFromDestination(){
             sessionStorage.setItem('cartTotal', updatedCartTotal);
             sessionStorage.setItem('returnTrain',JSON.stringify(t[i]));
         }
-        navigate('/'+( state.from === 'train' ? 'checkout' : 'car' ));
+        navigate('/'+( (state && state.from && state.from === 'train') ? 'checkout' : 'car' ), {state:state});
     };
 
     const handleTrainSkip = () => {
         sessionStorage.removeItem('returnTrain');
         console.log("No Train Set");
-        navigate('/'+( state.from === 'train' ? 'checkout' : 'car' ));
+        console.log(state);
+        console.log(state.from);
+        navigate('/'+( state.from === 'train' ? 'checkout' : 'car' ), {state:state});
     }
 
     const handleEditClick = () => {

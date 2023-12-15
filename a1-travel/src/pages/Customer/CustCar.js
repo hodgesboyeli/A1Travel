@@ -7,6 +7,8 @@ import Axios from "axios";
 
 export default function CustCar(){
     const {state} = useLocation();
+    console.log(state);
+    console.log("^^first one");
     const [cars, setCars] = useState([]);
     const [selectedDestination, setSelectedDestination] = useState(null);
     const [carIndex, setCarIndex] = useState(-1);
@@ -44,6 +46,7 @@ export default function CustCar(){
         setCartTotal(storedCartTotal);
         setSelectedDestination(storedDestination);
         fetchCars();
+        console.log(state);
     }, []);
 
     const handleCarSelect = (i) => {
@@ -58,15 +61,16 @@ export default function CustCar(){
             setCartTotal(updatedCartTotal);
             sessionStorage.setItem('cartTotal', updatedCartTotal);
             sessionStorage.setItem('car',JSON.stringify(c[i]));
-            navigate()
         }
         console.log('Car Set');
+        navigate((state && state.from==='car') ? '/checkout' : '/lodging',{state:state});
     }
 
     const handleCarSkip = () => {
         sessionStorage.removeItem('car');
         console.log("No Car Set");
-        navigate((state!=null && state.from==='car') ? '/checkout' : '/car',state);
+        console.log(state===null);
+        navigate((state && state.from==='car') ? '/checkout' : '/lodging',{state:state});
     }
 
     const handleEditClick = () => {
@@ -153,9 +157,7 @@ export default function CustCar(){
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
                         <button type="submit" className="btn btn-md custom-button" onClick={()=> handleCarSet(cars,carIndex)} disabled={carIndex < 0}>
-                            <Link to={(state!=null && state.from==='car') ? '/checkout' : '/car'}>
                                 Rent Car
-                            </Link>
                         </button>
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>

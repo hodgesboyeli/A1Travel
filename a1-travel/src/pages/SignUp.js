@@ -46,7 +46,7 @@ export default function SignUp() {
                     </p>
                 </div>
                 <div className="text-center mb-2">
-                    <img src={process.env.PUBLIC_URL + "/A1Logo.png"} style={{marginTop:5}}
+                    <img src={process.env.PUBLIC_URL + "/A1Logo.png"} style={{marginTop:20}}
                          className="img-fluid" alt="A1 Travel Logo" />
                 </div>
                 <div className="container-fluid d-flex justify-content-center">
@@ -57,7 +57,7 @@ export default function SignUp() {
             </div>
             <div className="element signin-form-movement container-fluid d-flex justify-content-center">
                 <form className="w-25 row" onSubmit={handleSignUp}>
-                    <div className="mb-3">
+                    <div className="mb-4">
                         <input
                             type="text"
                             className="form-control"
@@ -67,7 +67,7 @@ export default function SignUp() {
                             onChange={(e) => setFirstName(e.target.value)}
                         />
                     </div>
-                    <div className="mb-3">
+                    <div className="mb-4">
                         <input
                             type="text"
                             className="form-control"
@@ -77,7 +77,7 @@ export default function SignUp() {
                             onChange={(e) => setLastName(e.target.value)}
                         />
                     </div>
-                    <div className="mb-3">
+                    <div className="mb-4">
                         <input
                             type="email"
                             className="form-control"
@@ -87,7 +87,7 @@ export default function SignUp() {
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
-                    <div className="mb-3">
+                    <div className="mb-4">
                         <input
                             type="text"
                             className="form-control"
@@ -97,7 +97,7 @@ export default function SignUp() {
                             onChange={(e) => setUsername(e.target.value)}
                         />
                     </div>
-                    <div className="mb-3">
+                    <div className="mb-4">
                         <input
                             type="password"
                             className="form-control"
@@ -107,10 +107,10 @@ export default function SignUp() {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
-                    <div className="text-center mt-3">
+                    <div className="text-center mt-4">
                         <button type="submit" className="btn btn-sm custom-button">CREATE ACCOUNT</button>
                     </div>
-                    <div className="p text-center mt-4 mb-3">
+                    <div className="p text-center mt-5 mb-5">
                         <Link to="/login">ALREADY HAVE ACCOUNT? SIGN IN</Link>
                     </div>
                 </form>

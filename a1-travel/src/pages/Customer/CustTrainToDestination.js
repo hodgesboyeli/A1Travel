@@ -40,7 +40,7 @@ export default function CustTrainToDestination(){
         setCartTotal(storedCartTotal);
         setSelectedDestination(storedDestination);
         fetchTrains();
-
+        console.log(state);
     }, []);
 
     const handleTrainSelect = (i) => {
@@ -156,11 +156,11 @@ export default function CustTrainToDestination(){
                     </div>
                     <div className="text-center" style={{ marginTop: 40 }}>
                         <div className="container-fluid d-flex justify-content-center">
-                            <Link to="/train-from-destination" state={state}>
-                                <button className="btn btn-link" type="button" onClick={handleTrainSkip}>
+                            <button className="btn btn-link" type="button" onClick={handleTrainSkip}>
+                                <Link to="/train-from-destination" state={state}>
                                     Don't want a departure train? CONTINUE HERE
-                                </button>
-                            </Link>
+                                </Link>
+                            </button>
                         </div>
                     </div>
 

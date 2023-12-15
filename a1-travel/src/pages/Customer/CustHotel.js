@@ -60,7 +60,7 @@ export default function CustHotel(){
             sessionStorage.setItem('lodging',JSON.stringify(h[i]));
         }
         console.log('Hotel Set');
-        navigate(state.from === 'lodging' ? "/checkout" : '/event',state);
+        navigate(state.from === 'lodging' ? "/checkout" : '/event',{state:state});
     }
 
     const handleHotelSkip = () => {

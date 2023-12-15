@@ -36,7 +36,7 @@ export default function CustFlightFromDestination() {
         setBudget(storedBudget);
         setCartTotal(storedCartTotal);
         fetchFlights().then();
-
+        console.log(state);
     }, []);
 
     const handleFlightSelect = (i) => {
@@ -146,14 +146,14 @@ export default function CustFlightFromDestination() {
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
                     <button type="submit" className="btn btn-md custom-button" disabled={flightIndex < 0}>
-                        <Link to={(state!=null && state.from==='fly') ? '/checkout' : '/train-to-destination'} onClick={()=> handleCombinedFlight(flights,flightIndex)}>
+                        <Link to={(state!=null && state.from==='fly') ? '/checkout' : '/train-to-destination'} onClick={()=> handleCombinedFlight(flights,flightIndex)} state={state}>
                             Book Return Flight
                         </Link>
                     </button>
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
                     <div className="container-fluid d-flex justify-content-center">
-                        <Link to={(state!=null && state.from==='fly') ? '/checkout' : '/train-to-destination'} onClick={handleContinueWithoutBooking}>
+                        <Link to={(state!=null && state.from==='fly') ? '/checkout' : '/train-to-destination'} onClick={handleContinueWithoutBooking} state={state}>
                             <button className="btn btn-link" type="button">
                                 Don't want to book a return flight? CONTINUE HERE
                             </button>

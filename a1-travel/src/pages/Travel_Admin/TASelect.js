@@ -5,10 +5,10 @@ export default function TASelect(){
     return (
         <div className="page-style">
             <TravelAdminNavbar/>
-            <div className="container-fluid d-flex justify-content-center mt-4 mb-8" style={{paddingTop: 50}}>
+            <div className="container-fluid d-flex justify-content-center mt-4 mb-8" style={{paddingTop: 80}}>
                 <h1 style={{color : "#FFF"}}>Please Select</h1>
             </div>
-            <div className="container-fluid d-flex justify-content-center mt-5 mb-12">
+            <div className="container-fluid d-flex justify-content-center mb-12" style={{paddingTop: 60}}>
                 <Link to="/ta/database-management">
                     <button type="button mr-1" className="admin-button" style={{marginRight: 20}}>
                         Add New

@@ -5,7 +5,7 @@ export default function AdminHome(){
     return (
         <div className="page-style">
             <AdminNavbar/>
-            <div className="container-fluid d-flex justify-content-center mt-5" style={{paddingTop: 30}}>
+            <div className="container-fluid d-flex justify-content-center" style={{marginTop: 84}}>
                 <h1 style={{color : "#FFF"}}>Administrator Dashboard</h1>
             </div>
             <div className="container-fluid d-flex justify-content-center mt-5">
@@ -22,7 +22,7 @@ export default function AdminHome(){
                     </button>
                 </Link>
             </div>
-            <div className="container-fluid d-flex justify-content-center mt-3">
+            <div className="container-fluid d-flex justify-content-center" style={{marginTop: 83}}>
                 <Link to={"/admin-reports"}>
                     <button type="button" className="admin-button" style={{marginRight: 20}}>
                         <i className="fas fa-folder-closed d-flex justify-content-center" style={{fontSize: 80}}></i>
@@ -34,7 +34,7 @@ export default function AdminHome(){
                     Settings
                 </button>
             </div>
-            <div className="page-style container-fluid d-flex justify-content-center mt-3" style={{paddingTop:77}}>
+            <div className="page-style container-fluid d-flex justify-content-center mt-5" style={{paddingTop:77}}>
             </div>
         </div>
     )

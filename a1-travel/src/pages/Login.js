@@ -99,7 +99,7 @@ export default function Login() {
                 </div>
             </div>
 
-            <div className="signin-form-movement container-fluid d-flex justify-content-center">
+            <div className="signin-form-movement container-fluid d-flex justify-content-center mt-5">
                 <form className="w-25 row" onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <input type="email" className="form-control" id="email" placeholder="EMAIL" ref={emailRef} />
@@ -107,7 +107,7 @@ export default function Login() {
                     <div className="mb-3">
                         <input type="password" className="form-control" id="password" placeholder="PASSWORD" ref={passwordRef} />
                     </div>
-                    <div className="text-center" style={{ marginTop: 40 }}>
+                    <div className="text-center mb-4" style={{ marginTop: 60 }}>
                         <button disabled={loading} type="submit" className="btn btn-sm custom-button">
                             SIGN IN
                         </button>

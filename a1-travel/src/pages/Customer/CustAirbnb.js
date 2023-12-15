@@ -60,7 +60,7 @@ export default function CustAirbnb(){
             sessionStorage.setItem('lodging', JSON.stringify(a[i]));
         }
         console.log('Airbnb Set');
-        navigate(state.from === 'lodging' ? "/checkout" : '/event',state);
+        navigate(state.from === 'lodging' ? "/checkout" : '/event',{state:state});
     }
 
     const handleAirbnbSkip = () => {
