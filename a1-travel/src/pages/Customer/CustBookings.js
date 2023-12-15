@@ -14,7 +14,6 @@ export default function CustBookings() {
                 const response = await Axios.get('http://localhost:8080/api/trip/');
                 let data = response.data.trips;
 
-
                 setTrips(data);
                 sessionStorage.setItem('allTrips',JSON.stringify(data));
             } catch (e) {
@@ -43,21 +42,49 @@ export default function CustBookings() {
     };
     // Filter users based on string value closeness
     const filterTripsByStringMatch = (field, searchString) => {
-        // Sort users by the specified field
+        // Sort trips by the specified field
         const sortedTrips = [...trips].sort((a, b) => {
             if (a[field] < b[field]) return -1;
             if (a[field] > b[field]) return 1;
             return 0;
         });
-        // If searchString is provided, filter the sorted users
-        if (searchString !== '') {
-            return sortedTrips.filter(trip => {
-                if (!trip[field]) return false;
-                return trip[field].toLowerCase().includes(searchString.toLowerCase());
-            });
+
+        // If searchString is provided, filter based on the field
+        if (field !== '') {
+            switch (field) {
+                case 'destination':
+                    // Default search behavior
+                    return sortedTrips.filter(trip => {
+                        if (!trip[field]) return false;
+                        return trip[field].toLowerCase().includes(searchString.toLowerCase());
+                    });
+                case 'flightID':
+                case 'trainID':
+                    // Search for 'departLocation' in flights and trains
+                    return sortedTrips.filter(trip => {
+                        if (!trip[field]) return false;
+                        return trip[field]['departLocation'].toLowerCase().includes(searchString.toLowerCase());
+                    });
+                case 'carID':
+                    // Compare 'make' field in cars
+                    return sortedTrips.filter(trip => {
+                        if (!trip['make']) return false;
+                        return trip['make'].toLowerCase().includes(searchString.toLowerCase());
+                    });
+                case 'eventID':
+                    // Search for 'eventName' in events
+                    return sortedTrips.filter(trip => {
+                        if (!trip['eventName']) return false;
+                        return trip['eventName'].toLowerCase().includes(searchString.toLowerCase());
+                    });
+                default:
+                    // Return all trips if field doesn't match any case
+                    return sortedTrips;
+            }
         }
         return sortedTrips;
     };
+
 
     return (
         <>
@@ -82,8 +109,8 @@ export default function CustBookings() {
                     <input
                         className="form-check-input form-check-inline"
                         type="radio"
-                        value="flight"
-                        checked={searchBy === 'flight'}
+                        value="flightID"
+                        checked={searchBy === 'flightID'}
                         onChange={handleSearchByChange}
                     />
                     Flight
@@ -92,8 +119,8 @@ export default function CustBookings() {
                     <input
                         className="form-check-input form-check-inline"
                         type="radio"
-                        value="train"
-                        checked={searchBy === 'train'}
+                        value="trainID"
+                        checked={searchBy === 'trainID'}
                         onChange={handleSearchByChange}
                     />
                     Train
@@ -102,8 +129,8 @@ export default function CustBookings() {
                     <input
                         className="form-check-input form-check-inline"
                         type="radio"
-                        value="car"
-                        checked={searchBy === 'car'}
+                        value="carID"
+                        checked={searchBy === 'carID'}
                         onChange={handleSearchByChange}
                     />
                     Car
@@ -112,8 +139,8 @@ export default function CustBookings() {
                     <input
                         className="form-check-input form-check-inline"
                         type="radio"
-                        value="event"
-                        checked={searchBy === 'event'}
+                        value="eventID"
+                        checked={searchBy === 'eventID'}
                         onChange={handleSearchByChange}
                     />
                     Event
@@ -133,11 +160,11 @@ export default function CustBookings() {
             </div>
             <div className="d-flex flex-column align-content-center">
                 <div className="card-body bg-light">
-                    {trips.length === 0 ? (
+                    {filteredTrips.length === 0 ? (
                         <p>No trips found</p>
                     ) : (
                         <ul className="list-group list-group-flush">
-                            {trips.map((trip, index) => (
+                            {filteredTrips.map((trip, index) => (
                                 <li key={index} className="list-group-item">
                                     <p>Destination: {trip.destination}</p>
                                     <p>Budget: {trip.budget}</p>
