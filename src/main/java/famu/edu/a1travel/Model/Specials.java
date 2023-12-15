@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Specials {
     private String code;
-    private float discount;
+    private int discount;
     private boolean isActive;
     private String name;
 
