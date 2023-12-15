@@ -31,9 +31,7 @@ export default function CustHotel(){
 
         // Retrieve selected destination and selected lodging type from session storage
         const storedDestination = sessionStorage.getItem('selectedDestination');
-        const storedType = sessionStorage.getItem('lodgingType')
         console.log('Selected destination type:', storedDestination);
-        console.log('Selected lodging type:', storedType);
 
         const storedBudget = parseFloat(sessionStorage.getItem('budget'));
         const storedCartTotal = parseFloat(sessionStorage.getItem('cartTotal')); // Retrieve cartTotal
@@ -44,7 +42,6 @@ export default function CustHotel(){
         setCartTotal(storedCartTotal);
         setSelectedDestination(storedDestination);
         setSelectedDestination(storedDestination);
-        setLodgingType(storedType);
         fetchHotels();
 
     }, []);
@@ -60,13 +57,14 @@ export default function CustHotel(){
             const updatedCartTotal = parseFloat(cartTotal) + hotelPrice;
             setCartTotal(updatedCartTotal);
             sessionStorage.setItem('cartTotal', updatedCartTotal);
-            sessionStorage.setItem('hotel',JSON.stringify(h[i]));
+            sessionStorage.setItem('lodging',JSON.stringify(h[i]));
         }
         console.log('Hotel Set');
+        navigate(state.from === 'lodging' ? "/checkout" : '/event',state);
     }
 
     const handleHotelSkip = () => {
-        sessionStorage.removeItem('hotel');
+        sessionStorage.removeItem('lodging');
         console.log("No Hotel Set");
     }
 
@@ -156,19 +154,17 @@ export default function CustHotel(){
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
                     <button type="submit" className="btn btn-md custom-button" onClick={()=> handleHotelSet(hotels,hotelIndex)} disabled={hotelIndex < 0}>
-                        <Link to="/event">
                             Next
-                        </Link>
                     </button>
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/lodging">
                         <div className="container-fluid d-flex justify-content-center">
                             <button className="btn btn-link" type="button">
-                                Go back
+                                <Link to="/lodging" state={state}>
+                                    Go back
+                                </Link>
                             </button>
                         </div>
-                    </Link>
                 </div>
             </div>
         </>

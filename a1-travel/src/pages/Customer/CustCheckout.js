@@ -113,6 +113,7 @@ export default function CustCheckout(){
     const down = "bi bi-caret-down-fill";
     return (
         <>
+            <Navbar/>
             <div className="container-fluid">
                 <h1 className="d-flex mt-5 mb-5 justify-content-center">
                     Checkout

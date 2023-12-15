@@ -58,6 +58,7 @@ export default function CustCar(){
             setCartTotal(updatedCartTotal);
             sessionStorage.setItem('cartTotal', updatedCartTotal);
             sessionStorage.setItem('car',JSON.stringify(c[i]));
+            navigate()
         }
         console.log('Car Set');
     }
@@ -65,6 +66,7 @@ export default function CustCar(){
     const handleCarSkip = () => {
         sessionStorage.removeItem('car');
         console.log("No Car Set");
+        navigate((state!=null && state.from==='car') ? '/checkout' : '/car',state);
     }
 
     const handleEditClick = () => {
@@ -158,11 +160,9 @@ export default function CustCar(){
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
                     <div className="container-fluid d-flex justify-content-center">
-                        <Link to={(state!=null && state.from==='car') ? '/checkout' : '/car'}z>
                             <button className="btn btn-link" type="button" onClick={handleCarSkip}>
                                 Don't want to rent a car? CONTINUE HERE
                             </button>
-                        </Link>
                     </div>
                 </div>
             </div>

@@ -103,7 +103,7 @@ export default function CustEvent(){
     const handleEventSkip = () => {
         sessionStorage.removeItem('event');
         console.log("No Event Set");
-        navigate('/checkout');
+        navigate('/checkout',state);
     }
 
     const handleEditClick = () => {
