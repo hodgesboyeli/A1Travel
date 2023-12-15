@@ -11,8 +11,8 @@ export default function CustBookings() {
     useEffect(() => {
         const fetchTrips = async () => {
             try {
-                const response = await Axios.get('http://localhost:8080/api/trip/?user=' + sessionStorage.getItem('email'));
-                const data = response.data.trips;
+                const response = await Axios.get('http://localhost:8080/api/trip/');
+                let data = response.data.trips;
 
                 setTrips(data);
                 sessionStorage.setItem('allTrips', JSON.stringify(data));
@@ -47,49 +47,42 @@ export default function CustBookings() {
             return 0;
         });
 
-        console.log('Sorted trips:', sortedTrips);
-
-        // If searchString is provided, filter the sorted trips
-        if (searchString !== '') {
-            const filtered = sortedTrips.filter(trip => {
-                console.log('Filtering by Field:', field, 'Search String:', searchString);
-
-                // Check if the field is defined for the current trip
-                if (!trip[field]) return false;
-
-                // Log the field and search string for debugging
-                console.log('Field:', field, 'Search String:', searchString);
-
-                // Check if the field is an array of references
-                if (Array.isArray(trip[field])) {
-                    const result = trip[field].some(item => {
-                        // Check if the item.id is defined before using it
-                        if (!item.id) return false;
-
-                        // Log the item.id and search string for debugging
-                        console.log('Item ID:', item.id, 'Search String:', searchString);
-
-                        // Perform the search operation
-                        const includes = item.id.toLowerCase().includes(searchString.toLowerCase());
-                        console.log('Includes:', includes);
-                        return includes;
+        // If searchString is provided, filter based on the field
+        if (field !== '') {
+            switch (field) {
+                case 'destination':
+                    // Default search behavior
+                    return sortedTrips.filter(trip => {
+                        if (!trip[field]) return false;
+                        return trip[field].toLowerCase().includes(searchString.toLowerCase());
                     });
-
-                    console.log('Result:', result);
-                    return result;
-                }
-
-                // For non-array fields, perform a regular string match
-                return trip[field].toLowerCase().includes(searchString.toLowerCase());
-            });
-
-            console.log('Filtered trips:', filtered);
-            return filtered;
+                case 'flightID':
+                case 'trainID':
+                    // Search for 'departLocation' in flights and trains
+                    return sortedTrips.filter(trip => {
+                        if (!trip[field]) return false;
+                        return trip[field]['departLocation'].toLowerCase().includes(searchString.toLowerCase());
+                    });
+                case 'carID':
+                    // Compare 'make' field in cars
+                    return sortedTrips.filter(trip => {
+                        if (!trip['make']) return false;
+                        return trip['make'].toLowerCase().includes(searchString.toLowerCase());
+                    });
+                case 'eventID':
+                    // Search for 'eventName' in events
+                    return sortedTrips.filter(trip => {
+                        if (!trip['eventName']) return false;
+                        return trip['eventName'].toLowerCase().includes(searchString.toLowerCase());
+                    });
+                default:
+                    // Return all trips if field doesn't match any case
+                    return sortedTrips;
+            }
         }
 
         return sortedTrips;
     };
-
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -107,7 +100,6 @@ export default function CustBookings() {
             setFilteredTrips(trips);
         }
     };
-
 
     return (
         <>
@@ -132,8 +124,8 @@ export default function CustBookings() {
                     <input
                         className="form-check-input form-check-inline"
                         type="radio"
-                        value="flight"
-                        checked={searchBy === 'flight'}
+                        value="flightID"
+                        checked={searchBy === 'flightID'}
                         onChange={handleSearchByChange}
                     />
                     Flight
@@ -142,8 +134,8 @@ export default function CustBookings() {
                     <input
                         className="form-check-input form-check-inline"
                         type="radio"
-                        value="train"
-                        checked={searchBy === 'train'}
+                        value="trainID"
+                        checked={searchBy === 'trainID'}
                         onChange={handleSearchByChange}
                     />
                     Train
@@ -152,8 +144,8 @@ export default function CustBookings() {
                     <input
                         className="form-check-input form-check-inline"
                         type="radio"
-                        value="car"
-                        checked={searchBy === 'car'}
+                        value="carID"
+                        checked={searchBy === 'carID'}
                         onChange={handleSearchByChange}
                     />
                     Car
@@ -162,8 +154,8 @@ export default function CustBookings() {
                     <input
                         className="form-check-input form-check-inline"
                         type="radio"
-                        value="event"
-                        checked={searchBy === 'event'}
+                        value="eventID"
+                        checked={searchBy === 'eventID'}
                         onChange={handleSearchByChange}
                     />
                     Event
