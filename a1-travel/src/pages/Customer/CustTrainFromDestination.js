@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Navbar from "../../Navbars/Navbar";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import Axios from "axios";
 
 export default function CustTrainFromDestination(){
@@ -16,6 +16,8 @@ export default function CustTrainFromDestination(){
     useEffect(() => {
         const fetchTrains = async () => {
             try {
+                const db = getFirestore(app);
+
                 // Query trains where arriveLocation is equal to selectedDestination in the backend
                 const response = await Axios.get(`http://localhost:8080/api/train/return/${storedDestination}`);
                 setTrains(response.data.trains);

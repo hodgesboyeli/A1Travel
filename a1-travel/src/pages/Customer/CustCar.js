@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import Navbar from "../../Navbars/Navbar";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import {getFirestore} from "firebase/firestore";
 import {app} from "../../Firebase";
 import Axios from "axios";
 
 export default function CustCar(){
+    const {state} = useLocation();
     const [cars, setCars] = useState([]);
     const [selectedDestination, setSelectedDestination] = useState(null);
     const [carIndex, setCarIndex] = useState(-1);
@@ -42,7 +43,7 @@ export default function CustCar(){
         setBudget(storedBudget);
         setCartTotal(storedCartTotal);
         setSelectedDestination(storedDestination);
-
+        fetchCars();
     }, []);
 
     const handleCarSelect = (i) => {
@@ -150,14 +151,14 @@ export default function CustCar(){
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
                         <button type="submit" className="btn btn-md custom-button" onClick={()=> handleCarSet(cars,carIndex)} disabled={carIndex < 0}>
-                            <Link to="/lodging">
+                            <Link to={(state!=null && state.from==='car') ? '/checkout' : '/car'}>
                                 Rent Car
                             </Link>
                         </button>
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
                     <div className="container-fluid d-flex justify-content-center">
-                        <Link to="/lodging">
+                        <Link to={(state!=null && state.from==='car') ? '/checkout' : '/car'}z>
                             <button className="btn btn-link" type="button" onClick={handleCarSkip}>
                                 Don't want to rent a car? CONTINUE HERE
                             </button>

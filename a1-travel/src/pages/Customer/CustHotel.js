@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import Navbar from "../../Navbars/Navbar";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import Axios from "axios";
 
 export default function CustHotel(){
+    const {state} = useLocation();
     const [hotels, setHotels] = useState([]);
     const [selectedDestination, setSelectedDestination] = useState(null);
     const [hotelIndex, setHotelIndex] = useState(-1);
@@ -30,7 +31,9 @@ export default function CustHotel(){
 
         // Retrieve selected destination and selected lodging type from session storage
         const storedDestination = sessionStorage.getItem('selectedDestination');
+        const storedType = sessionStorage.getItem('lodgingType')
         console.log('Selected destination type:', storedDestination);
+        console.log('Selected lodging type:', storedType);
 
         const storedBudget = parseFloat(sessionStorage.getItem('budget'));
         const storedCartTotal = parseFloat(sessionStorage.getItem('cartTotal')); // Retrieve cartTotal
@@ -41,6 +44,7 @@ export default function CustHotel(){
         setCartTotal(storedCartTotal);
         setSelectedDestination(storedDestination);
         setSelectedDestination(storedDestination);
+        setLodgingType(storedType);
         fetchHotels();
 
     }, []);
@@ -56,13 +60,13 @@ export default function CustHotel(){
             const updatedCartTotal = parseFloat(cartTotal) + hotelPrice;
             setCartTotal(updatedCartTotal);
             sessionStorage.setItem('cartTotal', updatedCartTotal);
-            sessionStorage.setItem('lodging',JSON.stringify(h[i]));
+            sessionStorage.setItem('hotel',JSON.stringify(h[i]));
         }
         console.log('Hotel Set');
     }
 
     const handleHotelSkip = () => {
-        sessionStorage.removeItem('lodging');
+        sessionStorage.removeItem('hotel');
         console.log("No Hotel Set");
     }
 

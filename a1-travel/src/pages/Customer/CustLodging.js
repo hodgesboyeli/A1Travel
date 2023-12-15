@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import Navbar from "../../Navbars/Navbar";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 
 export default function CustLodging(){
-
+    const {state} = useLocation();
     const [budget, setBudget] = useState(null);
     const [cartTotal, setCartTotal] = useState(sessionStorage.getItem('cartTotal'));
     const [editMode, setEditMode] = useState(false);

@@ -81,7 +81,8 @@ export default function CustDestination() {
             fly: 'flight-to-destination',
             car: 'car',
             train: 'train-to-destination',
-            lodging: 'lodging'
+            lodging: 'lodging',
+            event: 'event'
         };
         if (obj.hasOwnProperty(from))
             return obj[from];

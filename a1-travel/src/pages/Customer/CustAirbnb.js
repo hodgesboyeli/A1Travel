@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import Navbar from "../../Navbars/Navbar";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import Axios from "axios";
 
 export default function CustAirbnb(){
+    const {state} = useLocation();
     const [airbnbs, setAirbnbs] = useState([]);
     const [selectedDestination, setSelectedDestination] = useState(null);
     const [airbnbIndex, setAirbnbIndex] = useState(-1);
@@ -30,7 +31,9 @@ export default function CustAirbnb(){
 
         // Retrieve selected destination and selected lodging type from session storage
         const storedDestination = sessionStorage.getItem('selectedDestination');
+        const storedType = sessionStorage.getItem('lodgingType')
         console.log('Selected destination type:', storedDestination);
+        console.log('Selected lodging type:', storedType);
 
         const storedBudget = parseFloat(sessionStorage.getItem('budget'));
         const storedCartTotal = parseFloat(sessionStorage.getItem('cartTotal')); // Retrieve cartTotal
@@ -41,6 +44,7 @@ export default function CustAirbnb(){
         setCartTotal(storedCartTotal);
         setSelectedDestination(storedDestination);
         setSelectedDestination(storedDestination);
+        setLodgingType(storedType);
         fetchAirbnbs();
 
     }, []);
@@ -56,13 +60,13 @@ export default function CustAirbnb(){
             const updatedCartTotal = parseFloat(cartTotal) + airbnbPrice;
             setCartTotal(updatedCartTotal);
             sessionStorage.setItem('cartTotal', updatedCartTotal);
-            sessionStorage.setItem('lodging', JSON.stringify(a[i]));
+            sessionStorage.setItem('airbnb', JSON.stringify(a[i]));
         }
         console.log('Airbnb Set');
     }
 
     const handleAirbnbSkip = () => {
-        sessionStorage.removeItem('lodging');
+        sessionStorage.removeItem('airbnb');
         console.log("No Airbnb Set");
     }
 
