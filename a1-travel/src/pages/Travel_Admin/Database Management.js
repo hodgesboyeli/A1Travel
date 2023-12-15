@@ -11,7 +11,7 @@ export default function DatabaseManagement() {
     const [showFlightForm, setShowFlightForm] = useState(false);
     const [showTrainForm, setShowTrainForm] = useState(false);
     const [showCarForm, setShowCarForm] = useState(false);
-    const [showDestinationForm, setShowDestinationForm] = useState(false);
+    const [showLodgingForm, setShowLodgingForm] = useState(false);
     const phoneRef = useRef(null);
     const emailRef = useRef(null);
     const imageRef = useRef(null);
@@ -46,6 +46,9 @@ export default function DatabaseManagement() {
         pickupLocation: '',
         returnDate: null,
         returnLocation: '',
+        details: '',
+        name: '',
+        type: '',
         year: null,
     });
 
@@ -96,6 +99,21 @@ export default function DatabaseManagement() {
 
     const isCarFormValid = () => {
         const requiredFields = ['color', 'make', 'model', 'pickupDate', 'pickupLocation', 'price', 'returnDate', 'returnLocation', 'year'];
+
+        for (const field of requiredFields) {
+            if (!inputValues[field]) {
+                // Field is empty, show error and return false
+                showErrorModal();
+                return false;
+            }
+        }
+
+        // All required fields are filled, return true
+        return true;
+    };
+
+    const isLodgingFormValid = () => {
+        const requiredFields = ['address', 'cityState', 'details', 'name', 'price', 'type'];
 
         for (const field of requiredFields) {
             if (!inputValues[field]) {
@@ -348,6 +366,50 @@ export default function DatabaseManagement() {
         }
     };
 
+    const handleLodgingSubmit = async (e) => {
+        e.preventDefault();
+        console.log('handleLodgingSubmit function is working!');
+
+        if (!isLodgingFormValid()) {
+            return;
+        }
+
+        const {
+            address,
+            cityState,
+            details,
+            name,
+            price,
+            type
+        } = inputValues;
+
+        const lodging = {
+            address,
+            cityState,
+            details,
+            name,
+            price,
+            type
+        };
+
+        console.log(lodging);
+
+        try {
+            const response = await Axios.post('http://localhost:8080/api/lodging/', lodging);
+            console.log(lodging);
+            if (response.status === 201) {
+                console.log('Lodging created successfully');
+                showModal();
+            } else {
+                console.error('Lodging create failed');
+                showErrorModal();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showErrorModal();
+        }
+    };
+
     const showModal = () => {
         if (modalRef.current) {
             const modal = new Modal(modalRef.current);
@@ -426,10 +488,10 @@ export default function DatabaseManagement() {
             setShowCarForm(false);
         }
 
-        if (event.target.id === "radioDestination") {
-            setShowDestinationForm(true);
+        if (event.target.id === "radioLodging") {
+            setShowLodgingForm(true);
         } else {
-            setShowDestinationForm(false);
+            setShowLodgingForm(false);
         }
     };
 
@@ -529,6 +591,17 @@ export default function DatabaseManagement() {
         });
     };
 
+    const handleLodgingReset = () => {
+        setInputValues({
+            address: '',
+            cityState: '',
+            details: '',
+            name: '',
+            price: '',
+            type: ''
+        });
+    };
+
 
     return (
         <div>
@@ -562,11 +635,11 @@ export default function DatabaseManagement() {
                     className="form-check-input form-check-inline"
                     type="radio"
                     name="AddNew"
-                    id="radioDestination"
+                    id="radioLodging"
                     onChange={handleRadioChange}
                 />
-                <label style={{ marginRight: 10 }} htmlFor="radioDestination">
-                    Destination
+                <label style={{ marginRight: 10 }} htmlFor="radioLodging">
+                    Lodging
                 </label>
             </div>
 
@@ -610,7 +683,7 @@ export default function DatabaseManagement() {
                             <input type="text" className="form-control" id="address" value={inputValues.address} onChange={handleInputChange} />
                         </div>
                         <div className="col-md-2">
-                            <label htmlFor="inputCityState" className="form-label">Event Ciy/State</label>
+                            <label htmlFor="inputCityState" className="form-label">Event City/State</label>
                             <input type="text" className="form-control" id="cityState" value={inputValues.cityState} onChange={handleInputChange} />
                         </div>
                         <div className="col-md-5">
@@ -686,7 +759,7 @@ export default function DatabaseManagement() {
                         id="radioFlight"
                         onChange={handleRadioChange}
                     />
-                    <label style={{ marginRight: 10 }} htmlFor="radioEvent">
+                    <label style={{ marginRight: 10 }} htmlFor="radioTransportation">
                         Flight
                     </label>
                     <input
@@ -706,7 +779,7 @@ export default function DatabaseManagement() {
                         id="radioCar"
                         onChange={handleRadioChange}
                     />
-                    <label style={{ marginRight: 10 }} htmlFor="radioDestination">
+                    <label style={{ marginRight: 10 }} htmlFor="radioTransportation">
                         Car
                     </label>
                 </div>
@@ -969,6 +1042,89 @@ export default function DatabaseManagement() {
                                 </div>
                                 <div className="modal-body">
                                     <p>Error creating the car. Please try again.</p>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseErrorModal}>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showLodgingForm && (
+                <div className="container-fluid d-flex justify-content-center" style={{paddingLeft: 150, paddingRight: 150}}>
+                    <form className="row g-3" onSubmit={handleLodgingSubmit}>
+                        <div className="col-md-6">
+                            <label htmlFor="inputLodgingName" className="form-label">Lodging Name</label>
+                            <input type="text" className="form-control" id="name" value={inputValues.name} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputLodgingType" className="form-label">Lodging Type</label>
+                            <select className="form-select" id="type" value={inputValues.type} onChange={handleInputChange}>
+                                <option>Choose...</option>
+                                <option value="Hotel">Hotel</option>
+                                <option value="Airbnb">Airbnb</option>
+                            </select>
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputAddress" className="form-label">Lodging Address</label>
+                            <input type="text" className="form-control" id="address" value={inputValues.address} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputCityState" className="form-label">Lodging City/State</label>
+                            <input type="text" className="form-control" id="cityState" value={inputValues.cityState} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputDetails" className="form-label">Lodging Details</label>
+                            <input type="text" className="form-control" id="details" value={inputValues.details} onChange={handleInputChange}/>
+                        </div>
+                        <div className="col-md-6">
+                            <label htmlFor="inputPrice" className="form-label">Price</label>
+                            <input type="number" className="form-control" id="price" value={inputValues.price} onChange={handleInputChange} />
+                        </div>
+                        <div className="col-12 d-flex justify-content-center">
+                            <button type="submit" className="btn btn-success">Submit</button>
+                        </div>
+                        <div className="col-12 d-flex justify-content-center">
+                            <button type="button" className="btn btn-secondary" onClick={handleLodgingReset}>
+                                Reset
+                            </button>
+                        </div>
+                    </form>
+                    <div className="modal fade" ref={modalRef} tabIndex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="successModalLabel">
+                                        Success!
+                                    </h5>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleEventReset}></button>
+                                </div>
+                                <div className="modal-body">
+                                    <p>Lodging has been successfully created.</p>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleLodgingReset}>
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="modal fade" ref={errorModalRef} tabIndex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="errorModalLabel">
+                                        Error!
+                                    </h5>
+                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleCloseErrorModal}></button>
+                                </div>
+                                <div className="modal-body">
+                                    <p>Error creating the lodging. Please try again.</p>
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleCloseErrorModal}>

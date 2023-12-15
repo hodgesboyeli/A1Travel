@@ -2,6 +2,7 @@ package famu.edu.a1travel.Service;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
+import famu.edu.a1travel.Model.Events;
 import famu.edu.a1travel.Model.Lodgings;
 import famu.edu.a1travel.Model.Lodgings;
 import famu.edu.a1travel.Model.Lodgings;
@@ -18,6 +19,12 @@ public class LodgingsService {
         this.db = db;
     }
 
+    public String createLodging(Lodgings lodging) throws ExecutionException, InterruptedException {
+        ApiFuture<DocumentReference> future = db.collection("Lodgings").add(lodging);
+        DocumentReference lodgingRef = future.get();
+        return lodgingRef.getId();
+    }
+  
     public ArrayList<Lodgings> getLodgings() throws ExecutionException, InterruptedException {
         CollectionReference lodgingsCollection = db.collection("Lodgings");
         ApiFuture<QuerySnapshot> future = lodgingsCollection.get();
@@ -33,6 +40,7 @@ public class LodgingsService {
         }
         return null;
     }
+  
     public Lodgings getLodgingById(String id) throws ExecutionException, InterruptedException {
         DocumentReference doc = db.collection("Lodgings").document(id);
         ApiFuture<DocumentSnapshot> future = doc.get();
