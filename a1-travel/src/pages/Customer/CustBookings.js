@@ -4,28 +4,60 @@ import Axios from 'axios';
 
 export default function CustBookings() {
     const [trips, setTrips] = useState([]);
-    const [searchBy, setSearchBy] = useState('');
+    const [searchBy, setSearchBy] = useState(''); // Set the default search criteria
     const searchQuery = useRef();
+    const [filteredTrips, setFilteredTrips] = useState([]);
+
+    useEffect(()=>{
+        const fetchTrips = async () => {
+            try {
+                const response = await Axios.get('http://localhost:8080/api/trip/');
+                let data = response.data.trips;
+
+
+                setTrips(data);
+                sessionStorage.setItem('allTrips',JSON.stringify(data));
+            } catch (e) {
+                console.log('error',e);
+            }
+        };
+        const temp = sessionStorage.getItem('allTrips');
+        if (!temp)
+            fetchTrips().then();
+        else {
+            setTrips(prev=> JSON.parse(temp));
+            setFilteredTrips([]);
+            console.log(trips);
+        }
+    },[])
 
     const handleSearchByChange = (event) => {
         setSearchBy(event.target.value);
     };
 
-    const handleSearch = async (e) => {
+    const handleSearch = async(e) => {
         e.preventDefault();
-
+        // Perform a Firestore query from backend matching each user's field with a value
+        const search = searchQuery.current.value;
+        setFilteredTrips(filterTripsByStringMatch(searchBy,search));
     };
-
-    useEffect(() => {
-        const fetchTrip = async () => {
-            const response = await Axios.get(
-                'http://localhost:8080/api/trip/?user=' + sessionStorage.getItem('email')
-            );
-
-            setTrips(response.data.trips);
-        };
-        fetchTrip();
-    }, []);
+    // Filter users based on string value closeness
+    const filterTripsByStringMatch = (field, searchString) => {
+        // Sort users by the specified field
+        const sortedTrips = [...trips].sort((a, b) => {
+            if (a[field] < b[field]) return -1;
+            if (a[field] > b[field]) return 1;
+            return 0;
+        });
+        // If searchString is provided, filter the sorted users
+        if (searchString !== '') {
+            return sortedTrips.filter(trip => {
+                if (!trip[field]) return false;
+                return trip[field].toLowerCase().includes(searchString.toLowerCase());
+            });
+        }
+        return sortedTrips;
+    };
 
     return (
         <>
@@ -107,7 +139,9 @@ export default function CustBookings() {
                         <ul className="list-group list-group-flush">
                             {trips.map((trip, index) => (
                                 <li key={index} className="list-group-item">
-                                    Destination: {trip.destination}, Budget: {trip.budget}, Total Spent: {trip.cartTotal}
+                                    Destination: {trip.destination}
+                                    Budget: {trip.budget}
+                                    Total Spent: {trip.cartTotal}
                                 </li>
                             ))}
                         </ul>
