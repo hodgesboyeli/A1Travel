@@ -139,9 +139,9 @@ export default function CustBookings() {
                         <ul className="list-group list-group-flush">
                             {trips.map((trip, index) => (
                                 <li key={index} className="list-group-item">
-                                    Destination: {trip.destination}
-                                    Budget: {trip.budget}
-                                    Total Spent: {trip.cartTotal}
+                                    <p>Destination: {trip.destination}</p>
+                                    <p>Budget: {trip.budget}</p>
+                                    <p>Total Spent: {trip.cartTotal}</p>
                                 </li>
                             ))}
                         </ul>
