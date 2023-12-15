@@ -31,10 +31,10 @@ public class Events {
     private String phoneNumber;
     private String email;
 
-    void setEventEnd(String t) throws ParseException {
+    /*void setEventEnd(String t) throws ParseException {
         eventEnd = Timestamp.fromProto(Timestamps.parse(t));
     }
     void setEventStart(String t) throws ParseException {
         eventStart = Timestamp.fromProto(Timestamps.parse(t));
-    }
+    }*/
 }
