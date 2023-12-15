@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import Navbar from "../../Navbars/Navbar";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import {getFirestore} from "firebase/firestore";
 import {app} from "../../Firebase";
 import Axios from "axios";
 
 export default function CustTrainFromDestination(){
+    const {state} = useLocation();
     const [trains, setTrains] = useState([]);
     const [selectedDestination, setSelectedDestination] = useState(null);
     const [trainIndex, setTrainIndex] = useState(-1);
@@ -159,14 +160,14 @@ export default function CustTrainFromDestination(){
                 <div className="mt-5">
                     <div className="text-center" style={{ marginTop: 40 }}>
                         <button type="submit" className="btn btn-md custom-button" onClick={()=> handleCombinedTrain(trains,trainIndex)} disabled={trainIndex < 0}>
-                            <Link to="/car">
+                            <Link to={(state!=null && state.from==='train') ? '/checkout' : '/car'}>
                                     Book Return Train
                             </Link>
                         </button>
                     </div>
                     <div className="text-center" style={{ marginTop: 40 }}>
                         <div className="container-fluid d-flex justify-content-center">
-                            <Link to="/car">
+                            <Link to={(state!=null && state.from==='train') ? '/checkout' : '/car'}>
                                 <button className="btn btn-link" type="button" onClick={handleTrainSkip}>
                                     Don't want a return train? CONTINUE HERE
                                 </button>

@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import Navbar from "../../Navbars/Navbar";
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import {getFirestore} from "firebase/firestore";
 import {app} from "../../Firebase";
 import Axios from "axios";
 
 export default function CustAirbnb(){
+    const {state} = useLocation();
     const [airbnbs, setAirbnbs] = useState([]);
     const [selectedDestination, setSelectedDestination] = useState(null);
     const [airbnbIndex, setAirbnbIndex] = useState(-1);
@@ -160,13 +161,13 @@ export default function CustAirbnb(){
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
                     <button type="submit" className="btn btn-md custom-button" onClick={()=> handleAirbnbSet(airbnbs,airbnbIndex)} disabled={airbnbIndex < 0}>
-                        <Link to="/event">
+                        <Link to={(state!=null && state.from==='lodging') ? '/checkout' : '/event'}>
                             Next
                         </Link>
                     </button>
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/lodging">
+                    <Link to="/lodging" state={ state }>
                         <div className="container-fluid d-flex justify-content-center">
                             <button className="btn btn-link" type="button">
                                 Go back
