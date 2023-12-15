@@ -18,7 +18,7 @@ export default function TAHistory(){
                             name: trip.userID.firstName+' '+trip.userID.lastName,
                             email: trip.userID.email,
                             trips: []
-                        };
+                        }
                     }
                     acc[userKey].trips.push(trip);
                     return acc;

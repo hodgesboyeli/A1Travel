@@ -35,7 +35,6 @@ export default function CustInbox() {
         });
     };
 
-
     const fetchMessages = async (view) => {
         setIsLoading(true);
         const email = sessionStorage.getItem('email');

@@ -19,9 +19,7 @@ import java.util.concurrent.ExecutionException;
 @RequestMapping("/api/user")
 public class UsersController {
     private final UsersService usersService;
-
     private static final Logger logger = LoggerFactory.getLogger(UsersController.class);
-
     @Value("${response.status}")
     private int statusCode;
     @Value("${response.name}")
@@ -63,11 +61,9 @@ public class UsersController {
             payload = new ErrorMessage("Cannot fetch user with id" + id + " from database", CLASS_NAME,
                     e.getStackTrace().toString());
         }
-
         response = new ResponseWrapper(statusCode, name, payload);
         return response.getResponse();
     }
-
     @GetMapping("/email/{email}")
     public ResponseEntity<Object> getUserByEmail(@PathVariable String email) {
         try {

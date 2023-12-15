@@ -34,6 +34,8 @@ import CustHotel from "./pages/Customer/CustHotel";
 import CustFlightFromDestination from "./pages/Customer/CustFlightFromDestination";
 import CustTrainFromDestination from "./pages/Customer/CustTrainFromDestination";
 import AdminReports from "./pages/Admin/AdminReports";
+import TASelect from "./pages/Travel_Admin/TASelect";
+import TASearchData from "./pages/Travel_Admin/TASearchData";
 
 function App() {
     return (
@@ -72,6 +74,8 @@ function App() {
                         <Route element={<TAInbox />} path='/ta/inbox'/>
                         <Route element={<TANotifications />} path='/ta/notifications'/>
                         <Route element={<TAHome />} path='/ta'/>
+                        <Route element={<TASelect />} path='/ta/select'/>
+                        <Route element={<TASearchData />} path='/ta/search-data'/>
                     </Route>
 
 

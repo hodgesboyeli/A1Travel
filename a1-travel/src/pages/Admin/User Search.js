@@ -1,16 +1,47 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import AdminNavbar from '../../Navbars/AdminNavbar';
 import Axios from "axios";
-import {getAuth} from "firebase/auth";
-import {auth} from "../../Firebase";
 
 export default function UserSearch() {
     const [userIndex, setUserIndex] = useState(0);
     const [searchBy, setSearchBy] = useState(''); // Set the default search criteria
     const searchQuery = useRef();
+    const [users, setUsers] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
-    const [userPfp, setUserPfp] = useState([]);
     const [showModal, setShowModal] = useState(false);
+
+    useEffect(()=>{
+        const fetchUsers = async () => {
+            try {
+                const response = await Axios.get('http://localhost:8080/api/account/users/');
+                let data = response.data.users.values.map(u=>u.providerData[0]);
+                data = data.filter(user => user != null);
+
+                // Fetch additional data
+                const moreResponse = await Axios.get('http://localhost:8080/api/user/');
+                const moreData = moreResponse.data.users;
+
+                // Merge the data based on email field
+                const mergedData = data.map(user => {
+                    let additionalData = moreData.find(more => more && more.email === user.email);
+                    return { ...user, ...additionalData };
+                });
+                setUsers(mergedData);
+                sessionStorage.setItem('allUsers',JSON.stringify(mergedData));
+                console.log(mergedData);
+            } catch (e) {
+                console.log('error',e);
+            }
+        };
+        const temp = sessionStorage.getItem('allUsers');
+        if (!temp)
+            fetchUsers().then();
+        else {
+            setUsers(prev=> JSON.parse(temp));
+            setFilteredUsers([]);
+            console.log(users);
+        }
+    },[])
 
     const handleSearchByChange = (event) => {
         setSearchBy(event.target.value);
@@ -20,33 +51,31 @@ export default function UserSearch() {
         e.preventDefault();
         // Perform a Firestore query from backend matching each user's field with a value
         const search = searchQuery.current.value;
-        const response = await Axios.get('http://localhost:8080/api/user/?field='+searchBy+'&value='+search);
-        const matchedUsers = response.data.users;
-
-        // Array to store user profile pictures
-        let profilePictures = [];
-        // For each user, get user details from auth and extract profile picture
-
-        for (const user of matchedUsers) {
-            const userEmail = user.email; // Assuming each user object has an email field
-            // Get user details from auth (modify this part based on how your auth system works)
-            const userDetails = await auth.getUserByEmail(userEmail); // This is just a placeholder, replace with actual auth call
-            const userProfilePicture = userDetails.photoURL;
-            // Assuming UserInfo is a method or an object where you can get user info
-            // Add profile picture to the array
-            if (userProfilePicture) {
-                profilePictures.push(userProfilePicture);
-            }
-        }
-        // Update the state with the new profile pictures
-        setUserPfp(profilePictures);
-        setFilteredUsers(matchedUsers);
-        console.log(filteredUsers);
+        setFilteredUsers(filterUsersByStringMatch(searchBy,search));
     };
+    // Filter users based on string value closeness
+    const filterUsersByStringMatch = (field, searchString) => {
+        // Sort users by the specified field
+        const sortedUsers = [...users].sort((a, b) => {
+            if (a[field] < b[field]) return -1;
+            if (a[field] > b[field]) return 1;
+            return 0;
+        });
+        // If searchString is provided, filter the sorted users
+        if (searchString !== '') {
+            return sortedUsers.filter(user => {
+                if (!user[field]) return false;
+                return user[field].toLowerCase().includes(searchString.toLowerCase());
+            });
+        }
+        return sortedUsers;
+    };
+
     const handleActiveSwitch = (index) => {
         setUserIndex(index);
         setShowModal(true);
     }
+
     const handleConfirm = async() =>{
         let email = '';
         if (filteredUsers.length > 0){
@@ -72,7 +101,6 @@ export default function UserSearch() {
             <div className="container-fluid d-flex justify-content-center mt-5 mb-3">
                 <h1>User Search</h1>
             </div>
-
             <div className="container-fluid d-flex justify-content-center">
                 <p className="form-check-inline">Search By:</p>
                 <label style={{ marginRight: 10 }}>
@@ -119,8 +147,8 @@ export default function UserSearch() {
                     <input
                         className="form-check-input form-check-inline"
                         type="radio"
-                        value="id"
-                        checked={searchBy === 'id'}
+                        value="userId"
+                        checked={searchBy === 'userId'}
                         onChange={handleSearchByChange}
                     />
                     ID
@@ -141,15 +169,19 @@ export default function UserSearch() {
             <div className="container mt-4 ms-5 me-5 mb-4">
                 {filteredUsers.length > 0 ? (
                     filteredUsers.map((user, index) => (
-                        <div key={index} className="card">
+                        <div key={index} className="card" style={{border:'0'}}>
                             <div className="d-flex flex-row justify-content-center align-items-center">
                                 <div className="col-md-1 me-auto">
-                                    <img src={process.env.PUBLIC_URL+'/blank-profile-pic.png'} className="pfp-img img-fluid rounded-start" alt="Profile"/>
+                                    <img src={user.photoUrl || (process.env.PUBLIC_URL+'/blank-profile-pic.png')}
+                                         className="pfp-img img-fluid rounded-start object-fit-contain"
+                                         alt="Profile"
+                                         style={{ width: '108px', height:'108px' }}
+                                    />
                                 </div>
                                 <div className="col-md-6">
                                     <div className="card-body">
                                         <div className="card-title">
-                                            <b>{user.firstName} {user.lastName}</b>
+                                            <b>{user.firstName} {user.lastName}</b> - <u>{user.userId}</u>
                                         </div>
                                         <div className="card-text">
                                             {user.email}

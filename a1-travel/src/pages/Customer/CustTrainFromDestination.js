@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import Navbar from "../../Navbars/Navbar";
-import {Link, useNavigate} from "react-router-dom";
-import {getFirestore} from "firebase/firestore";
-import {app} from "../../Firebase";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import Axios from "axios";
 
 export default function CustTrainFromDestination(){
+    const {state} = useLocation();
     const [trains, setTrains] = useState([]);
     const [selectedDestination, setSelectedDestination] = useState(null);
     const [trainIndex, setTrainIndex] = useState(-1);
@@ -18,8 +17,6 @@ export default function CustTrainFromDestination(){
     useEffect(() => {
         const fetchTrains = async () => {
             try {
-                const db = getFirestore(app);
-
                 // Query trains where arriveLocation is equal to selectedDestination in the backend
                 const response = await Axios.get(`http://localhost:8080/api/train/return/${storedDestination}`);
                 setTrains(response.data.trains);
@@ -64,13 +61,13 @@ export default function CustTrainFromDestination(){
             sessionStorage.setItem('cartTotal', updatedCartTotal);
             sessionStorage.setItem('returnTrain',JSON.stringify(t[i]));
         }
-
-        navigate('/car');
+        navigate('/'+( state.from === 'train' ? 'checkout' : 'car' ));
     };
 
     const handleTrainSkip = () => {
         sessionStorage.removeItem('returnTrain');
         console.log("No Train Set");
+        navigate('/'+( state.from === 'train' ? 'checkout' : 'car' ));
     }
 
     const handleEditClick = () => {
@@ -159,18 +156,14 @@ export default function CustTrainFromDestination(){
                 <div className="mt-5">
                     <div className="text-center" style={{ marginTop: 40 }}>
                         <button type="submit" className="btn btn-md custom-button" onClick={()=> handleCombinedTrain(trains,trainIndex)} disabled={trainIndex < 0}>
-                            <Link to="/car">
                                     Book Return Train
-                            </Link>
                         </button>
                     </div>
                     <div className="text-center" style={{ marginTop: 40 }}>
                         <div className="container-fluid d-flex justify-content-center">
-                            <Link to="/car">
                                 <button className="btn btn-link" type="button" onClick={handleTrainSkip}>
                                     Don't want a return train? CONTINUE HERE
                                 </button>
-                            </Link>
                         </div>
                     </div>
                 </div>

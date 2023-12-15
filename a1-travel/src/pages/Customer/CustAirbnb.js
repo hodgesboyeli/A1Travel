@@ -1,15 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import Navbar from "../../Navbars/Navbar";
-import {Link, useNavigate} from "react-router-dom";
-import {getFirestore} from "firebase/firestore";
-import {app} from "../../Firebase";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import Axios from "axios";
 
 export default function CustAirbnb(){
+    const {state} = useLocation();
     const [airbnbs, setAirbnbs] = useState([]);
     const [selectedDestination, setSelectedDestination] = useState(null);
     const [airbnbIndex, setAirbnbIndex] = useState(-1);
-    const [lodgingType, setLodgingType] = useState("");
     const navigate = useNavigate();
     const [budget, setBudget] = useState(null);
     const [cartTotal, setCartTotal] = useState(sessionStorage.getItem('cartTotal'));
@@ -19,10 +17,8 @@ export default function CustAirbnb(){
     useEffect(() => {
         const fetchAirbnbs = async () => {
             try {
-                const db = getFirestore(app);
-
                 // Query airbnbs where cityState is equal to storedDestination and the type is equal to storedType in the backend
-                const response = await Axios.get(`http://localhost:8080/api/lodging/cityState/?cityState=${storedDestination}&type=${storedType}`);
+                const response = await Axios.get(`http://localhost:8080/api/lodging/cityState/?cityState=${storedDestination}&type=Airbnb`);
                 setAirbnbs(response.data.lodgings);
                 airbnbs.reduce((acc, airbnbs) => {
                     acc = {lodgings: []};
@@ -35,9 +31,7 @@ export default function CustAirbnb(){
 
         // Retrieve selected destination and selected lodging type from session storage
         const storedDestination = sessionStorage.getItem('selectedDestination');
-        const storedType = sessionStorage.getItem('lodgingType')
         console.log('Selected destination type:', storedDestination);
-        console.log('Selected lodging type:', storedType);
 
         const storedBudget = parseFloat(sessionStorage.getItem('budget'));
         const storedCartTotal = parseFloat(sessionStorage.getItem('cartTotal')); // Retrieve cartTotal
@@ -48,7 +42,6 @@ export default function CustAirbnb(){
         setCartTotal(storedCartTotal);
         setSelectedDestination(storedDestination);
         setSelectedDestination(storedDestination);
-        setLodgingType(storedType);
         fetchAirbnbs();
 
     }, []);
@@ -64,13 +57,14 @@ export default function CustAirbnb(){
             const updatedCartTotal = parseFloat(cartTotal) + airbnbPrice;
             setCartTotal(updatedCartTotal);
             sessionStorage.setItem('cartTotal', updatedCartTotal);
-            sessionStorage.setItem('airbnb', JSON.stringify(a[i]));
+            sessionStorage.setItem('lodging', JSON.stringify(a[i]));
         }
         console.log('Airbnb Set');
+        navigate(state.from === 'lodging' ? "/checkout" : '/event',state);
     }
 
     const handleAirbnbSkip = () => {
-        sessionStorage.removeItem('airbnb');
+        sessionStorage.removeItem('lodging');
         console.log("No Airbnb Set");
     }
 
@@ -148,9 +142,10 @@ export default function CustAirbnb(){
                             <div key={index}
                                  className={`destination-option ${airbnbIndex === index && 'selected-destination'}`}
                                  onClick={() => handleAirbnbSelect(index)}>
-                                <p>{airbnb.address} {airbnb.cityState}</p>
-                                <p>{airbnb.details}</p>
-                                <p>Price = ${airbnb.price}.00</p>
+                                <p>Name: {airbnb.name}</p>
+                                <p>Address: {airbnb.address} {airbnb.cityState}</p>
+                                <p>Details: {airbnb.details}</p>
+                                <p>Price Per Night: ${airbnb.price}.00</p>
                             </div>
                         ))
                     ) : (
@@ -159,19 +154,17 @@ export default function CustAirbnb(){
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
                     <button type="submit" className="btn btn-md custom-button" onClick={()=> handleAirbnbSet(airbnbs,airbnbIndex)} disabled={airbnbIndex < 0}>
-                        <Link to="/event">
                             Next
-                        </Link>
                     </button>
                 </div>
                 <div className="text-center" style={{ marginTop: 40 }}>
-                    <Link to="/lodging">
                         <div className="container-fluid d-flex justify-content-center">
-                            <button className="btn btn-link" type="button">
+                            <button className="btn btn-link" type="button" onClick={handleAirbnbSkip}>
+                                <Link to="/lodging" state={state}>
                                 Go back
+                                </Link>
                             </button>
                         </div>
-                    </Link>
                 </div>
             </div>
         </>
