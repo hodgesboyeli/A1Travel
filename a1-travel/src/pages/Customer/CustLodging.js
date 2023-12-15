@@ -1,9 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Navbar from "../../Navbars/Navbar";
 import {Link} from "react-router-dom";
-import {getFirestore} from "firebase/firestore";
-import {app} from "../../Firebase";
-import Axios from "axios";
 
 export default function CustLodging(){
 

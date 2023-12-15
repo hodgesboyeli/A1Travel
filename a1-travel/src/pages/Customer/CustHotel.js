@@ -1,15 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import Navbar from "../../Navbars/Navbar";
 import {Link, useNavigate} from "react-router-dom";
-import {getFirestore} from "firebase/firestore";
-import {app} from "../../Firebase";
 import Axios from "axios";
 
 export default function CustHotel(){
     const [hotels, setHotels] = useState([]);
     const [selectedDestination, setSelectedDestination] = useState(null);
     const [hotelIndex, setHotelIndex] = useState(-1);
-    const [lodgingType, setLodgingType] = useState("");
     const navigate = useNavigate();
     const [budget, setBudget] = useState(null);
     const [cartTotal, setCartTotal] = useState(sessionStorage.getItem('cartTotal'));
@@ -19,10 +16,8 @@ export default function CustHotel(){
     useEffect(() => {
         const fetchHotels = async () => {
             try {
-                const db = getFirestore(app);
-
                 // Query hotels where cityState is equal to storedDestination and the type is equal to storedType in the backend
-                const response = await Axios.get(`http://localhost:8080/api/lodging/cityState/?cityState=${storedDestination}&type=${storedType}`);
+                const response = await Axios.get(`http://localhost:8080/api/lodging/cityState/?cityState=${storedDestination}&type=Hotel`);
                 setHotels(response.data.lodgings);
                 hotels.reduce((acc, hotels) => {
                     acc = {lodgings: []};
@@ -35,9 +30,7 @@ export default function CustHotel(){
 
         // Retrieve selected destination and selected lodging type from session storage
         const storedDestination = sessionStorage.getItem('selectedDestination');
-        const storedType = sessionStorage.getItem('lodgingType')
         console.log('Selected destination type:', storedDestination);
-        console.log('Selected lodging type:', storedType);
 
         const storedBudget = parseFloat(sessionStorage.getItem('budget'));
         const storedCartTotal = parseFloat(sessionStorage.getItem('cartTotal')); // Retrieve cartTotal
@@ -48,7 +41,6 @@ export default function CustHotel(){
         setCartTotal(storedCartTotal);
         setSelectedDestination(storedDestination);
         setSelectedDestination(storedDestination);
-        setLodgingType(storedType);
         fetchHotels();
 
     }, []);
@@ -64,13 +56,13 @@ export default function CustHotel(){
             const updatedCartTotal = parseFloat(cartTotal) + hotelPrice;
             setCartTotal(updatedCartTotal);
             sessionStorage.setItem('cartTotal', updatedCartTotal);
-            sessionStorage.setItem('hotel',JSON.stringify(h[i]));
+            sessionStorage.setItem('lodging',JSON.stringify(h[i]));
         }
         console.log('Hotel Set');
     }
 
     const handleHotelSkip = () => {
-        sessionStorage.removeItem('hotel');
+        sessionStorage.removeItem('lodging');
         console.log("No Hotel Set");
     }
 
