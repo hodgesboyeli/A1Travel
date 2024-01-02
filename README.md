@@ -27,7 +27,7 @@ Welcome to A1 Travel, an innovative Java Spring Boot and ReactJS web application
 
 - **Effortless Trip Booking**: A1 Travel simplifies the entire trip booking process, allowing you to seamlessly plan and book your entire trip or individual components within one platform.
 - **All-in-One Solution**: Say goodbye to the hassle of visiting multiple websites to book different aspects of your trip. A1 Travel consolidates flights, hotels, Airbnb’s, events, and more in one user-friendly site.
-- **Streamlined Experience**: Enjoy a streamlined booking experience with real-time budget monitoring and smart recommendations to keep your trip planning stress-free.
+- **Streamlined Experience**: Enjoy a streamlined booking experience with real-time budget monitoring to keep your trip planning stress-free.
 - **Comprehensive User Management**: Administrators have powerful tools to manage users, ensuring a smooth experience for all.
 - **Database Efficiency**: Travel Administrators can efficiently manage transportation, lodging, and events within the system.
 - **Transparent Communication**: All users can communicate seamlessly, fostering a collaborative and informed travel community.
