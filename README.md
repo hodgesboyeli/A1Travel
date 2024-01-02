@@ -1,6 +1,6 @@
 # A1 Travel - Your Ultimate Budget-Friendly Travel Companion
 
-Welcome to A1 Travel, an innovative Java Spring Boot and ReactJS web application powered by Google Firebase! A1 Travel is designed to redefine the travel experience, offering advanced budgeting features and seamless booking capabilities for customers, administrators, and travel administrators.
+Welcome to A1 Travel, an innovative Java and ReactJS web application powered by Google Firebase! A1 Travel is designed to redefine the travel experience, offering advanced budgeting features and seamless booking capabilities for customers, administrators, and travel administrators.
 
 ## Key Features
 
